@@ -1,0 +1,28 @@
+$orange-crayola: #ff6b35ff;
+$peach-crayola: #f7c59fff;
+$beige: #efefd0ff;
+$usafa-blue: #004e89ff;
+$sapphire-blue: #1a659eff;
+
+@font-face {
+  font-family: "Young";
+  src: url(./Young.ttf) format("truetype");
+}
+
+html {
+  background-color: $usafa-blue;
+  color: $orange-crayola;
+  font-family: "Young";
+  display: flex;
+
+  h1 {
+    font-size: 60px;
+  }
+
+  h3 {
+    color: $peach-crayola;
+  }
+
+  #welcome {
+  }
+}
