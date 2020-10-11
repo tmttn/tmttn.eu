@@ -6,7 +6,7 @@ $white: #feefdd;
 
 html {
   scroll-behavior: smooth;
-  //display: flex;
+  scroll-snap-type: y mandatory;
 
   @media screen and (prefers-reduced-motion: reduce) {
     scroll-behavior: auto;
@@ -32,7 +32,7 @@ html {
 
     h2 {
       margin-top: 0;
-      padding-left: 7vw;
+      padding-left: 9vw;
     }
 
     h3 {
@@ -46,9 +46,12 @@ html {
       align-items: center;
       justify-content: space-between;
       background-color: $white;
+      position: sticky;
+      top: 0;
+      padding: 8px;
 
       nav {
-        padding: 0px 8px 0px 8px;
+        padding: 8px;
 
         a,
         a:visited,
@@ -64,7 +67,7 @@ html {
 
       .logo {
         width: 100px;
-        padding: 8px 0px 8px 0px;
+        padding: 8px;
         margin: 0;
       }
     }
@@ -72,6 +75,7 @@ html {
     section {
       height: 101vh;
       display: flex;
+      scroll-snap-align: start;
 
       @media only screen and (max-width: 600px) {
         align-items: center !important;
@@ -99,6 +103,10 @@ html {
         h4 {
           color: $black;
         }
+      }
+
+      main {
+        margin-top: 15vw;
       }
     }
   }
