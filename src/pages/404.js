@@ -1,5 +1,5 @@
 import React from "react"
-import Container from "../components/container"
+import Container from "../components/layout"
 import Section from "../components/section"
 
 import "../styles/main.scss"
