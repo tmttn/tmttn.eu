@@ -1,28 +1,105 @@
-$orange-crayola: #ff6b35ff;
-$peach-crayola: #f7c59fff;
-$beige: #efefd0ff;
-$usafa-blue: #004e89ff;
-$sapphire-blue: #1a659eff;
-
-@font-face {
-  font-family: "Young";
-  src: url(./Young.ttf) format("truetype");
-}
+$primary: #ff4000;
+$primary-highlight: #faaa8d;
+$secondary: #50b2c0;
+$black: #201e1f;
+$white: #feefdd;
 
 html {
-  background-color: $usafa-blue;
-  color: $orange-crayola;
-  font-family: "Young";
-  display: flex;
+  scroll-behavior: smooth;
+  //display: flex;
 
-  h1 {
-    font-size: 60px;
+  @media screen and (prefers-reduced-motion: reduce) {
+    scroll-behavior: auto;
   }
 
-  h3 {
-    color: $peach-crayola;
-  }
+  body {
+    margin: 0;
+    padding: 0;
 
-  #welcome {
+    .emoji {
+      padding-left: 1vw;
+    }
+
+    h1 {
+      @media only screen and (max-width: 600px) {
+        padding-top: 0 !important;
+      }
+
+      font-size: 10vw;
+      padding-left: 7vw;
+      margin-bottom: 0;
+    }
+
+    h2 {
+      margin-top: 0;
+      padding-left: 7vw;
+    }
+
+    h3 {
+      margin-top: 0;
+      padding-left: 9vw;
+    }
+
+    header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      background-color: $white;
+
+      nav {
+        padding: 0px 8px 0px 8px;
+
+        a,
+        a:visited,
+        a:hover,
+        a:active,
+        a:focus {
+          text-decoration: none;
+          color: $black;
+          margin: 8px;
+          background-image: none;
+        }
+      }
+
+      .logo {
+        width: 100px;
+        padding: 8px 0px 8px 0px;
+        margin: 0;
+      }
+    }
+
+    section {
+      height: 101vh;
+      display: flex;
+
+      @media only screen and (max-width: 600px) {
+        align-items: center !important;
+      }
+
+      &:nth-child(odd) {
+        background-color: $primary;
+        color: $white;
+
+        h1,
+        h2,
+        h3,
+        h4 {
+          color: $white;
+        }
+      }
+
+      &:nth-child(even) {
+        background-color: $secondary;
+        color: $black;
+
+        h1,
+        h2,
+        h3,
+        h4 {
+          color: $black;
+        }
+      }
+    }
   }
 }
