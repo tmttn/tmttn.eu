@@ -1,28 +1,33 @@
 import React from "react"
-import { Link } from "gatsby"
-
-import "../styles/main.scss"
+import Container from "../components/container"
+import Section from "../components/section"
 
 export default function Home() {
   return (
-    <div>
-      <section>
+    <Container>
+      <header>
+        <img src="../../tmttn-logo-black-on-transparent.svg" alt="tmttn logo" class="logo"></img>
         <nav>
-          <Link to="/">Home</Link>
-          <Link to="/blog/">Blog</Link>
-          <Link to="/about/">About</Link>
+          <a href="welcome">Welcome</a>
+          <a href="about">About</a>
+          <a href="contact">Contact</a>
+          <a href="showcase">Showcase</a>
         </nav>
-      </section>
-      <main id="welcome">
-        <h1>I'm Thomas Metten</h1>
-        <h3>
-          Developer | Father | Tabletop and Online RPG enthousiast
-          <span role="img" aria-label="roleplaying wizard">
-            🧙‍♂️
-          </span>
-        </h3>
-        <h2>Welcome to my site!</h2>
-      </main>
-    </div>
+      </header>
+      <Section id="welcome">
+        <main>
+          <h1>Thomas Metten</h1>
+          <h3>
+            Developer | Father | Tabletop and Online RPG enthousiast
+            <span class="emoji" role="img" aria-label="roleplaying wizard">
+              🧙‍♂️
+            </span>
+          </h3>
+        </main>
+      </Section>
+      <Section id="about">About</Section>
+      <Section id="contact">Contact</Section>
+      <Section id="showcase">Showcase</Section>
+    </Container>
   )
 }
