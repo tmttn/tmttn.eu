@@ -1,8 +1,8 @@
-$primary: #ff4000;
-$primary-highlight: #faaa8d;
-$secondary: #50b2c0;
-$black: #201e1f;
-$white: #feefdd;
+$primary: #1c6e8c;
+$primary-highlight: #a7acd9;
+$secondary: #d62246;
+$black: #3e363f;
+$white: #fffce8;
 
 html {
   scroll-behavior: smooth;
@@ -15,9 +15,12 @@ html {
   body {
     margin: 0;
     padding: 0;
+    background-color: $black;
 
     .emoji {
       padding-left: 1vw;
+      font-size: 170px;
+      align-self: center;
     }
 
     h1 {
@@ -45,7 +48,6 @@ html {
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      background-color: $white;
       position: sticky;
       top: 0;
       padding: 8px;
@@ -53,15 +55,40 @@ html {
       nav {
         padding: 8px;
 
-        a,
-        a:visited,
-        a:hover,
-        a:active,
-        a:focus {
-          text-decoration: none;
-          color: $black;
-          margin: 8px;
-          background-image: none;
+        ul {
+          list-style: none;
+          margin: 0;
+          display: flex;
+
+          li {
+            margin: 0;
+
+            a,
+            a:visited,
+            a:hover,
+            a:active,
+            a:focus {
+              text-decoration: none;
+              color: $secondary;
+              margin: 8px;
+              background-image: none;
+              text-shadow: none;
+              padding-bottom: 4px;
+
+              &.current {
+                border-bottom: 2px solid $secondary;
+              }
+            }
+          }
+
+          hr {
+            height: 0.25rem;
+            width: 25%;
+            margin: 0;
+            background: tomato;
+            border: none;
+            transition: 0.3s ease-in-out;
+          }
         }
       }
 
@@ -72,41 +99,50 @@ html {
       }
     }
 
-    section {
-      height: 101vh;
+    main {
       display: flex;
-      scroll-snap-align: start;
+      flex-direction: column;
 
-      @media only screen and (max-width: 600px) {
-        align-items: center !important;
-      }
+      section {
+        height: 101vh;
+        scroll-snap-align: start;
+        display: flex;
+        flex-direction: column;
 
-      &:nth-child(odd) {
-        background-color: $primary;
-        color: $white;
+        @media only screen and (max-width: 600px) {
+          align-items: center !important;
+        }
 
-        h1,
-        h2,
-        h3,
-        h4 {
+        &#welcome {
+          padding-top: 8vw;
+        }
+
+        &:nth-child(odd) {
+          background-color: $black;
+          color: $primary;
+
+          h1 {
+            color: $white;
+          }
+
+          h2,
+          h3,
+          h4 {
+            color: $primary;
+          }
+        }
+
+        &:nth-child(even) {
+          background-color: $white;
           color: $white;
+
+          h1,
+          h2,
+          h3,
+          h4 {
+            color: $secondary;
+          }
         }
-      }
-
-      &:nth-child(even) {
-        background-color: $secondary;
-        color: $black;
-
-        h1,
-        h2,
-        h3,
-        h4 {
-          color: $black;
-        }
-      }
-
-      main {
-        margin-top: 15vw;
       }
     }
   }
