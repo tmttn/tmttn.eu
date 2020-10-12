@@ -29,18 +29,38 @@ html {
       }
 
       font-size: 10vw;
-      padding-left: 7vw;
-      margin-bottom: 0;
     }
 
-    h2 {
-      margin-top: 0;
-      padding-left: 9vw;
-    }
-
+    h1,
+    h2,
     h3 {
-      margin-top: 0;
-      padding-left: 9vw;
+      padding-left: 7vw;
+    }
+
+    p {
+      max-width: 800px;
+      text-align: justify;
+    }
+
+    a,
+    a:visited,
+    a:hover,
+    a:active,
+    a:focus {
+      text-decoration: none;
+      color: $primary;
+      text-shadow: none;
+    }
+
+    a {
+      background-image: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0),
+        rgba(0, 0, 0, 0) 1px,
+        $primary 1px,
+        $primary 2px,
+        rgba(0, 0, 0, 0) 2px
+      );
     }
 
     header {
@@ -68,26 +88,15 @@ html {
             a:hover,
             a:active,
             a:focus {
-              text-decoration: none;
               color: $secondary;
               margin: 8px;
-              background-image: none;
-              text-shadow: none;
               padding-bottom: 4px;
+              background-image: none;
 
               &.current {
                 border-bottom: 2px solid $secondary;
               }
             }
-          }
-
-          hr {
-            height: 0.25rem;
-            width: 25%;
-            margin: 0;
-            background: tomato;
-            border: none;
-            transition: 0.3s ease-in-out;
           }
         }
       }
@@ -104,17 +113,14 @@ html {
       flex-direction: column;
 
       section {
-        height: 101vh;
+        min-height: 101vh;
         scroll-snap-align: start;
         display: flex;
         flex-direction: column;
+        padding-top: 9vw;
 
         @media only screen and (max-width: 600px) {
           align-items: center !important;
-        }
-
-        &#welcome {
-          padding-top: 8vw;
         }
 
         &:nth-child(odd) {
@@ -134,7 +140,7 @@ html {
 
         &:nth-child(even) {
           background-color: $white;
-          color: $white;
+          color: $black;
 
           h1,
           h2,
@@ -142,6 +148,27 @@ html {
           h4 {
             color: $secondary;
           }
+        }
+
+        .sectionContent {
+          display: flex;
+          flex-direction: row;
+
+          div:nth-of-type(1) {
+            margin-left: 7vw;
+          }
+
+          div:nth-of-type(2) {
+            margin-left: 16px;
+          }
+        }
+      }
+
+      section#welcome {
+        h1,
+        h2,
+        h3 {
+          margin: 0;
         }
       }
     }
