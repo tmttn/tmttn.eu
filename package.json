@@ -15,8 +15,10 @@
   },
   "dependencies": {
     "gatsby": "^2.24.66",
+    "gatsby-plugin-google-analytics": "^2.3.17",
     "gatsby-plugin-sass": "^2.3.14",
     "gatsby-plugin-typography": "^2.5.13",
+    "lodash": "^4.17.20",
     "node-sass": "^4.14.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
