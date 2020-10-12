@@ -108,7 +108,7 @@ html {
         margin: 0;
 
         @media only screen and (max-width: 600px) {
-          width: 60px;
+          width: 60px !important;
         }
       }
     }
@@ -127,7 +127,7 @@ html {
         @media only screen and (max-width: 600px) {
           align-items: center !important;
           justify-items: center !important;
-          scroll-snap-align: none;
+          scroll-snap-align: none !important;
           text-align: center !important;
 
           h1,
@@ -170,7 +170,7 @@ html {
 
           @media only screen and (max-width: 600px) {
             align-items: center !important;
-            flex-direction: column;
+            flex-direction: column !important;
 
             div {
               margin: 0px 32px !important;
