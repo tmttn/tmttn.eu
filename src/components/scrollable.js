@@ -16,7 +16,6 @@ export default class Scrollable extends React.Component {
 
   componentDidMount() {
     mainNavLinks = document.querySelectorAll("nav ul li a")
-    console.log("mounting")
     window.addEventListener(
       "scroll",
       this.throttledUpdateActiveNavigation,
@@ -25,7 +24,6 @@ export default class Scrollable extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log("unmounting")
     window.removeEventListener(
       "scroll",
       this.throttledUpdateActiveNavigation,
@@ -34,7 +32,6 @@ export default class Scrollable extends React.Component {
   }
 
   updateActiveNavigation() {
-    console.log("test")
     let fromTop = window.scrollY
 
     mainNavLinks.forEach(link => {
@@ -44,7 +41,6 @@ export default class Scrollable extends React.Component {
         section.offsetTop <= fromTop &&
         section.offsetTop + section.offsetHeight > fromTop
       ) {
-        console.log("setting current")
         link.classList.add("current")
       } else {
         link.classList.remove("current")
