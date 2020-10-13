@@ -195,6 +195,41 @@ html {
           margin: 0;
         }
       }
+
+      section#contact {
+        h2 {
+          align-self: center;
+          padding: 0;
+        }
+
+        .iconBar {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          padding: 0 7vw;
+          align-items: center;
+          justify-content: space-evenly;
+
+          .icons {
+            margin: 32px;
+            font-size: 116px;
+            color: $secondary;
+
+            @media only screen and (max-width: 600px) {
+              margin: 32px;
+              font-size: 110px;
+            }
+          }
+
+          a,
+          a:visited,
+          a:hover,
+          a:active,
+          a:focus {
+            background-image: none;
+          }
+        }
+      }
     }
   }
 }
