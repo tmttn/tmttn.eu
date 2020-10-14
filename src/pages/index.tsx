@@ -37,9 +37,6 @@ export default function Home() {
         <Section id="welcome">
           <h1>Thomas Metten</h1>
           <h2>Developer | Father | Tabletop and Online RPG enthousiast</h2>
-          {/* <span className="emoji" role="img" aria-label="roleplaying wizard">
-            👨🏻‍💻
-          </span> */}
         </Section>
         <Section id="about">
           <h1>About me</h1>
@@ -48,7 +45,7 @@ export default function Home() {
               <img
                 src="../../square-profile-picture.jpg"
                 alt="Thomas Metten"
-                heigth="260"
+                height="260"
                 width="260"
               ></img>
             </div>

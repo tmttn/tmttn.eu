@@ -12,7 +12,7 @@ export default function Home() {
           <h1>404</h1>
           <h2>
             This page is like a lost treasure: not found
-            <span class="emoji" role="img" aria-label="dead">
+            <span className="emoji" role="img" aria-label="dead">
               🏴‍☠️
             </span>
           </h2>

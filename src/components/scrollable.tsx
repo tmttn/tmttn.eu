@@ -1,21 +1,24 @@
 import React from "react"
 import _ from "lodash"
+import { faAlignLeft } from "@fortawesome/free-solid-svg-icons"
 
-let mainNavLinks
+let mainNavLinks: NodeListOf<HTMLAnchorElement>
 
 export default class Scrollable extends React.Component {
-  constructor(props) {
-    super()
+  private throttledUpdateActiveNavigation: _.DebouncedFunc<() => void>
 
-    this.updateActiveNavigation = this.updateActiveNavigation.bind(this)
+  constructor(props: Readonly<{}>) {
+    super(props)
+
     this.throttledUpdateActiveNavigation = _.throttle(
       this.updateActiveNavigation,
       100
     )
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     mainNavLinks = document.querySelectorAll("nav ul li a")
+
     window.addEventListener(
       "scroll",
       this.throttledUpdateActiveNavigation,
@@ -23,7 +26,7 @@ export default class Scrollable extends React.Component {
     )
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     window.removeEventListener(
       "scroll",
       this.throttledUpdateActiveNavigation,
@@ -31,11 +34,11 @@ export default class Scrollable extends React.Component {
     )
   }
 
-  updateActiveNavigation() {
+  updateActiveNavigation(): void {
     let fromTop = window.scrollY
 
     mainNavLinks.forEach(link => {
-      let section = document.querySelector(link.hash)
+      let section: HTMLElement = document.querySelector(link.hash)
 
       if (
         section.offsetTop <= fromTop &&
@@ -48,7 +51,7 @@ export default class Scrollable extends React.Component {
     })
   }
 
-  render = () => {
+  render = (): string => {
     return ""
   }
 }
