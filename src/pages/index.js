@@ -57,16 +57,15 @@ export default function Home() {
                 Hi! I'm Thomas (Tom) Metten, a {new Date().getFullYear() - 1987}{" "}
                 year old developer from Belgium. During the day, I work for{" "}
                 <a href="https://www.aca-it.be">ACA IT-Solutions</a>. After work
-                I spend quality time with my family, enjoy myself with some
-                personal and open-source coding projects and I bingewatching
+                I like spending quality time with my family, enjoying myself with some
+                personal and open-source coding projects and bingewatching
                 Netflix / Disney+ / Youtube (a lot).
               </p>
               <p>
-                I also really enjoy tabletop boardgames, roleplaying games and
-                occasionally video games (I'm a PC gamer, but I do not shun the
-                consoles). Food is equally the bane of my existance as it is my
+                I also enjoy tabletop boardgames, roleplaying games and
+                occasionally video games (I'm a PC gamer, consoles are awesome too). Food is as much the bane of my existance as it is my
                 passion. I love cooking, but I enjoy eating even more. As you
-                can imagine the struggle against the scale is real.
+                can imagine, the struggle against the scale is real.
               </p>
             </div>
           </div>
