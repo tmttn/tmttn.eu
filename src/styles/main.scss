@@ -7,6 +7,7 @@ $white: #fffce8;
 html {
   scroll-behavior: smooth;
   scroll-snap-type: y mandatory;
+  overscroll-behavior-y: none;
 
   @media screen and (prefers-reduced-motion: reduce) {
     scroll-behavior: auto;
@@ -69,9 +70,23 @@ html {
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      position: sticky;
+      position: fixed;
+      width: 100%;
       top: 0;
       padding: 8px;
+
+      &.scrolled {
+        backdrop-filter: blur(10px) brightness(60%);
+
+        .logo {
+          width: 50px;
+          transition: width 1s;
+        }
+      }
+
+      &:not(.scrolled) {
+        transition: width 1s;
+      }
 
       nav {
         padding: 8px;
@@ -106,9 +121,11 @@ html {
         width: 100px;
         padding: 8px;
         margin: 0;
+        transition: width 0.5s;
 
         @media only screen and (max-width: 600px) {
           width: 60px !important;
+          transition: width 0.5s;
         }
       }
     }
@@ -118,7 +135,7 @@ html {
       flex-direction: column;
 
       section {
-        min-height: 101vh;
+        min-height: 100vh;
         scroll-snap-align: start;
         display: flex;
         flex-direction: column;
@@ -189,6 +206,9 @@ html {
       }
 
       section#welcome {
+        justify-content: center;
+        padding-top: 0;
+
         h1,
         h2,
         h3 {
