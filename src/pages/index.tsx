@@ -89,7 +89,7 @@ export default function Home() {
             </a>
 
             <a className="icons" href="mailto:contact@tmttn.be">
-              <FontAwesomeIcon icon={["fa", "at"]} />
+              <FontAwesomeIcon icon="at" />
             </a>
 
             <a className="icons" href="https://www.twitch.tv/bizarius">
