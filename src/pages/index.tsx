@@ -53,7 +53,7 @@ export default function Home() {
               <p>
                 Hi! I'm Thomas (Tom) Metten, a {new Date().getFullYear() - 1987}{" "}
                 year old developer from Belgium. During the day, I work for{" "}
-                <a href="https://www.aca-it.be">ACA IT-Solutions</a>. After work
+                <a href="https://www.acagroup.be">ACA Group</a>. After work
                 I like spending quality time with my family, enjoying myself
                 with some personal and open-source coding projects and
                 bingewatching Netflix / Disney+ / Youtube (a lot).
@@ -74,10 +74,6 @@ export default function Home() {
           <div className="iconBar">
             <a className="icons" href="https://github.com/tmttn">
               <FontAwesomeIcon icon={["fab", "github-square"]} />
-            </a>
-
-            <a className="icons" href="https://twitter.com/tmetten">
-              <FontAwesomeIcon icon={["fab", "twitter-square"]} />
             </a>
 
             <a className="icons" href="https://www.linkedin.com/in/tmetten/">
