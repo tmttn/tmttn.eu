@@ -4,11 +4,11 @@
   
   # Output directory for Next.js static export
   publish = "out"
-  
-  # Node.js version for Next.js 15
-  environment = { NODE_VERSION = "18.17.0" }
 
 [build.environment]
+  # Node.js version for Next.js 15
+  NODE_VERSION = "18.17.0"
+  
   # Disable Next.js telemetry in CI
   NEXT_TELEMETRY_DISABLED = "1"
   
