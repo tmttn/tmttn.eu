@@ -18,6 +18,7 @@ const HeatmapContainer = styled.div`
     align-items: center;
     gap: 0.5rem;
     text-align: left;
+    padding-left: 0;
   }
 `
 
