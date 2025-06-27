@@ -13,11 +13,17 @@ export const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    background: 
+    background: ${({ theme }) => theme.isDark ? `
       radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
       radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
       radial-gradient(circle at 40% 80%, rgba(120, 255, 198, 0.2) 0%, transparent 50%),
-      linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)
+    ` : `
+      radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 40% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+      linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%)
+    `};
     background-attachment: fixed;
     font-family: 'Inter', 'Roboto', 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, system-ui, sans-serif;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
@@ -28,6 +34,7 @@ export const GlobalStyle = createGlobalStyle`
     min-height: 100vh;
     overflow-x: hidden;
     color: ${({ theme }) => theme.colors.text};
+    transition: background 0.3s ease, color 0.3s ease;
   }
 
   /* Floating background elements */

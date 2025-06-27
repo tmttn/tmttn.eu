@@ -8,14 +8,17 @@ export const StyledHeader = styled.header<{ $scrolled?: boolean }>`
   position: fixed;
   width: 100%;
   top: 0;
-  padding: 8px;
+  left: 0;
+  right: 0;
+  padding: 8px 16px;
   z-index: 1000;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
 
-  ${({ $scrolled }) => $scrolled ? `
-    background: rgba(255, 255, 255, 0.1);
+  ${({ $scrolled, theme }) => $scrolled ? `
+    background: ${theme.colors.surface};
     backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid ${theme.colors.border};
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   ` : `
     background: transparent;
@@ -29,9 +32,9 @@ export const StyledHeader = styled.header<{ $scrolled?: boolean }>`
     right: 0;
     bottom: 0;
     background: linear-gradient(90deg, 
-      rgba(255, 255, 255, 0.1) 0%, 
-      rgba(255, 255, 255, 0.05) 50%, 
-      rgba(255, 255, 255, 0.1) 100%);
+      ${({ theme }) => theme.colors.surfaceHover} 0%, 
+      ${({ theme }) => theme.colors.surface} 50%, 
+      ${({ theme }) => theme.colors.surfaceHover} 100%);
     opacity: ${({ $scrolled }) => $scrolled ? '1' : '0'};
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -50,12 +53,21 @@ export const StyledLogo = styled.img<{ $scrolled?: boolean }>`
   }
 `
 
-export const StyledNav = styled.nav`
-  padding: 8px;
+export const StyledHeaderRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  
+  @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    gap: 0.5rem;
+  }
+`
 
+export const StyledNav = styled.nav`
   ul {
     list-style: none;
     margin: 0;
+    padding: 0;
     display: flex;
     gap: 0.5rem;
     font-family: 'Inter', system-ui, sans-serif;
@@ -161,11 +173,17 @@ export const StyledSection = styled.section<{ $variant?: 'odd' | 'even' }>`
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
+    background: ${({ theme }) => theme.isDark ? `
       radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
       radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
       radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 60%),
-      linear-gradient(135deg, rgba(15, 15, 35, 0.95) 0%, rgba(26, 26, 46, 0.95) 100%);
+      linear-gradient(135deg, rgba(15, 15, 35, 0.95) 0%, rgba(26, 26, 46, 0.95) 100%)
+    ` : `
+      radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.03) 0%, transparent 60%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.9) 100%)
+    `};
     backdrop-filter: blur(2px);
     pointer-events: none;
   }
