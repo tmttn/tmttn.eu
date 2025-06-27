@@ -55,11 +55,11 @@ typings/
 .env*
 
 # Next.js build output
-.next/
-out/
+.next
+out
 
 # gatsby files
-.cache/
+.cache
 public
 
 # Mac files
@@ -74,3 +74,6 @@ yarn-error.log
 
 # Local Netlify folder
 .netlify
+
+# Claude artifacts and config
+.claude

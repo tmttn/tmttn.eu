@@ -281,6 +281,13 @@ export const StyledSection = styled.section<{ $variant?: 'odd' | 'even' }>`
   padding-top: 9vw;
   position: relative;
   overflow: hidden;
+  z-index: 2;
+  
+  /* Ensure content is above background layers */
+  & > * {
+    position: relative;
+    z-index: 3;
+  }
   
   &::before {
     content: '';
