@@ -154,18 +154,72 @@ export const StyledSectionContent = styled.div`
 `
 
 export const StyledContactSection = styled(StyledSection)`
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+      ${({ $variant }) => $variant === 'odd' 
+        ? 'rgba(59, 130, 246, 0.03)' 
+        : 'rgba(139, 92, 246, 0.03)'} 0%,
+      ${({ $variant }) => $variant === 'odd' 
+        ? 'rgba(16, 185, 129, 0.03)' 
+        : 'rgba(236, 72, 153, 0.03)'} 100%);
+    pointer-events: none;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, 
+      ${({ $variant }) => $variant === 'odd' 
+        ? '#3b82f6, #10b981' 
+        : '#8b5cf6, #ec4899'});
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    
+    @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+      font-size: 2.5rem;
+    }
+  }
+
   h2 {
-    padding-left: 8vw;
+    text-align: center;
+    margin-bottom: 3rem;
+    font-size: 1.5rem;
+    font-weight: 400;
+    opacity: 0.8;
+    letter-spacing: 0.02em;
+    
+    @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      padding: 0 2rem;
+    }
   }
 `
 
 export const StyledIconBar = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 2rem;
   padding: 0 7vw;
-  align-items: center;
-  justify-content: space-evenly;
+  max-width: 800px;
+  margin: 0 auto;
+  
+  @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1.5rem;
+    padding: 0 4vw;
+  }
 
   a,
   a:visited,
@@ -177,18 +231,84 @@ export const StyledIconBar = styled.div`
 `
 
 export const StyledIcon = styled.a`
-  margin: 32px;
-  font-size: 116px;
-  color: ${({ theme }) => theme.colors.secondary};
-  transition: transform ${({ theme }) => theme.transitions.default};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  border-radius: 20px;
+  background: ${({ theme }) => theme.colors.white};
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.1), 
+      transparent);
+    transition: left 0.5s ease;
+  }
 
   &:hover {
-    transform: scale(1.5);
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+
+  svg, span {
+    font-size: 3rem;
+    color: ${({ theme }) => theme.colors.secondary};
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+  }
+
+  &:hover svg,
+  &:hover span {
+    color: ${({ theme }) => theme.colors.primary};
+    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.3));
+  }
+
+  &::after {
+    content: attr(aria-label);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: ${({ theme }) => theme.colors.black};
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+
+  &:hover::after {
+    opacity: 1;
   }
 
   @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    margin: 32px;
-    font-size: 110px;
+    padding: 1.2rem;
+    border-radius: 16px;
+    
+    svg, span {
+      font-size: 2.5rem;
+    }
+    
+    &::after {
+      font-size: 0.8rem;
+    }
   }
 `
 
