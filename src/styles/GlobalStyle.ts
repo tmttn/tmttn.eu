@@ -27,6 +27,7 @@ export const GlobalStyle = createGlobalStyle`
     text-rendering: optimizeLegibility;
     min-height: 100vh;
     overflow-x: hidden;
+    color: ${({ theme }) => theme.colors.text};
   }
 
   /* Floating background elements */
