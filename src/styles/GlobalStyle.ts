@@ -3,7 +3,6 @@ import { createGlobalStyle } from 'styled-components'
 export const GlobalStyle = createGlobalStyle`
   html {
     scroll-behavior: smooth;
-    scroll-snap-type: y mandatory;
     overscroll-behavior-y: none;
 
     @media screen and (prefers-reduced-motion: reduce) {

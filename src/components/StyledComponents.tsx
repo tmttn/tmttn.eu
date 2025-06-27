@@ -95,8 +95,7 @@ export const StyledMain = styled.main`
 `
 
 export const StyledSection = styled.section<{ $variant?: 'odd' | 'even' }>`
-  min-height: 101vh;
-  scroll-snap-align: start;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   padding-top: 9vw;
@@ -162,7 +161,6 @@ export const StyledSection = styled.section<{ $variant?: 'odd' | 'even' }>`
   @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     align-items: center !important;
     justify-items: center !important;
-    scroll-snap-align: none !important;
     text-align: center !important;
 
     h1,
