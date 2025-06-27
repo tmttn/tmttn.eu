@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { useTheme } from '../contexts/ThemeContext'
 
-const ParticleCanvas = styled.canvas`
+const ParticleCanvas = styled.canvas<{ $isDark: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -9,8 +10,8 @@ const ParticleCanvas = styled.canvas`
   height: 100%;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.7;
-  mix-blend-mode: screen;
+  opacity: ${({ $isDark }) => $isDark ? 0.7 : 0.4};
+  mix-blend-mode: ${({ $isDark }) => $isDark ? 'screen' : 'multiply'};
   
   @media (prefers-reduced-motion: reduce) {
     display: none;
@@ -38,6 +39,7 @@ export default function ParticleBackground({
   particleCount = 50, 
   className 
 }: ParticleBackgroundProps) {
+  const { isDark } = useTheme()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animationRef = useRef<number | undefined>(undefined)
   const particlesRef = useRef<Particle[]>([])
@@ -67,11 +69,16 @@ export default function ParticleBackground({
     resizeCanvas()
 
     // Particle colors based on theme
-    const particleColors = [
+    const particleColors = isDark ? [
       'rgba(96, 165, 250, 0.8)', // primary blue
       'rgba(165, 180, 252, 0.6)', // primary highlight
       'rgba(52, 211, 153, 0.7)',  // accent green
       'rgba(244, 114, 182, 0.5)', // secondary pink
+    ] : [
+      'rgba(59, 130, 246, 0.6)',  // darker blue for light mode
+      'rgba(29, 78, 216, 0.5)',   // darker blue variant
+      'rgba(5, 150, 105, 0.6)',   // darker green
+      'rgba(225, 29, 72, 0.4)',   // darker pink
     ]
 
     const createParticle = (): Particle => {
@@ -184,7 +191,7 @@ export default function ParticleBackground({
             const opacity = (100 - distance) / 100 * 0.1
             ctx.save()
             ctx.globalAlpha = opacity
-            ctx.strokeStyle = 'rgba(96, 165, 250, 0.3)'
+            ctx.strokeStyle = isDark ? 'rgba(96, 165, 250, 0.3)' : 'rgba(59, 130, 246, 0.4)'
             ctx.lineWidth = 0.5
             ctx.beginPath()
             ctx.moveTo(particle.x, particle.y)
@@ -216,7 +223,7 @@ export default function ParticleBackground({
       window.removeEventListener('scroll', handleScroll)
       window.removeEventListener('resize', resizeCanvas)
     }
-  }, [particleCount])
+  }, [particleCount, isDark])
 
   if (!isVisible) return null
 
@@ -226,6 +233,7 @@ export default function ParticleBackground({
       className={className}
       aria-hidden="true"
       role="presentation"
+      $isDark={isDark}
     />
   )
 }
