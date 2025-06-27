@@ -378,6 +378,59 @@ export const StyledSectionContent = styled.div`
     margin-left: 7vw;
     position: relative;
     z-index: 1;
+    
+    /* Enhanced image styling */
+    img {
+      border-radius: 20px;
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, 
+          rgba(59, 130, 246, 0.1) 0%, 
+          transparent 50%, 
+          rgba(139, 92, 246, 0.1) 100%);
+        border-radius: 20px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+      
+      &:hover {
+        transform: translateY(-8px) scale(1.02) rotate(1deg);
+        box-shadow: 
+          0 30px 60px rgba(0, 0, 0, 0.4),
+          0 0 0 1px rgba(255, 255, 255, 0.2),
+          0 0 80px rgba(59, 130, 246, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        
+        &::before {
+          opacity: 1;
+        }
+      }
+    }
+
+    /* Add floating animation to image */
+    animation: profileFloat 6s ease-in-out infinite;
+    
+    @keyframes profileFloat {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
   }
 
   div:nth-of-type(2) {
@@ -388,9 +441,65 @@ export const StyledSectionContent = styled.div`
     
     p {
       animation: fadeInUp 1s ease-out 1s both;
+      position: relative;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(5px);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, 
+          rgba(255, 255, 255, 0.1) 0%, 
+          transparent 50%, 
+          rgba(255, 255, 255, 0.05) 100%);
+        border-radius: 16px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-color: rgba(255, 255, 255, 0.15);
+        
+        &::before {
+          opacity: 1;
+        }
+      }
       
       &:nth-child(2) {
         animation-delay: 1.2s;
+      }
+
+      a {
+        color: #60a5fa;
+        font-weight: 500;
+        text-decoration: none;
+        background-image: linear-gradient(
+          to right,
+          #60a5fa 0%,
+          #3b82f6 100%
+        );
+        background-size: 0% 2px;
+        background-position: 0 100%;
+        background-repeat: no-repeat;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          background-size: 100% 2px;
+          color: #3b82f6;
+          text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
       }
     }
   }
@@ -551,6 +660,152 @@ export const StyledIcon = styled.a`
     
     &::after {
       font-size: 0.8rem;
+    }
+  }
+`
+
+export const StyledFooter = styled.footer`
+  position: relative;
+  background: linear-gradient(135deg, 
+    rgba(15, 15, 35, 0.95) 0%, 
+    rgba(26, 26, 46, 0.95) 50%,
+    rgba(22, 33, 62, 0.95) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 4rem 7vw 2rem;
+  margin-top: 0;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 40%);
+    animation: footerFloat 20s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes footerFloat {
+    0%, 100% { 
+      transform: scale(1) rotate(0deg);
+      opacity: 0.8;
+    }
+    50% { 
+      transform: scale(1.1) rotate(1deg);
+      opacity: 1;
+    }
+  }
+
+  .footer-content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 2rem;
+
+    @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      text-align: center;
+    }
+  }
+
+  .footer-section {
+    h3 {
+      color: #ffffff;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-left: 0;
+      background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+    }
+
+    p, li {
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
+      margin-bottom: 0.8rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      background-image: none;
+      
+      &:hover {
+        color: #ffffff;
+        text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        transform: translateX(5px);
+      }
+    }
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+
+    @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+      justify-content: center;
+    }
+
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+
+      &:hover {
+        background: rgba(59, 130, 246, 0.2);
+        border-color: rgba(59, 130, 246, 0.4);
+        transform: translateY(-2px) scale(1.1);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+      }
+
+      svg {
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  .footer-bottom {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+
+    .footer-heart {
+      color: #ff6b6b;
+      animation: heartbeat 2s ease-in-out infinite;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
     }
   }
 `

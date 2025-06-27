@@ -16,7 +16,8 @@ import {
   StyledContactSection,
   StyledIconBar,
   StyledIcon,
-  StyledSection
+  StyledSection,
+  StyledFooter
 } from "../src/components/StyledComponents"
 
 export default function Home() {
@@ -130,6 +131,70 @@ export default function Home() {
           <Portfolio variant="even" />
         </StyledSection>
       </StyledMain>
+      
+      <StyledFooter>
+        <div className="footer-content">
+          <div className="footer-section">
+            <h3>About</h3>
+            <p>
+              Full-stack developer passionate about creating beautiful, 
+              functional web experiences. Based in Belgium, working 
+              remotely with teams worldwide.
+            </p>
+            <div className="footer-social">
+              <a href="https://github.com/tmttn" aria-label="GitHub">
+                <ClientOnlyIcon icon={["fab", "github"]} fallback="GH" />
+              </a>
+              <a href="https://www.linkedin.com/in/tmetten/" aria-label="LinkedIn">
+                <ClientOnlyIcon icon={["fab", "linkedin"]} fallback="LI" />
+              </a>
+              <a href="https://www.twitch.tv/bizarius" aria-label="Twitch">
+                <ClientOnlyIcon icon={["fab", "twitch"]} fallback="TW" />
+              </a>
+              <a href="https://discord.gg/G5E8XWR" aria-label="Discord">
+                <ClientOnlyIcon icon={["fab", "discord"]} fallback="DC" />
+              </a>
+            </div>
+          </div>
+          
+          <div className="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="#welcome">Home</a></li>
+              <li><a href="#about">About Me</a></li>
+              <li><a href="#contact">Contact</a></li>
+              <li><a href="#showcase">Portfolio</a></li>
+            </ul>
+          </div>
+          
+          <div className="footer-section">
+            <h3>Contact Info</h3>
+            <ul>
+              <li>
+                <a href="mailto:contact@tmttn.be">
+                  <ClientOnlyIcon icon="envelope" fallback="📧" /> contact@tmttn.be
+                </a>
+              </li>
+              <li>
+                <a href="https://tmttn.eu">
+                  <ClientOnlyIcon icon="globe" fallback="🌐" /> tmttn.eu
+                </a>
+              </li>
+              <li>
+                <ClientOnlyIcon icon="map-marker-alt" fallback="📍" /> Belgium
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="footer-bottom">
+          <p>
+            © {new Date().getFullYear()} Tom Metten. Made with{" "}
+            <span className="footer-heart">♥</span> using Next.js & TypeScript.
+          </p>
+        </div>
+      </StyledFooter>
+      
       <Scrollable />
     </Layout>
   )
