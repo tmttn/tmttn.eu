@@ -182,7 +182,7 @@ export default function Home() {
         
         <div className="footer-bottom">
           <p>
-            🤖 Generated with <a href="https://claude.ai/code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+            Crafted with passion and attention to detail.
           </p>
         </div>
       </StyledFooter>
