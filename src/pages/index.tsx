@@ -35,7 +35,7 @@ export default function Home() {
       </header>
       <main>
         <Section id="welcome">
-          <h1>Thomas Metten</h1>
+          <h1>Tom Metten</h1>
           <h2>Developer | Father | Tabletop and Online RPG enthousiast</h2>
         </Section>
         <Section id="about">
@@ -44,14 +44,14 @@ export default function Home() {
             <div>
               <img
                 src="../../square-profile-picture.jpg"
-                alt="Thomas Metten"
+                alt="Tom Metten"
                 height="260"
                 width="260"
               ></img>
             </div>
             <div>
               <p>
-                Hi! I'm Thomas (Tom) Metten, a {new Date().getFullYear() - 1987}{" "}
+                Hi! I'm Tom Metten, a {new Date().getFullYear() - 1987}{" "}
                 year old developer from Belgium. During the day, I work for{" "}
                 <a href="https://www.acagroup.be">ACA Group</a>. After work
                 I like spending quality time with my family, enjoying myself
