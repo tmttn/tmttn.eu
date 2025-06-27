@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 export const StyledHeader = styled.header<{ $scrolled?: boolean }>`
+  --border-width: 1px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -12,32 +13,79 @@ export const StyledHeader = styled.header<{ $scrolled?: boolean }>`
   right: 0;
   padding: 8px 16px;
   z-index: 1000;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
+  overflow: hidden;
 
   ${({ $scrolled, theme }) => $scrolled ? `
-    background: ${theme.colors.surface};
-    backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 1px solid ${theme.colors.border};
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    background: ${theme.colors.glass.surface};
+    backdrop-filter: blur(24px) saturate(200%);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.15),
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
   ` : `
     background: transparent;
   `}
 
+  /* Enhanced gradient border for scrolled state */
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, 
-      ${({ theme }) => theme.colors.surfaceHover} 0%, 
-      ${({ theme }) => theme.colors.surface} 50%, 
-      ${({ theme }) => theme.colors.surfaceHover} 100%);
+    z-index: -1;
+    inset: 0;
+    background: ${({ $scrolled, theme }) => $scrolled ? 
+      `linear-gradient(135deg, 
+        ${theme.colors.glass.borderTop}, 
+        ${theme.colors.glass.borderBottom}) border-box` : 
+      'transparent'};
+    mask: ${({ $scrolled }) => $scrolled ? 
+      `linear-gradient(black, black) border-box,
+       linear-gradient(black, black) padding-box;
+       mask-composite: subtract;` : 
+      'none'};
+    border: ${({ $scrolled }) => $scrolled ? 'var(--border-width) solid transparent' : 'none'};
+    border-top: none;
     opacity: ${({ $scrolled }) => $scrolled ? '1' : '0'};
-    transition: opacity 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: none;
+    animation: ${({ $scrolled }) => $scrolled ? 'headerGlow 4s ease-in-out infinite' : 'none'};
+  }
+
+  /* Floating shimmer effect when scrolled */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: ${({ $scrolled }) => $scrolled ? '-100%' : '0'};
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.1), 
+      transparent);
+    transition: left 3s ease-in-out;
+    pointer-events: none;
+    opacity: ${({ $scrolled }) => $scrolled ? '1' : '0'};
+    animation: ${({ $scrolled }) => $scrolled ? 'headerShimmer 6s ease-in-out infinite' : 'none'};
+  }
+
+  @keyframes headerGlow {
+    0%, 100% {
+      filter: brightness(1) saturate(200%);
+    }
+    50% {
+      filter: brightness(1.2) saturate(250%);
+    }
+  }
+
+  @keyframes headerShimmer {
+    0%, 100% {
+      left: -100%;
+    }
+    50% {
+      left: 100%;
+    }
   }
 `
 
@@ -80,24 +128,41 @@ export const StyledNav = styled.nav`
       a:hover,
       a:active,
       a:focus {
+        --border-width: 1px;
         position: relative;
         display: block;
         color: ${({ theme }) => theme.colors.textSecondary};
         padding: 0.75rem 1.25rem;
-        background: ${({ theme }) => theme.colors.surface};
-        backdrop-filter: blur(10px) saturate(120%);
-        border: 1px solid ${({ theme }) => theme.colors.border};
-        border-radius: 12px;
+        background: ${({ theme }) => theme.colors.glass.surface};
+        backdrop-filter: blur(14px) saturate(160%);
+        border-radius: 14px;
         background-image: none;
         font-weight: 500;
         font-size: 0.9rem;
         letter-spacing: -0.01em;
         text-decoration: none;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         overflow: hidden;
 
-        /* Shimmer effect */
+        /* Enhanced gradient border with mask technique */
         &::before {
+          content: "";
+          position: absolute;
+          z-index: -1;
+          inset: 0;
+          border-radius: inherit;
+          border: var(--border-width) solid transparent;
+          background: linear-gradient(135deg, 
+            ${({ theme }) => theme.colors.glass.borderTop}, 
+            ${({ theme }) => theme.colors.glass.borderBottom}) border-box;
+          mask: linear-gradient(black, black) border-box,
+            linear-gradient(black, black) padding-box;
+          mask-composite: subtract;
+          animation: navBorderFloat 3s ease-in-out infinite;
+        }
+
+        /* Enhanced shimmer effect */
+        &::after {
           content: '';
           position: absolute;
           top: 0;
@@ -106,33 +171,83 @@ export const StyledNav = styled.nav`
           height: 100%;
           background: linear-gradient(90deg, 
             transparent, 
-            rgba(255, 255, 255, 0.1), 
+            rgba(255, 255, 255, 0.15), 
             transparent);
-          transition: left 0.5s ease;
+          transition: left 0.6s ease;
+          pointer-events: none;
+        }
+
+        @keyframes navBorderFloat {
+          0%, 100% {
+            opacity: 0.8;
+            filter: brightness(1);
+          }
+          50% {
+            opacity: 1;
+            filter: brightness(1.3);
+          }
         }
 
         &:hover {
           color: ${({ theme }) => theme.colors.text};
-          background: ${({ theme }) => theme.colors.surfaceHover};
-          border-color: ${({ theme }) => theme.colors.borderHover};
-          transform: translateY(-2px);
+          background: ${({ theme }) => theme.colors.glass.surfaceHover};
+          transform: translateY(-3px) scale(1.02);
+          backdrop-filter: blur(18px) saturate(180%);
           box-shadow: 
-            0 8px 25px rgba(0, 0, 0, 0.15),
-            0 0 0 1px rgba(255, 255, 255, 0.1);
+            0 12px 30px rgba(0, 0, 0, 0.2),
+            0 0 0 1px rgba(255, 255, 255, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
 
           &::before {
+            background: linear-gradient(135deg, 
+              ${({ theme }) => theme.colors.primary}40, 
+              ${({ theme }) => theme.colors.primaryHighlight}40, 
+              ${({ theme }) => theme.colors.primary}20) border-box;
+            animation: navBorderHover 2s ease-in-out infinite;
+          }
+
+          &::after {
             left: 100%;
+          }
+        }
+
+        @keyframes navBorderHover {
+          0%, 100% {
+            filter: brightness(1.3) saturate(150%);
+          }
+          50% {
+            filter: brightness(1.6) saturate(200%);
           }
         }
 
         &.current {
           color: ${({ theme }) => theme.colors.primary};
-          background: ${({ theme }) => theme.colors.surfaceHover};
-          border-color: ${({ theme }) => theme.colors.primary};
+          background: ${({ theme }) => theme.colors.glass.surfaceHover};
           font-weight: 600;
+          backdrop-filter: blur(18px) saturate(200%);
           box-shadow: 
-            0 4px 15px rgba(96, 165, 250, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            0 6px 20px ${({ theme }) => theme.colors.primary}40,
+            0 0 0 1px rgba(255, 255, 255, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.25);
+
+          &::before {
+            background: linear-gradient(135deg, 
+              ${({ theme }) => theme.colors.primary}60, 
+              ${({ theme }) => theme.colors.primaryHighlight}50, 
+              ${({ theme }) => theme.colors.primary}40) border-box;
+            animation: navCurrentGlow 3s ease-in-out infinite;
+          }
+        }
+
+        @keyframes navCurrentGlow {
+          0%, 100% {
+            filter: brightness(1.4) saturate(180%);
+            opacity: 0.9;
+          }
+          50% {
+            filter: brightness(1.8) saturate(220%);
+            opacity: 1;
+          }
         }
       }
     }
@@ -410,10 +525,10 @@ export const StyledSectionContent = styled.div`
     left: 5vw;
     right: 5vw;
     bottom: -1rem;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px) saturate(120%);
+    background: ${({ theme }) => theme.colors.glass.surface};
+    backdrop-filter: blur(12px) saturate(150%);
     border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid ${({ theme }) => theme.colors.glass.border};
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -521,10 +636,10 @@ export const StyledSectionContent = styled.div`
       animation: fadeInUp 1s ease-out 1s both;
       position: relative;
       padding: 1.5rem;
-      background: ${({ theme }) => theme.colors.surface};
-      backdrop-filter: blur(10px);
+      background: ${({ theme }) => theme.colors.glass.surface};
+      backdrop-filter: blur(12px) saturate(150%);
       border-radius: 16px;
-      border: 1px solid ${({ theme }) => theme.colors.border};
+      border: 1px solid ${({ theme }) => theme.colors.glass.border};
       margin-bottom: 1.5rem;
       color: ${({ theme }) => theme.colors.textSecondary};
       
@@ -619,10 +734,10 @@ export const StyledIcon = styled.a`
   justify-content: center;
   padding: 1.5rem;
   border-radius: 20px;
-  background: ${({ theme }) => theme.colors.surface};
+  background: ${({ theme }) => theme.colors.glass.surface};
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  backdrop-filter: blur(10px) saturate(120%);
+  border: 1px solid ${({ theme }) => theme.colors.glass.border};
+  backdrop-filter: blur(12px) saturate(150%);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   position: relative;
@@ -645,8 +760,8 @@ export const StyledIcon = styled.a`
   &:hover {
     transform: translateY(-8px) scale(1.05);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    border-color: ${({ theme }) => theme.colors.borderHover};
-    background: ${({ theme }) => theme.colors.surfaceHover};
+    border-color: ${({ theme }) => theme.colors.glass.borderHover};
+    background: ${({ theme }) => theme.colors.glass.surfaceHover};
     
     &::before {
       left: 100%;
@@ -801,14 +916,14 @@ export const StyledFooter = styled.footer`
       justify-content: center;
       width: 40px;
       height: 40px;
-      background: ${({ theme }) => theme.colors.surface};
-      border: 1px solid ${({ theme }) => theme.colors.border};
+      background: ${({ theme }) => theme.colors.glass.surface};
+      border: 1px solid ${({ theme }) => theme.colors.glass.border};
       border-radius: 50%;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px) saturate(150%);
 
       &:hover {
-        background: ${({ theme }) => theme.colors.surfaceHover};
+        background: ${({ theme }) => theme.colors.glass.surfaceHover};
         border-color: ${({ theme }) => theme.colors.primary};
         transform: translateY(-2px) scale(1.1);
         box-shadow: 0 8px 25px ${({ theme }) => theme.colors.primary}33;
@@ -887,19 +1002,19 @@ export const StyledPortfolio = styled.div<{ $variant?: 'odd' | 'even' }>`
       gap: 0.5rem;
       padding: 1rem 2rem;
       margin-bottom: 2rem;
-      background: ${({ theme }) => theme.colors.surface};
-      border: 1px solid ${({ theme }) => theme.colors.border};
+      background: ${({ theme }) => theme.colors.glass.surface};
+      border: 1px solid ${({ theme }) => theme.colors.glass.border};
       border-radius: 12px;
       font-size: 1.1rem;
       font-weight: 500;
       color: ${({ theme }) => theme.colors.textSecondary};
       transition: all ${({ theme }) => theme.transitions.default};
       background-image: none;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px) saturate(150%);
 
       &:hover {
-        background: ${({ theme }) => theme.colors.surfaceHover};
-        border-color: ${({ theme }) => theme.colors.borderHover};
+        background: ${({ theme }) => theme.colors.glass.surfaceHover};
+        border-color: ${({ theme }) => theme.colors.glass.borderHover};
         color: ${({ theme }) => theme.colors.text};
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
@@ -913,21 +1028,91 @@ export const StyledPortfolio = styled.div<{ $variant?: 'odd' | 'even' }>`
 `
 
 export const StyledRepoCard = styled.div<{ $variant?: 'odd' | 'even' }>`
-  background: ${({ $variant }) => 
-    $variant === 'even' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)'};
-  border: 1px solid ${({ $variant }) => 
-    $variant === 'even' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'};
-  border-radius: 12px;
+  --border-width: 1px;
+  position: relative;
+  background: ${({ theme }) => theme.colors.glass.surface};
+  border-radius: 16px;
   padding: 1.5rem;
-  transition: all ${({ theme }) => theme.transitions.default};
-  backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(16px) saturate(180%);
+  overflow: hidden;
+  
+  /* Enhanced gradient border with mask technique */
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    border-radius: inherit;
+    border: var(--border-width) solid transparent;
+    background: ${({ $variant, theme }) => 
+      $variant === 'even' 
+        ? `linear-gradient(135deg, ${theme.colors.secondary}40, ${theme.colors.accent}30, ${theme.colors.secondary}20)` 
+        : `linear-gradient(135deg, ${theme.colors.primary}40, ${theme.colors.primaryHighlight}30, ${theme.colors.primary}20)`
+    } border-box;
+    mask: linear-gradient(black, black) border-box,
+      linear-gradient(black, black) padding-box;
+    mask-composite: subtract;
+    animation: borderGlow 4s ease-in-out infinite;
+  }
+
+  /* Floating shimmer effect */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.1), 
+      transparent);
+    transition: left 0.6s ease;
+    pointer-events: none;
+  }
+
+  @keyframes borderGlow {
+    0%, 100% {
+      opacity: 0.8;
+      filter: brightness(1);
+    }
+    50% {
+      opacity: 1;
+      filter: brightness(1.2);
+    }
+  }
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: ${({ $variant }) => 
-      $variant === 'even' ? '0 12px 24px rgba(0, 0, 0, 0.1)' : '0 12px 24px rgba(0, 0, 0, 0.3)'};
-    border-color: ${({ $variant, theme }) => 
-      $variant === 'even' ? theme.colors.secondary : theme.colors.primary};
+    transform: translateY(-6px) scale(1.02);
+    background: ${({ theme }) => theme.colors.glass.surfaceHover};
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.25),
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px) saturate(200%);
+    
+    &::before {
+      background: ${({ $variant, theme }) => 
+        $variant === 'even' 
+          ? `linear-gradient(135deg, ${theme.colors.secondary}60, ${theme.colors.accent}50, ${theme.colors.secondary}30)` 
+          : `linear-gradient(135deg, ${theme.colors.primary}60, ${theme.colors.primaryHighlight}50, ${theme.colors.primary}30)`
+      } border-box;
+      animation: borderPulse 2s ease-in-out infinite;
+    }
+
+    &::after {
+      left: 100%;
+    }
+  }
+
+  @keyframes borderPulse {
+    0%, 100% {
+      filter: brightness(1.2) saturate(150%);
+    }
+    50% {
+      filter: brightness(1.5) saturate(200%);
+    }
   }
 
   .repo-header {
@@ -983,10 +1168,8 @@ export const StyledRepoCard = styled.div<{ $variant?: 'odd' | 'even' }>`
     margin-bottom: 1rem;
 
     .topic-tag {
-      background: ${({ $variant }) => 
-        $variant === 'even' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'};
-      border: 1px solid ${({ $variant }) => 
-        $variant === 'even' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)'};
+      background: ${({ theme }) => theme.colors.glass.surface};
+      border: 1px solid ${({ theme }) => theme.colors.glass.border};
       border-radius: 16px;
       padding: 0.25rem 0.75rem;
       font-family: 'Inter', system-ui, sans-serif;
@@ -994,6 +1177,14 @@ export const StyledRepoCard = styled.div<{ $variant?: 'odd' | 'even' }>`
       font-weight: 500;
       text-transform: lowercase;
       letter-spacing: -0.005em;
+      backdrop-filter: blur(8px) saturate(120%);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: ${({ theme }) => theme.colors.glass.surfaceHover};
+        border-color: ${({ theme }) => theme.colors.glass.borderHover};
+        transform: translateY(-1px);
+      }
     }
   }
 
