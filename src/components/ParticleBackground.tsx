@@ -45,6 +45,7 @@ export default function ParticleBackground({
   const particlesRef = useRef<Particle[]>([])
   const mouseRef = useRef({ x: 0, y: 0 })
   const scrollRef = useRef(0)
+  const lastScrollRef = useRef(0)
   const [isVisible, setIsVisible] = useState(true)
 
   useEffect(() => {
@@ -122,7 +123,9 @@ export default function ParticleBackground({
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       const mouseX = mouseRef.current.x
-      const mouseY = mouseRef.current.y + scrollRef.current
+      const mouseY = mouseRef.current.y
+      const scrollDelta = (scrollRef.current - lastScrollRef.current) * 0.01
+      lastScrollRef.current = scrollRef.current
       
       particlesRef.current.forEach((particle, index) => {
         // Update particle position
@@ -140,9 +143,9 @@ export default function ParticleBackground({
           particle.vy += dy * force * 0.0001
         }
 
-        // Add some randomness and scroll influence
+        // Add some randomness and very subtle scroll influence
         particle.vx += (Math.random() - 0.5) * 0.02
-        particle.vy += (Math.random() - 0.5) * 0.02 + scrollRef.current * 0.0001
+        particle.vy += (Math.random() - 0.5) * 0.02 + scrollDelta * 0.1
 
         // Boundary wrapping
         if (particle.x < 0) particle.x = canvas.width
