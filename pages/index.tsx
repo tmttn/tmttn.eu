@@ -167,29 +167,22 @@ export default function Home() {
           </div>
           
           <div className="footer-section">
-            <h3>Contact Info</h3>
-            <ul>
-              <li>
-                <a href="mailto:contact@tmttn.be">
-                  <ClientOnlyIcon icon="envelope" fallback="📧" /> contact@tmttn.be
-                </a>
-              </li>
-              <li>
-                <a href="https://tmttn.eu">
-                  <ClientOnlyIcon icon="globe" fallback="🌐" /> tmttn.eu
-                </a>
-              </li>
-              <li>
-                <ClientOnlyIcon icon="map-marker-alt" fallback="📍" /> Belgium
-              </li>
-            </ul>
+            <h3>Copyright</h3>
+            <p>
+              © {new Date().getFullYear()} Tom Metten
+            </p>
+            <p>
+              All rights reserved. This website and its content are protected by copyright law.
+            </p>
+            <p>
+              Made with <span className="footer-heart">♥</span> using Next.js & TypeScript.
+            </p>
           </div>
         </div>
         
         <div className="footer-bottom">
           <p>
-            © {new Date().getFullYear()} Tom Metten. Made with{" "}
-            <span className="footer-heart">♥</span> using Next.js & TypeScript.
+            🤖 Generated with <a href="https://claude.ai/code" target="_blank" rel="noopener noreferrer">Claude Code</a>
           </p>
         </div>
       </StyledFooter>

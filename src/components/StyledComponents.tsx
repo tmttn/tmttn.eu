@@ -841,7 +841,7 @@ export const StyledPortfolio = styled.div<{ $variant?: 'odd' | 'even' }>`
   .portfolio-footer {
     text-align: center;
     margin-top: 3rem;
-    padding-top: 2rem;
+    padding: 2rem 0 4rem 0;
     border-top: 1px solid ${({ $variant }) => 
       $variant === 'even' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'};
 
@@ -850,6 +850,7 @@ export const StyledPortfolio = styled.div<{ $variant?: 'odd' | 'even' }>`
       align-items: center;
       gap: 0.5rem;
       padding: 1rem 2rem;
+      margin-bottom: 2rem;
       background: ${({ $variant }) => 
         $variant === 'even' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)'};
       border: 1px solid ${({ $variant }) => 
