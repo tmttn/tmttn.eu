@@ -1,5 +1,5 @@
 import { config, library } from '@fortawesome/fontawesome-svg-core'
-import { faAt, faStar, faCodeBranch, faSpinner, faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons'
+import { faAt, faStar, faCodeBranch, faSpinner, faExternalLinkAlt, faSun, faMoon, faEnvelope, faGlobe, faMapMarkerAlt} from '@fortawesome/free-solid-svg-icons'
 import { faGithubSquare, faLinkedin, faTwitterSquare, faTwitch, faDiscord, faFacebookSquare, faGithub} from '@fortawesome/free-brands-svg-icons'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 
@@ -12,4 +12,4 @@ config.keepOriginalSource = false
 // Ensure consistent server/client rendering
 config.showMissingIcons = false
 
-library.add(faAt, faStar, faCodeBranch, faSpinner, faExternalLinkAlt, faGithubSquare, faLinkedin, faTwitterSquare, faTwitch, faDiscord, faFacebookSquare, faGithub)
+library.add(faAt, faStar, faCodeBranch, faSpinner, faExternalLinkAlt, faSun, faMoon, faEnvelope, faGlobe, faMapMarkerAlt, faGithubSquare, faLinkedin, faTwitterSquare, faTwitch, faDiscord, faFacebookSquare, faGithub)
