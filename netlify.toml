@@ -5,9 +5,3 @@
 [build.environment]
   NODE_VERSION = "22.11.0"
   NEXT_TELEMETRY_DISABLED = "1"
-
-# Disable legacy Gatsby plugin
-[[plugins]]
-  package = "@netlify/plugin-gatsby"
-  [plugins.inputs]
-    disable = true
