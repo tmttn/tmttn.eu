@@ -2,6 +2,7 @@ import React from "react"
 import Layout from "../components/layout"
 import Section from "../components/section"
 import Scrollable from "../components/scrollable"
+import Portfolio from "../components/portfolio"
 import { Link } from "gatsby"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import "../utils/fontawesome"
@@ -103,6 +104,7 @@ export default function Home() {
         </Section>
         <Section id="showcase">
           <h1>Showcase</h1>
+          <Portfolio />
         </Section>
       </main>
       <Scrollable />
