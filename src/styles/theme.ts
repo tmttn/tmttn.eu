@@ -13,6 +13,14 @@ export const darkTheme = {
     textMuted: 'rgba(255, 255, 255, 0.6)',
     border: 'rgba(255, 255, 255, 0.1)',
     borderHover: 'rgba(255, 255, 255, 0.2)',
+    glass: {
+      surface: 'rgba(255, 255, 255, 0.08)',
+      surfaceHover: 'rgba(255, 255, 255, 0.12)',
+      border: 'rgba(255, 255, 255, 0.15)',
+      borderHover: 'rgba(255, 255, 255, 0.25)',
+      borderTop: 'rgba(255, 255, 255, 0.2)',
+      borderBottom: 'rgba(255, 255, 255, 0.08)',
+    },
   },
   breakpoints: {
     mobile: '600px',
@@ -39,6 +47,14 @@ export const lightTheme = {
     textMuted: 'rgba(31, 41, 55, 0.6)',
     border: 'rgba(0, 0, 0, 0.1)',
     borderHover: 'rgba(0, 0, 0, 0.2)',
+    glass: {
+      surface: 'rgba(255, 255, 255, 0.25)',
+      surfaceHover: 'rgba(255, 255, 255, 0.35)',
+      border: 'rgba(255, 255, 255, 0.3)',
+      borderHover: 'rgba(255, 255, 255, 0.5)',
+      borderTop: 'rgba(255, 255, 255, 0.4)',
+      borderBottom: 'rgba(255, 255, 255, 0.1)',
+    },
   },
   breakpoints: {
     mobile: '600px',
