@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useTheme } from '../contexts/ThemeContext'
 import ClientOnlyIcon from './ClientOnlyIcon'
@@ -68,6 +68,19 @@ const ToggleButton = styled.button`
 
 const ThemeToggle: React.FC = () => {
   const { isDark, toggleTheme } = useTheme()
+  const [hasMounted, setHasMounted] = useState(false)
+
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
+  if (!hasMounted) {
+    return (
+      <ToggleButton aria-label="Theme toggle loading">
+        <span style={{ fontSize: '1.2rem' }}>🌓</span>
+      </ToggleButton>
+    )
+  }
 
   return (
     <ToggleButton onClick={toggleTheme} aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}>
