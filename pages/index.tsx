@@ -96,31 +96,31 @@ export default function Home() {
           <h1>Contact</h1>
           <h2>Get in touch with me:</h2>
           <StyledIconBar>
-            <StyledIcon href="https://github.com/tmttn">
+            <StyledIcon href="https://github.com/tmttn" aria-label="GitHub">
               <ClientOnlyIcon icon={["fab", "github-square"]} fallback="GitHub" />
             </StyledIcon>
 
-            <StyledIcon href="https://www.linkedin.com/in/tmetten/">
+            <StyledIcon href="https://www.linkedin.com/in/tmetten/" aria-label="LinkedIn">
               <ClientOnlyIcon icon={["fab", "linkedin"]} fallback="LinkedIn" />
             </StyledIcon>
 
-            <StyledIcon href="https://github.com/less-is-code">
+            <StyledIcon href="https://github.com/less-is-code" aria-label="Less is Code">
               <ClientOnlyIcon icon={["fab", "github-square"]} fallback="GitHub" />
             </StyledIcon>
 
-            <StyledIcon href="mailto:contact@tmttn.be">
+            <StyledIcon href="mailto:contact@tmttn.be" aria-label="Email">
               <ClientOnlyIcon icon="at" fallback="Email" />
             </StyledIcon>
 
-            <StyledIcon href="https://www.twitch.tv/bizarius">
+            <StyledIcon href="https://www.twitch.tv/bizarius" aria-label="Twitch">
               <ClientOnlyIcon icon={["fab", "twitch"]} fallback="Twitch" />
             </StyledIcon>
 
-            <StyledIcon href="https://discord.gg/G5E8XWR">
+            <StyledIcon href="https://discord.gg/G5E8XWR" aria-label="Discord">
               <ClientOnlyIcon icon={["fab", "discord"]} fallback="Discord" />
             </StyledIcon>
 
-            <StyledIcon href="https://www.facebook.com/mettentom">
+            <StyledIcon href="https://www.facebook.com/mettentom" aria-label="Facebook">
               <ClientOnlyIcon icon={["fab", "facebook-square"]} fallback="Facebook" />
             </StyledIcon>
           </StyledIconBar>
