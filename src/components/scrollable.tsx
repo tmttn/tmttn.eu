@@ -1,65 +1,69 @@
-import React from "react"
-import _ from "lodash"
-import { faAlignLeft } from "@fortawesome/free-solid-svg-icons"
+import { useEffect, useCallback, useRef } from "react"
 
-let mainNavLinks: NodeListOf<HTMLAnchorElement>
-let header: HTMLElement
-
-export default class Scrollable extends React.Component {
-  private throttledUpdateActiveNavigation: _.DebouncedFunc<() => void>
-
-  constructor(props: Readonly<{}>) {
-    super(props)
-
-    this.throttledUpdateActiveNavigation = _.throttle(
-      this.updateActiveNavigation,
-      100
-    )
-  }
-
-  componentDidMount(): void {
-    mainNavLinks = document.querySelectorAll("nav ul li a")
-    header = document.querySelector("header")
-
-    window.addEventListener(
-      "scroll",
-      this.throttledUpdateActiveNavigation,
-      false
-    )
-  }
-
-  componentWillUnmount(): void {
-    window.removeEventListener(
-      "scroll",
-      this.throttledUpdateActiveNavigation,
-      false
-    )
-  }
-
-  updateActiveNavigation(): void {
-    let fromTop = window.scrollY
-
-    if (fromTop > 10) {
-      header.classList.add("scrolled")
+function throttle<T extends (...args: any[]) => void>(func: T, delay: number): T {
+  let timeoutId: NodeJS.Timeout | null = null
+  let lastExecTime = 0
+  
+  return ((...args: Parameters<T>) => {
+    const currentTime = Date.now()
+    
+    if (currentTime - lastExecTime > delay) {
+      func(...args)
+      lastExecTime = currentTime
     } else {
-      header.classList.remove("scrolled")
+      if (timeoutId) clearTimeout(timeoutId)
+      timeoutId = setTimeout(() => {
+        func(...args)
+        lastExecTime = Date.now()
+      }, delay - (currentTime - lastExecTime))
+    }
+  }) as T
+}
+
+export default function Scrollable() {
+  const mainNavLinksRef = useRef<NodeListOf<HTMLAnchorElement> | null>(null)
+  const headerRef = useRef<HTMLElement | null>(null)
+
+  const updateActiveNavigation = useCallback(() => {
+    const fromTop = window.scrollY
+
+    if (headerRef.current) {
+      if (fromTop > 10) {
+        headerRef.current.classList.add("scrolled")
+      } else {
+        headerRef.current.classList.remove("scrolled")
+      }
     }
 
-    mainNavLinks.forEach(link => {
-      let section: HTMLElement = document.querySelector(link.hash)
+    if (mainNavLinksRef.current) {
+      mainNavLinksRef.current.forEach(link => {
+        const section: HTMLElement | null = document.querySelector(link.hash)
 
-      if (
-        section.offsetTop <= fromTop &&
-        section.offsetTop + section.offsetHeight > fromTop
-      ) {
-        link.classList.add("current")
-      } else {
-        link.classList.remove("current")
-      }
-    })
-  }
+        if (section && section.offsetTop <= fromTop &&
+          section.offsetTop + section.offsetHeight > fromTop
+        ) {
+          link.classList.add("current")
+        } else {
+          link.classList.remove("current")
+        }
+      })
+    }
+  }, [])
 
-  render = (): string => {
-    return ""
-  }
+  const throttledUpdateActiveNavigation = useCallback(() => {
+    return throttle(updateActiveNavigation, 100)()
+  }, [updateActiveNavigation])
+
+  useEffect(() => {
+    mainNavLinksRef.current = document.querySelectorAll("nav ul li a")
+    headerRef.current = document.querySelector("header")
+
+    window.addEventListener("scroll", throttledUpdateActiveNavigation, false)
+
+    return () => {
+      window.removeEventListener("scroll", throttledUpdateActiveNavigation, false)
+    }
+  }, [throttledUpdateActiveNavigation])
+
+  return null
 }

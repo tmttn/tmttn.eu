@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react"
 import { GitHubService, GitHubRepository } from "../services/github"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import ClientOnlyIcon from "./ClientOnlyIcon"
+import { StyledPortfolio, StyledRepoCard } from "./StyledComponents"
 
 interface RepositoryCardProps {
   repo: GitHubRepository
+  variant?: 'odd' | 'even'
 }
 
-function RepositoryCard({ repo }: RepositoryCardProps) {
+function RepositoryCard({ repo, variant }: RepositoryCardProps) {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -40,7 +42,7 @@ function RepositoryCard({ repo }: RepositoryCardProps) {
   }
 
   return (
-    <div className="repo-card">
+    <StyledRepoCard $variant={variant}>
       <div className="repo-header">
         <h3>
           <a href={repo.html_url} target="_blank" rel="noopener noreferrer">
@@ -55,7 +57,7 @@ function RepositoryCard({ repo }: RepositoryCardProps) {
             className="repo-link"
             title="Visit project"
           >
-            <FontAwesomeIcon icon="external-link-alt" />
+            <ClientOnlyIcon icon="external-link-alt" fallback="→" />
           </a>
         )}
       </div>
@@ -86,14 +88,14 @@ function RepositoryCard({ repo }: RepositoryCardProps) {
           
           {repo.stargazers_count > 0 && (
             <span className="repo-stars">
-              <FontAwesomeIcon icon="star" />
+              <ClientOnlyIcon icon="star" fallback="★" />
               {repo.stargazers_count}
             </span>
           )}
           
           {repo.forks_count > 0 && (
             <span className="repo-forks">
-              <FontAwesomeIcon icon="code-branch" />
+              <ClientOnlyIcon icon="code-branch" fallback="⑂" />
               {repo.forks_count}
             </span>
           )}
@@ -103,11 +105,15 @@ function RepositoryCard({ repo }: RepositoryCardProps) {
           Updated {formatDate(repo.updated_at)}
         </span>
       </div>
-    </div>
+    </StyledRepoCard>
   )
 }
 
-export default function Portfolio() {
+interface PortfolioProps {
+  variant?: 'odd' | 'even'
+}
+
+export default function Portfolio({ variant = 'odd' }: PortfolioProps) {
   const [repositories, setRepositories] = useState<GitHubRepository[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -133,7 +139,7 @@ export default function Portfolio() {
   if (loading) {
     return (
       <div className="portfolio-loading">
-        <FontAwesomeIcon icon="spinner" spin />
+        <ClientOnlyIcon icon="spinner" spin fallback="⟳" />
         <p>Loading repositories...</p>
       </div>
     )
@@ -145,7 +151,7 @@ export default function Portfolio() {
         <p>{error}</p>
         <p>
           <a href="https://github.com/tmttn" target="_blank" rel="noopener noreferrer">
-            View on GitHub <FontAwesomeIcon icon="external-link-alt" />
+            View on GitHub <ClientOnlyIcon icon="external-link-alt" fallback="→" />
           </a>
         </p>
       </div>
@@ -161,10 +167,10 @@ export default function Portfolio() {
   }
 
   return (
-    <div className="portfolio">
+    <StyledPortfolio $variant={variant}>
       <div className="portfolio-grid">
         {repositories.map(repo => (
-          <RepositoryCard key={repo.id} repo={repo} />
+          <RepositoryCard key={repo.id} repo={repo} variant={variant} />
         ))}
       </div>
       
@@ -175,10 +181,10 @@ export default function Portfolio() {
           rel="noopener noreferrer"
           className="github-profile-link"
         >
-          <FontAwesomeIcon icon={["fab", "github"]} />
+          <ClientOnlyIcon icon={["fab", "github"]} fallback="GitHub" />
           View all repositories on GitHub
         </a>
       </div>
-    </div>
+    </StyledPortfolio>
   )
 }
