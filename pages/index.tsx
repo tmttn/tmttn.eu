@@ -9,6 +9,7 @@ import {
   StyledHeader,
   StyledLogo,
   StyledNav,
+  StyledHeaderRight,
   StyledMain,
   StyledWelcomeSection,
   StyledSectionContent,
@@ -18,6 +19,7 @@ import {
   StyledSection,
   StyledFooter
 } from "../src/components/StyledComponents"
+import ThemeToggle from "../src/components/ThemeToggle"
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false)
@@ -39,23 +41,25 @@ export default function Home() {
           alt="tmttn logo"
           $scrolled={scrolled}
         />
-        <StyledNav>
-          <ul>
-            <li>
-              <Link href="/#welcome">Welcome</Link>
-            </li>
-            <li>
-              <Link href="/#about">About</Link>
-            </li>
-            <li>
-              <Link href="/#contact">Contact</Link>
-            </li>
-            <li>
-              <Link href="/#showcase">Showcase</Link>
-            </li>
-            <hr />
-          </ul>
-        </StyledNav>
+        <StyledHeaderRight>
+          <StyledNav>
+            <ul>
+              <li>
+                <Link href="/#welcome">Welcome</Link>
+              </li>
+              <li>
+                <Link href="/#about">About</Link>
+              </li>
+              <li>
+                <Link href="/#contact">Contact</Link>
+              </li>
+              <li>
+                <Link href="/#showcase">Showcase</Link>
+              </li>
+            </ul>
+          </StyledNav>
+          <ThemeToggle />
+        </StyledHeaderRight>
       </StyledHeader>
       <StyledMain>
         <StyledWelcomeSection id="welcome" $variant="odd">
