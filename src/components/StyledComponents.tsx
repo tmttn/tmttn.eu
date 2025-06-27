@@ -9,10 +9,33 @@ export const StyledHeader = styled.header<{ $scrolled?: boolean }>`
   width: 100%;
   top: 0;
   padding: 8px;
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-  ${({ $scrolled }) => $scrolled && `
-    backdrop-filter: blur(10px) brightness(60%);
+  ${({ $scrolled }) => $scrolled ? `
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  ` : `
+    background: transparent;
   `}
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+      rgba(255, 255, 255, 0.1) 0%, 
+      rgba(255, 255, 255, 0.05) 50%, 
+      rgba(255, 255, 255, 0.1) 100%);
+    opacity: ${({ $scrolled }) => $scrolled ? '1' : '0'};
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
 `
 
 export const StyledLogo = styled.img<{ $scrolled?: boolean }>`
@@ -77,6 +100,64 @@ export const StyledSection = styled.section<{ $variant?: 'odd' | 'even' }>`
   display: flex;
   flex-direction: column;
   padding-top: 9vw;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${({ $variant }) => $variant === 'odd' 
+      ? `
+        radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(15, 15, 35, 0.95) 0%, rgba(26, 26, 46, 0.95) 100%)
+      ` : `
+        radial-gradient(circle at 30% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 70% 30%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(255, 252, 232, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)
+      `};
+    backdrop-filter: blur(2px);
+    pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${({ $variant }) => $variant === 'odd' 
+      ? 'rgba(0, 0, 0, 0.3)' 
+      : 'rgba(255, 255, 255, 0.1)'};
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  /* Floating particles effect */
+  &:nth-child(odd)::before {
+    animation: sectionFloat 25s ease-in-out infinite;
+  }
+
+  &:nth-child(even)::before {
+    animation: sectionFloat 20s ease-in-out infinite reverse;
+  }
+
+  @keyframes sectionFloat {
+    0%, 100% { 
+      transform: translateY(0px);
+      filter: blur(2px);
+    }
+    50% { 
+      transform: translateY(-10px);
+      filter: blur(1px);
+    }
+  }
 
   @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     align-items: center !important;
@@ -91,12 +172,44 @@ export const StyledSection = styled.section<{ $variant?: 'odd' | 'even' }>`
     }
   }
 
+  /* Enhanced typography with animations */
+  h1 {
+    animation: fadeInUp 1s ease-out 0.2s both;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  h2 {
+    animation: fadeInUp 1s ease-out 0.4s both;
+  }
+
+  h3 {
+    animation: fadeInUp 1s ease-out 0.6s both;
+  }
+
+  p {
+    animation: fadeInUp 1s ease-out 0.8s both;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   ${({ $variant, theme }) => $variant === 'odd' && `
-    background-color: ${theme.colors.black};
     color: ${theme.colors.primary};
 
     h1 {
       color: ${theme.colors.white};
+      background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     h2,
@@ -107,7 +220,6 @@ export const StyledSection = styled.section<{ $variant?: 'odd' | 'even' }>`
   `}
 
   ${({ $variant, theme }) => $variant === 'even' && `
-    background-color: ${theme.colors.white};
     color: ${theme.colors.black};
 
     h1,
@@ -122,9 +234,87 @@ export const StyledSection = styled.section<{ $variant?: 'odd' | 'even' }>`
 export const StyledWelcomeSection = styled(StyledSection)`
   justify-content: center;
   padding-top: 0;
+  position: relative;
+  overflow: hidden;
 
-  h1,
-  h2,
+  &::before {
+    background: 
+      radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 70% 70%, rgba(16, 185, 129, 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 60%),
+      linear-gradient(135deg, rgba(15, 15, 35, 0.9) 0%, rgba(26, 26, 46, 0.9) 100%);
+    animation: welcomeFloat 30s ease-in-out infinite;
+  }
+
+  @keyframes welcomeFloat {
+    0%, 100% { 
+      transform: scale(1) rotate(0deg);
+      filter: blur(2px) brightness(1);
+    }
+    33% { 
+      transform: scale(1.02) rotate(0.5deg);
+      filter: blur(1px) brightness(1.1);
+    }
+    66% { 
+      transform: scale(0.98) rotate(-0.5deg);
+      filter: blur(1.5px) brightness(0.9);
+    }
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 12vw;
+    background: linear-gradient(135deg, 
+      #ffffff 0%, 
+      #e0e7ff 25%, 
+      #c7d2fe 50%, 
+      #a5b4fc 75%, 
+      #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+    filter: drop-shadow(0 4px 20px rgba(59, 130, 246, 0.4));
+    animation: titleGlow 3s ease-in-out infinite alternate;
+    
+    @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+      font-size: 16vw;
+    }
+  }
+
+  @keyframes titleGlow {
+    from {
+      filter: drop-shadow(0 4px 20px rgba(59, 130, 246, 0.4));
+    }
+    to {
+      filter: drop-shadow(0 8px 40px rgba(139, 92, 246, 0.6));
+    }
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    animation: subtitleFloat 4s ease-in-out infinite;
+    
+    @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+      font-size: 2rem;
+    }
+  }
+
+  @keyframes subtitleFloat {
+    0%, 100% {
+      transform: translateY(0px);
+      opacity: 0.8;
+    }
+    50% {
+      transform: translateY(-5px);
+      opacity: 1;
+    }
+  }
+
   h3 {
     margin: 0;
   }
@@ -133,10 +323,51 @@ export const StyledWelcomeSection = styled(StyledSection)`
 export const StyledSectionContent = styled.div`
   display: flex;
   flex-direction: row;
+  position: relative;
+  padding: 2rem 0;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -1rem;
+    left: 5vw;
+    right: 5vw;
+    bottom: -1rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px) saturate(120%);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+    z-index: -1;
+    animation: contentGlow 8s ease-in-out infinite;
+  }
+
+  @keyframes contentGlow {
+    0%, 100% {
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 0 rgba(59, 130, 246, 0);
+    }
+    50% {
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        0 0 40px rgba(59, 130, 246, 0.1);
+    }
+  }
 
   @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     align-items: center !important;
     flex-direction: column !important;
+    
+    &::before {
+      left: 2vw;
+      right: 2vw;
+    }
 
     div {
       margin: 0px 32px !important;
@@ -145,11 +376,23 @@ export const StyledSectionContent = styled.div`
 
   div:nth-of-type(1) {
     margin-left: 7vw;
+    position: relative;
+    z-index: 1;
   }
 
   div:nth-of-type(2) {
     margin-left: 16px;
     margin-right: 32px;
+    position: relative;
+    z-index: 1;
+    
+    p {
+      animation: fadeInUp 1s ease-out 1s both;
+      
+      &:nth-child(2) {
+        animation-delay: 1.2s;
+      }
+    }
   }
 `
 
@@ -314,6 +557,7 @@ export const StyledIcon = styled.a`
 
 export const StyledPortfolio = styled.div<{ $variant?: 'odd' | 'even' }>`
   padding: 0 7vw;
+  position: relative;
 
   .portfolio-loading,
   .portfolio-error,
