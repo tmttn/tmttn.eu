@@ -6,6 +6,14 @@ import Scrollable from "../src/components/scrollable"
 import Portfolio from "../src/components/portfolio"
 import Link from "next/link"
 import ClientOnlyIcon from "../src/components/ClientOnlyIcon"
+import SEOHead from "../src/components/SEOHead"
+import { personStructuredData, websiteStructuredData } from "../src/utils/structuredData"
+import AccessibleNavigation from "../src/components/AccessibleNavigation"
+import SkipNavigation from "../src/components/SkipNavigation"
+import ParticleBackground from "../src/components/ParticleBackground"
+import GitHubHeatmap from "../src/components/GitHubHeatmap"
+import EnhancedThemeToggle from "../src/components/EnhancedThemeToggle"
+import PageTransition from "../src/components/PageTransition"
 import {
   StyledHeader,
   StyledLogo,
@@ -35,7 +43,15 @@ export default function Home() {
   }, [])
 
   return (
-    <Layout>
+    <>
+      <SEOHead 
+        structuredData={[personStructuredData, websiteStructuredData]}
+        canonicalUrl="https://tmttn.eu"
+      />
+      <SkipNavigation />
+      <ParticleBackground />
+      <PageTransition>
+        <Layout>
       <StyledHeader $scrolled={scrolled}>
         <StyledLogo
           src="/static/tmttn-logo2.svg"
@@ -43,39 +59,25 @@ export default function Home() {
           $scrolled={scrolled}
         />
         <StyledHeaderRight>
-          <StyledNav>
-            <ul>
-              <li>
-                <Link href="/#welcome">Welcome</Link>
-              </li>
-              <li>
-                <Link href="/#about">About</Link>
-              </li>
-              <li>
-                <Link href="/#contact">Contact</Link>
-              </li>
-              <li>
-                <Link href="/#showcase">Showcase</Link>
-              </li>
-            </ul>
-          </StyledNav>
-          <ThemeToggle />
+          <AccessibleNavigation />
+          <EnhancedThemeToggle />
         </StyledHeaderRight>
       </StyledHeader>
-      <StyledMain>
-        <StyledWelcomeSection id="welcome" $variant="odd">
-          <h1>Tom Metten</h1>
+      <StyledMain id="main-content" role="main" aria-label="Main content">
+        <StyledWelcomeSection id="welcome" $variant="odd" role="banner" aria-labelledby="welcome-heading">
+          <h1 id="welcome-heading">Tom Metten</h1>
           <h2>Developer | Father | Tabletop and Online RPG enthousiast</h2>
         </StyledWelcomeSection>
-        <StyledSection id="about" $variant="even">
-          <h1>About me</h1>
+        <StyledSection id="about" $variant="even" role="region" aria-labelledby="about-heading">
+          <h1 id="about-heading">About me</h1>
           <StyledSectionContent>
             <div>
               <Image
                 src="/static/square-profile-picture.jpg"
-                alt="Tom Metten"
+                alt="Portrait photo of Tom Metten, a full-stack developer from Belgium"
                 height={260}
                 width={260}
+                priority
               />
             </div>
             <div>
@@ -97,8 +99,8 @@ export default function Home() {
             </div>
           </StyledSectionContent>
         </StyledSection>
-        <StyledContactSection id="contact" $variant="odd">
-          <h1>Contact</h1>
+        <StyledContactSection id="contact" $variant="odd" role="region" aria-labelledby="contact-heading">
+          <h1 id="contact-heading">Contact</h1>
           <h2>Get in touch with me:</h2>
           <StyledIconBar>
             <StyledIcon href="https://github.com/tmttn" aria-label="GitHub">
@@ -130,13 +132,14 @@ export default function Home() {
             </StyledIcon>
           </StyledIconBar>
         </StyledContactSection>
-        <StyledSection id="showcase" $variant="even">
-          <h1>Showcase</h1>
+        <StyledSection id="showcase" $variant="even" role="region" aria-labelledby="showcase-heading">
+          <h1 id="showcase-heading">Showcase</h1>
+          <GitHubHeatmap />
           <Portfolio variant="even" />
         </StyledSection>
       </StyledMain>
       
-      <StyledFooter>
+      <StyledFooter role="contentinfo" aria-label="Site footer">
         <div className="footer-content">
           <div className="footer-section">
             <h3>About</h3>
@@ -192,7 +195,9 @@ export default function Home() {
         </div>
       </StyledFooter>
       
-      <Scrollable />
-    </Layout>
+        <Scrollable />
+        </Layout>
+      </PageTransition>
+    </>
   )
 }

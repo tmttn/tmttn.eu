@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "node scripts/generate-sitemap.js && next build",
+    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
@@ -30,7 +31,8 @@
   },
   "devDependencies": {
     "@types/styled-components": "^5.1.34",
-    "prettier": "3.6.0"
+    "prettier": "3.6.0",
+    "webpack-bundle-analyzer": "^4.10.1"
   },
   "repository": {
     "type": "git",
