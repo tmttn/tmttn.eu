@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import Image from "next/image"
 import Layout from "../src/components/layout"
 import Section from "../src/components/section"
 import Scrollable from "../src/components/scrollable"
@@ -37,7 +38,7 @@ export default function Home() {
     <Layout>
       <StyledHeader $scrolled={scrolled}>
         <StyledLogo
-          src="/tmttn-logo2.svg"
+          src="/static/tmttn-logo2.svg"
           alt="tmttn logo"
           $scrolled={scrolled}
         />
@@ -70,11 +71,11 @@ export default function Home() {
           <h1>About me</h1>
           <StyledSectionContent>
             <div>
-              <img
-                src="/square-profile-picture.jpg"
+              <Image
+                src="/static/square-profile-picture.jpg"
                 alt="Tom Metten"
-                height="260"
-                width="260"
+                height={260}
+                width={260}
               />
             </div>
             <div>

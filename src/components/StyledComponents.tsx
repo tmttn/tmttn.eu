@@ -91,6 +91,7 @@ export const StyledHeader = styled.header<{ $scrolled?: boolean }>`
 
 export const StyledLogo = styled.img<{ $scrolled?: boolean }>`
   width: ${({ $scrolled }) => $scrolled ? '50px' : '100px'};
+  height: auto;
   padding: 8px;
   margin: 0;
   transition: width ${({ theme }) => theme.transitions.transform};
@@ -571,8 +572,9 @@ export const StyledSectionContent = styled.div`
     position: relative;
     z-index: 1;
     
-    /* Enhanced image styling */
-    img {
+    /* Enhanced image styling for Next.js Image */
+    img, 
+    span[style*="box-sizing: border-box"] {
       border-radius: 20px;
       box-shadow: 
         0 20px 40px rgba(0, 0, 0, 0.3),
