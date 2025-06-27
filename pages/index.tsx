@@ -4,7 +4,6 @@ import Section from "../src/components/section"
 import Scrollable from "../src/components/scrollable"
 import Portfolio from "../src/components/portfolio"
 import Link from "next/link"
-import Image from "next/image"
 import ClientOnlyIcon from "../src/components/ClientOnlyIcon"
 import {
   StyledHeader,
@@ -67,11 +66,11 @@ export default function Home() {
           <h1>About me</h1>
           <StyledSectionContent>
             <div>
-              <Image
+              <img
                 src="/square-profile-picture.jpg"
                 alt="Tom Metten"
-                height={260}
-                width={260}
+                height="260"
+                width="260"
               />
             </div>
             <div>

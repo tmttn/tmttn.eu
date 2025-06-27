@@ -387,24 +387,7 @@ export const StyledSectionContent = styled.div`
         0 0 0 1px rgba(255, 255, 255, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      
-      &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, 
-          rgba(59, 130, 246, 0.1) 0%, 
-          transparent 50%, 
-          rgba(139, 92, 246, 0.1) 100%);
-        border-radius: 20px;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        pointer-events: none;
-      }
+      display: block;
       
       &:hover {
         transform: translateY(-8px) scale(1.02) rotate(1deg);
@@ -413,11 +396,29 @@ export const StyledSectionContent = styled.div`
           0 0 0 1px rgba(255, 255, 255, 0.2),
           0 0 80px rgba(59, 130, 246, 0.2),
           inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        
-        &::before {
-          opacity: 1;
-        }
       }
+    }
+
+    /* Gradient overlay on hover */
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, 
+        rgba(59, 130, 246, 0.1) 0%, 
+        transparent 50%, 
+        rgba(139, 92, 246, 0.1) 100%);
+      border-radius: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    
+    &:hover::after {
+      opacity: 1;
     }
 
     /* Add floating animation to image */
