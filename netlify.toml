@@ -5,15 +5,3 @@
 [build.environment]
   NODE_VERSION = "18.17.0"
   NEXT_TELEMETRY_DISABLED = "1"
-
-[context.production]
-  command = "npm run build"
-
-[context.production.environment]
-  NEXT_RUNTIME = "nodejs"
-
-# SPA routing - catch all and serve index.html
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
