@@ -57,6 +57,7 @@ export const StyledNav = styled.nav`
     list-style: none;
     margin: 0;
     display: flex;
+    gap: 0.5rem;
     font-family: 'Inter', system-ui, sans-serif;
 
     li {
@@ -67,23 +68,74 @@ export const StyledNav = styled.nav`
       a:hover,
       a:active,
       a:focus {
-        color: ${({ theme }) => theme.colors.secondary};
-        margin: 8px;
-        padding-bottom: 4px;
+        position: relative;
+        display: block;
+        color: ${({ theme }) => theme.colors.textSecondary};
+        padding: 0.75rem 1.25rem;
+        background: ${({ theme }) => theme.colors.surface};
+        backdrop-filter: blur(10px) saturate(120%);
+        border: 1px solid ${({ theme }) => theme.colors.border};
+        border-radius: 12px;
         background-image: none;
         font-weight: 500;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         letter-spacing: -0.01em;
-        transition: all ${({ theme }) => theme.transitions.default};
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
 
-        &.current {
-          border-bottom: 2px solid ${({ theme }) => theme.colors.secondary};
-          font-weight: 600;
+        /* Shimmer effect */
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, 
+            transparent, 
+            rgba(255, 255, 255, 0.1), 
+            transparent);
+          transition: left 0.5s ease;
         }
 
         &:hover {
-          opacity: 0.8;
+          color: ${({ theme }) => theme.colors.text};
+          background: ${({ theme }) => theme.colors.surfaceHover};
+          border-color: ${({ theme }) => theme.colors.borderHover};
+          transform: translateY(-2px);
+          box-shadow: 
+            0 8px 25px rgba(0, 0, 0, 0.15),
+            0 0 0 1px rgba(255, 255, 255, 0.1);
+
+          &::before {
+            left: 100%;
+          }
         }
+
+        &.current {
+          color: ${({ theme }) => theme.colors.primary};
+          background: ${({ theme }) => theme.colors.surfaceHover};
+          border-color: ${({ theme }) => theme.colors.primary};
+          font-weight: 600;
+          box-shadow: 
+            0 4px 15px rgba(96, 165, 250, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+
+    hr {
+      display: none;
+    }
+
+    @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+      flex-direction: column;
+      gap: 0.25rem;
+      
+      li a {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
       }
     }
   }
@@ -109,16 +161,11 @@ export const StyledSection = styled.section<{ $variant?: 'odd' | 'even' }>`
     left: 0;
     right: 0;
     bottom: 0;
-    background: ${({ $variant }) => $variant === 'odd' 
-      ? `
-        radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
-        linear-gradient(135deg, rgba(15, 15, 35, 0.95) 0%, rgba(26, 26, 46, 0.95) 100%)
-      ` : `
-        radial-gradient(circle at 30% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 70% 30%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
-        linear-gradient(135deg, rgba(255, 252, 232, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)
-      `};
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 60%),
+      linear-gradient(135deg, rgba(15, 15, 35, 0.95) 0%, rgba(26, 26, 46, 0.95) 100%);
     backdrop-filter: blur(2px);
     pointer-events: none;
   }
@@ -199,34 +246,23 @@ export const StyledSection = styled.section<{ $variant?: 'odd' | 'even' }>`
     }
   }
 
-  ${({ $variant, theme }) => $variant === 'odd' && `
-    color: ${theme.colors.primary};
+  color: ${({ theme }) => theme.colors.textSecondary};
 
-    h1 {
-      color: ${theme.colors.white};
-      background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+  h1 {
+    color: ${({ theme }) => theme.colors.text};
+    background: linear-gradient(135deg, 
+      ${({ theme }) => theme.colors.text} 0%, 
+      ${({ theme }) => theme.colors.primaryHighlight} 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-    h2,
-    h3,
-    h4 {
-      color: ${theme.colors.primary};
-    }
-  `}
-
-  ${({ $variant, theme }) => $variant === 'even' && `
-    color: ${theme.colors.black};
-
-    h1,
-    h2,
-    h3,
-    h4 {
-      color: ${theme.colors.secondary};
-    }
-  `}
+  h2,
+  h3,
+  h4 {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 `
 
 export const StyledWelcomeSection = styled(StyledSection)`
@@ -442,52 +478,25 @@ export const StyledSectionContent = styled.div`
       animation: fadeInUp 1s ease-out 1s both;
       position: relative;
       padding: 1.5rem;
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(5px);
+      background: ${({ theme }) => theme.colors.surface};
+      backdrop-filter: blur(10px);
       border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid ${({ theme }) => theme.colors.border};
       margin-bottom: 1.5rem;
-      transition: all 0.3s ease;
-      
-      &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, 
-          rgba(255, 255, 255, 0.1) 0%, 
-          transparent 50%, 
-          rgba(255, 255, 255, 0.05) 100%);
-        border-radius: 16px;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        pointer-events: none;
-      }
-      
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        border-color: rgba(255, 255, 255, 0.15);
-        
-        &::before {
-          opacity: 1;
-        }
-      }
+      color: ${({ theme }) => theme.colors.textSecondary};
       
       &:nth-child(2) {
         animation-delay: 1.2s;
       }
 
       a {
-        color: #60a5fa;
+        color: ${({ theme }) => theme.colors.primary};
         font-weight: 500;
         text-decoration: none;
         background-image: linear-gradient(
           to right,
-          #60a5fa 0%,
-          #3b82f6 100%
+          ${({ theme }) => theme.colors.primary} 0%,
+          ${({ theme }) => theme.colors.primaryHighlight} 100%
         );
         background-size: 0% 2px;
         background-position: 0 100%;
@@ -496,8 +505,8 @@ export const StyledSectionContent = styled.div`
         
         &:hover {
           background-size: 100% 2px;
-          color: #3b82f6;
-          text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+          color: ${({ theme }) => theme.colors.primaryHighlight};
+          text-shadow: 0 0 10px ${({ theme }) => theme.colors.primary}33;
         }
       }
     }
@@ -505,34 +514,13 @@ export const StyledSectionContent = styled.div`
 `
 
 export const StyledContactSection = styled(StyledSection)`
-  position: relative;
-  overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, 
-      ${({ $variant }) => $variant === 'odd' 
-        ? 'rgba(59, 130, 246, 0.03)' 
-        : 'rgba(139, 92, 246, 0.03)'} 0%,
-      ${({ $variant }) => $variant === 'odd' 
-        ? 'rgba(16, 185, 129, 0.03)' 
-        : 'rgba(236, 72, 153, 0.03)'} 100%);
-    pointer-events: none;
-  }
-
   h1 {
     text-align: center;
     font-size: 3rem;
     margin-bottom: 0.5rem;
     background: linear-gradient(135deg, 
-      ${({ $variant }) => $variant === 'odd' 
-        ? '#3b82f6, #10b981' 
-        : '#8b5cf6, #ec4899'});
+      ${({ theme }) => theme.colors.primary} 0%, 
+      ${({ theme }) => theme.colors.secondary} 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -547,7 +535,7 @@ export const StyledContactSection = styled(StyledSection)`
     margin-bottom: 3rem;
     font-size: 1.5rem;
     font-weight: 400;
-    opacity: 0.8;
+    color: ${({ theme }) => theme.colors.textSecondary};
     letter-spacing: 0.02em;
     
     @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
@@ -588,10 +576,10 @@ export const StyledIcon = styled.a`
   justify-content: center;
   padding: 1.5rem;
   border-radius: 20px;
-  background: ${({ theme }) => theme.colors.white};
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  background: ${({ theme }) => theme.colors.surface};
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  backdrop-filter: blur(10px) saturate(120%);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   position: relative;
@@ -606,15 +594,16 @@ export const StyledIcon = styled.a`
     height: 100%;
     background: linear-gradient(90deg, 
       transparent, 
-      rgba(255, 255, 255, 0.1), 
+      ${({ theme }) => theme.colors.surfaceHover}, 
       transparent);
     transition: left 0.5s ease;
   }
 
   &:hover {
     transform: translateY(-8px) scale(1.05);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border-color: ${({ theme }) => theme.colors.borderHover};
+    background: ${({ theme }) => theme.colors.surfaceHover};
     
     &::before {
       left: 100%;
@@ -623,7 +612,7 @@ export const StyledIcon = styled.a`
 
   svg, span {
     font-size: 3rem;
-    color: ${({ theme }) => theme.colors.secondary};
+    color: ${({ theme }) => theme.colors.textSecondary};
     transition: all 0.3s ease;
     margin-bottom: 0.5rem;
   }
@@ -631,14 +620,14 @@ export const StyledIcon = styled.a`
   &:hover svg,
   &:hover span {
     color: ${({ theme }) => theme.colors.primary};
-    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.3));
+    filter: drop-shadow(0 0 20px ${({ theme }) => theme.colors.primary}33);
   }
 
   &::after {
     content: attr(aria-label);
     font-size: 0.9rem;
     font-weight: 500;
-    color: ${({ theme }) => theme.colors.black};
+    color: ${({ theme }) => theme.colors.textSecondary};
     opacity: 0.7;
     transition: opacity 0.3s ease;
     text-align: center;
@@ -647,6 +636,7 @@ export const StyledIcon = styled.a`
 
   &:hover::after {
     opacity: 1;
+    color: ${({ theme }) => theme.colors.text};
   }
 
   @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
@@ -665,12 +655,9 @@ export const StyledIcon = styled.a`
 
 export const StyledFooter = styled.footer`
   position: relative;
-  background: linear-gradient(135deg, 
-    rgba(15, 15, 35, 0.95) 0%, 
-    rgba(26, 26, 46, 0.95) 50%,
-    rgba(22, 33, 62, 0.95) 100%);
+  background: ${({ theme }) => theme.colors.backgroundAlt};
   backdrop-filter: blur(20px) saturate(180%);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
   padding: 4rem 7vw 2rem;
   margin-top: 0;
   overflow: hidden;
@@ -717,19 +704,21 @@ export const StyledFooter = styled.footer`
 
   .footer-section {
     h3 {
-      color: #ffffff;
+      color: ${({ theme }) => theme.colors.text};
       font-size: 1.5rem;
       margin-bottom: 1.5rem;
       padding-left: 0;
-      background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+      background: linear-gradient(135deg, 
+        ${({ theme }) => theme.colors.text} 0%, 
+        ${({ theme }) => theme.colors.primaryHighlight} 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      text-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+      text-shadow: 0 2px 10px ${({ theme }) => theme.colors.primary}33;
     }
 
     p, li {
-      color: rgba(255, 255, 255, 0.8);
+      color: ${({ theme }) => theme.colors.textSecondary};
       line-height: 1.6;
       margin-bottom: 0.8rem;
     }
@@ -741,14 +730,14 @@ export const StyledFooter = styled.footer`
     }
 
     a {
-      color: rgba(255, 255, 255, 0.7);
+      color: ${({ theme }) => theme.colors.textMuted};
       text-decoration: none;
       transition: all 0.3s ease;
       background-image: none;
       
       &:hover {
-        color: #ffffff;
-        text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        color: ${({ theme }) => theme.colors.text};
+        text-shadow: 0 0 10px ${({ theme }) => theme.colors.primary}66;
         transform: translateX(5px);
       }
     }
@@ -769,21 +758,26 @@ export const StyledFooter = styled.footer`
       justify-content: center;
       width: 40px;
       height: 40px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: ${({ theme }) => theme.colors.surface};
+      border: 1px solid ${({ theme }) => theme.colors.border};
       border-radius: 50%;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       backdrop-filter: blur(10px);
 
       &:hover {
-        background: rgba(59, 130, 246, 0.2);
-        border-color: rgba(59, 130, 246, 0.4);
+        background: ${({ theme }) => theme.colors.surfaceHover};
+        border-color: ${({ theme }) => theme.colors.primary};
         transform: translateY(-2px) scale(1.1);
-        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        box-shadow: 0 8px 25px ${({ theme }) => theme.colors.primary}33;
       }
 
       svg {
         font-size: 1.2rem;
+        color: ${({ theme }) => theme.colors.textSecondary};
+      }
+
+      &:hover svg {
+        color: ${({ theme }) => theme.colors.primary};
       }
     }
   }
@@ -793,12 +787,12 @@ export const StyledFooter = styled.footer`
     z-index: 1;
     text-align: center;
     padding-top: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.6);
+    border-top: 1px solid ${({ theme }) => theme.colors.border};
+    color: ${({ theme }) => theme.colors.textMuted};
     font-size: 0.9rem;
 
     .footer-heart {
-      color: #ff6b6b;
+      color: ${({ theme }) => theme.colors.secondary};
       animation: heartbeat 2s ease-in-out infinite;
     }
 
@@ -842,8 +836,7 @@ export const StyledPortfolio = styled.div<{ $variant?: 'odd' | 'even' }>`
     text-align: center;
     margin-top: 3rem;
     padding: 2rem 0 4rem 0;
-    border-top: 1px solid ${({ $variant }) => 
-      $variant === 'even' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'};
+    border-top: 1px solid ${({ theme }) => theme.colors.border};
 
     .github-profile-link {
       display: inline-flex;
@@ -851,20 +844,22 @@ export const StyledPortfolio = styled.div<{ $variant?: 'odd' | 'even' }>`
       gap: 0.5rem;
       padding: 1rem 2rem;
       margin-bottom: 2rem;
-      background: ${({ $variant }) => 
-        $variant === 'even' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)'};
-      border: 1px solid ${({ $variant }) => 
-        $variant === 'even' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)'};
-      border-radius: 8px;
+      background: ${({ theme }) => theme.colors.surface};
+      border: 1px solid ${({ theme }) => theme.colors.border};
+      border-radius: 12px;
       font-size: 1.1rem;
       font-weight: 500;
+      color: ${({ theme }) => theme.colors.textSecondary};
       transition: all ${({ theme }) => theme.transitions.default};
       background-image: none;
+      backdrop-filter: blur(10px);
 
       &:hover {
-        background: ${({ $variant }) => 
-          $variant === 'even' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'};
+        background: ${({ theme }) => theme.colors.surfaceHover};
+        border-color: ${({ theme }) => theme.colors.borderHover};
+        color: ${({ theme }) => theme.colors.text};
         transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
       }
 
       svg {
