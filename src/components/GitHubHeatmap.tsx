@@ -6,6 +6,20 @@ import { GlassCard } from './GlassmorphismComponents'
 const HeatmapContainer = styled(GlassCard)`
   margin: 2rem 7vw;
   
+  /* Enhanced contrast for light mode */
+  background: ${({ theme }) => theme.isDark 
+    ? `rgba(255, 255, 255, 0.12)` 
+    : `rgba(255, 255, 255, 0.95)`
+  };
+  border: ${({ theme }) => theme.isDark 
+    ? `1px solid ${theme.colors.glass.border}` 
+    : `1px solid rgba(0, 0, 0, 0.15)`
+  };
+  box-shadow: ${({ theme }) => theme.isDark 
+    ? `0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)` 
+    : `0 8px 32px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8)`
+  };
+  
   h3 {
     margin: 0 0 1rem 0;
     color: ${({ theme }) => theme.colors.text};
