@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import ClientOnlyIcon from './ClientOnlyIcon'
+import { GlassCard } from './GlassmorphismComponents'
 
-const HeatmapContainer = styled.div`
-  background: ${({ theme }) => theme.colors.glass.surface};
-  backdrop-filter: blur(14px) saturate(160%);
-  border-radius: 16px;
-  padding: 1.5rem;
+const HeatmapContainer = styled(GlassCard)`
   margin: 2rem 7vw;
-  border: 1px solid ${({ theme }) => theme.colors.glass.border};
   
   h3 {
     margin: 0 0 1rem 0;
@@ -237,7 +233,7 @@ export default function GitHubHeatmap() {
   }
 
   return (
-    <HeatmapContainer>
+    <HeatmapContainer $intensity="heavy" $variant="neutral">
       <h3>
         <ClientOnlyIcon icon={["fab", "github"]} fallback="GH" />
         GitHub Activity - Past Year
