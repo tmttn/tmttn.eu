@@ -17,10 +17,17 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
   
-  // Bundle analysis
-  webpack: (config, { dev, isServer }) => {
-    // Bundle analyzer
-    if (process.env.ANALYZE === 'true') {
+  // Turbopack configuration for development
+  turbopack: {
+    rules: {},
+  },
+  
+  // Bundle analysis - only when needed for production builds
+  ...(process.env.ANALYZE === 'true' && {
+    webpack: (config, { dev, isServer }) => {
+      // Only apply during production builds
+      if (dev) return config
+      
       const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
       config.plugins.push(
         new BundleAnalyzerPlugin({
@@ -29,35 +36,10 @@ const nextConfig = {
           openAnalyzer: true,
         })
       )
-    }
-
-    // Optimize chunks
-    if (!dev && !isServer) {
-      config.optimization.splitChunks = {
-        chunks: 'all',
-        cacheGroups: {
-          default: false,
-          vendors: false,
-          vendor: {
-            name: 'vendor',
-            chunks: 'all',
-            test: /node_modules/,
-            priority: 20
-          },
-          common: {
-            name: 'common',
-            minChunks: 2,
-            chunks: 'all',
-            priority: 10,
-            reuseExistingChunk: true,
-            enforce: true
-          }
-        }
-      }
-    }
-
-    return config
-  },
+      
+      return config
+    },
+  }),
 }
 
 module.exports = nextConfig
