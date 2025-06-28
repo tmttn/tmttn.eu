@@ -51,7 +51,7 @@
     "@types/jest": "^30.0.0",
     "@types/styled-components": "^5.1.34",
     "cypress": "^14.5.0",
-    "eslint-plugin-unicorn": "^55.0.0",
+    "eslint-plugin-unicorn": "^59.0.0",
     "jest": "^30.0.3",
     "jest-environment-jsdom": "^30.0.2",
     "prettier": "3.6.2",
