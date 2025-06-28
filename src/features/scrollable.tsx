@@ -36,7 +36,7 @@ export default function Scrollable() {
     }
 
     if (mainNavLinksRef.current) {
-      mainNavLinksRef.current.forEach(link => {
+      for (const link of mainNavLinksRef.current) {
         const section: HTMLElement | null = document.querySelector(link.hash)
 
         if (section && section.offsetTop <= fromTop &&
@@ -46,7 +46,7 @@ export default function Scrollable() {
         } else {
           link.classList.remove("current")
         }
-      })
+      }
     }
   }, [])
 

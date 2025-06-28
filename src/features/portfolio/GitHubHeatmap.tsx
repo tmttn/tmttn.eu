@@ -30,8 +30,8 @@ export default function GitHubHeatmap() {
         setContributions(contributions)
         setStats(stats)
         setLoading(false)
-      } catch (err) {
-        console.error('Error fetching GitHub contributions:', err)
+      } catch (error_) {
+        console.error('Error fetching GitHub contributions:', error_)
         setError('Failed to load GitHub activity. Please try again later.')
         setLoading(false)
       }

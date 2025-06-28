@@ -7,38 +7,39 @@ interface RepositoryCardProps {
   variant?: 'odd' | 'even'
 }
 
-function RepositoryCard({ repo, variant }: RepositoryCardProps) {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short'
-    })
-  }
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short'
+  })
+}
 
-  const getLanguageColor = (language: string | null) => {
-    const colors: { [key: string]: string } = {
-      'JavaScript': '#f1e05a',
-      'TypeScript': '#2b7489',
-      'Python': '#3572A5',
-      'Java': '#b07219',
-      'C#': '#239120',
-      'PHP': '#4F5D95',
-      'Ruby': '#701516',
-      'Go': '#00ADD8',
-      'Rust': '#dea584',
-      'Swift': '#fa7343',
-      'Kotlin': '#F18E33',
-      'Dart': '#00B4AB',
-      'C++': '#f34b7d',
-      'C': '#555555',
-      'HTML': '#e34c26',
-      'CSS': '#1572B6',
-      'SCSS': '#c6538c',
-      'Vue': '#4FC08D',
-      'React': '#61DAFB'
-    }
-    return colors[language || ''] || '#858585'
+const getLanguageColor = (language: string | null) => {
+  const colors: { [key: string]: string } = {
+    'JavaScript': '#f1e05a',
+    'TypeScript': '#2b7489',
+    'Python': '#3572A5',
+    'Java': '#b07219',
+    'C#': '#239120',
+    'PHP': '#4F5D95',
+    'Ruby': '#701516',
+    'Go': '#00ADD8',
+    'Rust': '#dea584',
+    'Swift': '#fa7343',
+    'Kotlin': '#F18E33',
+    'Dart': '#00B4AB',
+    'C++': '#f34b7d',
+    'C': '#555555',
+    'HTML': '#e34c26',
+    'CSS': '#1572B6',
+    'SCSS': '#c6538c',
+    'Vue': '#4FC08D',
+    'React': '#61DAFB'
   }
+  return colors[language || ''] || '#858585'
+}
+
+function RepositoryCard({ repo, variant }: RepositoryCardProps) {
 
   return (
     <StyledRepoCard $variant={variant}>
@@ -124,9 +125,9 @@ export default function Portfolio({ variant = 'odd' }: PortfolioProps) {
         const repos = await GitHubService.getPublicRepositories()
         setRepositories(repos)
         setError(null)
-      } catch (err) {
+      } catch (error_) {
         setError('Failed to load repositories')
-        console.error('Error fetching repositories:', err)
+        console.error('Error fetching repositories:', error_)
       } finally {
         setLoading(false)
       }
