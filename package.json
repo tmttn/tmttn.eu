@@ -14,11 +14,11 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.4.2",
-    "@fortawesome/free-brands-svg-icons": "^6.4.2",
-    "@fortawesome/free-solid-svg-icons": "^6.4.2",
-    "@fortawesome/react-fontawesome": "^0.2.0",
-    "@types/node": "^24.0.6",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@types/node": "^24.0.7",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "eslint": "^9.30.0",
@@ -33,8 +33,8 @@
     "@next/eslint-plugin-next": "^15.3.4",
     "@types/styled-components": "^5.1.34",
     "eslint-plugin-unicorn": "^55.0.0",
-    "prettier": "3.6.0",
-    "webpack-bundle-analyzer": "^4.10.1"
+    "prettier": "3.6.2",
+    "webpack-bundle-analyzer": "^4.10.2"
   },
   "repository": {
     "type": "git",
@@ -44,11 +44,11 @@
     "url": "https://github.com/tmttn/tmttn.be/issues"
   },
   "optionalDependencies": {
-    "@parcel/watcher-linux-x64-glibc": "^2.3.0"
+    "@parcel/watcher-linux-x64-glibc": "^2.5.1"
   },
   "overrides": {
     "tar-fs": "^3.0.9",
     "base-x": "^5.0.1",
-    "brace-expansion": "^4.0.1"
+    "brace-expansion": "^2.0.2"
   }
 }
