@@ -1,7 +1,6 @@
 [build]
   command = "npm run build"
   publish = "out"
-  ignore = "exit 0"
 
 [context.production]
   command = "npm run build"
