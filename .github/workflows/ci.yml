@@ -90,7 +90,7 @@ jobs:
         path: node_modules/
     
     - name: Run Jest tests with coverage
-      run: npm run test:coverage
+      run: npx jest --coverage
     
     - name: Display coverage summary
       run: |
@@ -142,10 +142,10 @@ jobs:
         path: node_modules/
     
     - name: Run TypeScript type checking
-      run: npm run type-check
+      run: npx tsc --noEmit
     
     - name: Run linting
-      run: npm run lint
+      run: npx next lint
 
   # QA Job 3: CodeQL Security Analysis
   codeql-javascript:
