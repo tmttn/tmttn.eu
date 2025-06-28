@@ -20,7 +20,6 @@
     "cypress:run:chrome": "cypress run --browser chrome --config-file cypress.config.cucumber.ts",
     "cypress:run:headless": "cypress run --headless --config-file cypress.config.cucumber.ts",
     "e2e": "start-server-and-test dev http://localhost:3000 cypress:run",
-    "cypress:simple": "cypress run --config-file cypress.config.simple.ts",
     "e2e:chrome": "start-server-and-test dev http://localhost:3000 cypress:run:chrome",
     "e2e:ci": "start-server-and-test start http://localhost:3000 cypress:run:headless"
   },
