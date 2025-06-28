@@ -47,3 +47,8 @@ jobs:
           exit 1
         fi
         echo "Build verification successful"
+    
+    - name: Trigger Netlify deployment
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: |
+        curl -X POST -d '{}' https://api.netlify.com/build_hooks/685fd48e97cef8af9c3a8e4e
