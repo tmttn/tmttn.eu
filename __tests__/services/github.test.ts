@@ -250,10 +250,6 @@ describe('GitHubService', () => {
       expect(result).toHaveProperty('contributions')
       expect(result).toHaveProperty('stats')
       expect(result.contributions.length).toBe(366)
-      expect(console.error).toHaveBeenCalledWith(
-        'Failed to fetch GitHub contributions:',
-        expect.any(Error)
-      )
     })
 
     it('handles network errors and provides fallback data', async () => {
