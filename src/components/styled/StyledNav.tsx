@@ -23,7 +23,7 @@ export const StyledNav = styled.nav`
         color: ${({ theme }) => theme.colors.textSecondary};
         padding: 0.75rem 1.25rem;
         background: ${({ theme }) => theme.colors.glass.surface};
-        backdrop-filter: blur(14px) saturate(160%);
+        backdrop-filter: blur(8px) saturate(130%);
         border-radius: 14px;
         background-image: none;
         font-weight: 500;
@@ -32,6 +32,8 @@ export const StyledNav = styled.nav`
         text-decoration: none;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         overflow: hidden;
+        will-change: transform;
+        contain: layout style;
 
         /* Enhanced gradient border with mask technique */
         &::before {
@@ -80,12 +82,12 @@ export const StyledNav = styled.nav`
         &:hover {
           color: ${({ theme }) => theme.colors.text};
           background: ${({ theme }) => theme.colors.glass.surfaceHover};
-          transform: translateY(-3px) scale(1.02);
-          backdrop-filter: blur(18px) saturate(180%);
+          transform: translateY(-2px) scale(1.01);
+          backdrop-filter: blur(10px) saturate(150%);
           box-shadow: 
-            0 12px 30px rgba(0, 0, 0, 0.2),
-            0 0 0 1px rgba(255, 255, 255, 0.15),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            0 8px 20px rgba(0, 0, 0, 0.15),
+            0 0 0 1px rgba(255, 255, 255, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 0.18);
 
           &::before {
             background: linear-gradient(135deg, 
@@ -113,11 +115,11 @@ export const StyledNav = styled.nav`
           color: ${({ theme }) => theme.colors.primary};
           background: ${({ theme }) => theme.colors.glass.surfaceHover};
           font-weight: 600;
-          backdrop-filter: blur(18px) saturate(200%);
+          backdrop-filter: blur(10px) saturate(160%);
           box-shadow: 
-            0 6px 20px ${({ theme }) => theme.colors.primary}40,
-            0 0 0 1px rgba(255, 255, 255, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            0 4px 16px ${({ theme }) => theme.colors.primary}30,
+            0 0 0 1px rgba(255, 255, 255, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
 
           &::before {
             background: linear-gradient(135deg, 

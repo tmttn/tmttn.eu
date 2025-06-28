@@ -23,13 +23,17 @@ export const StyledHeader = styled.header<{ $scrolled?: boolean }>`
     overflow: visible;
   }
 
+  /* Performance optimizations for smooth scrolling */
+  will-change: ${({ $scrolled }) => $scrolled ? 'transform, opacity' : 'auto'};
+  contain: ${({ $scrolled }) => $scrolled ? 'layout style paint' : 'none'};
+
   ${({ $scrolled, theme }) => $scrolled ? `
     background: ${theme.colors.glass.surface};
-    backdrop-filter: blur(24px) saturate(200%);
+    backdrop-filter: blur(12px) saturate(150%);
     box-shadow: 
-      0 8px 32px rgba(0, 0, 0, 0.15),
-      0 0 0 1px rgba(255, 255, 255, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      0 4px 16px rgba(0, 0, 0, 0.12),
+      0 0 0 1px rgba(255, 255, 255, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
   ` : `
     background: transparent;
   `}

@@ -32,6 +32,9 @@ export default function ParticleBackground({
   const scrollRef = useRef(0)
   const lastScrollRef = useRef(0)
   const [isVisible, setIsVisible] = useState(true)
+  const lastFrameTime = useRef(0)
+  const fpsTarget = 60
+  const frameInterval = 1000 / fpsTarget
 
   useEffect(() => {
     // Check for reduced motion preference
@@ -103,8 +106,15 @@ export default function ParticleBackground({
       scrollRef.current = window.scrollY
     }
 
-    // Animation loop
-    const animate = () => {
+    // Animation loop with frame rate limiting
+    const animate = (currentTime: number) => {
+      // Frame rate limiting for consistent 60fps
+      if (currentTime - lastFrameTime.current < frameInterval) {
+        animationRef.current = requestAnimationFrame(animate)
+        return
+      }
+      lastFrameTime.current = currentTime
+
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       const mouseX = mouseRef.current.x
@@ -117,12 +127,13 @@ export default function ParticleBackground({
         particle.x += particle.vx
         particle.y += particle.vy
         
-        // Mouse interaction - attract particles to mouse
+        // Optimized mouse interaction - attract particles to mouse
         const dx = mouseX - particle.x
         const dy = mouseY - particle.y
-        const distance = Math.hypot(dx, dy)
+        const distanceSquared = dx * dx + dy * dy
         
-        if (distance < 150) {
+        if (distanceSquared < 22_500) { // 150^2 to avoid sqrt calculation
+          const distance = Math.sqrt(distanceSquared)
           const force = (150 - distance) / 150
           particle.vx += dx * force * 0.0001
           particle.vy += dy * force * 0.0001
@@ -149,7 +160,7 @@ export default function ParticleBackground({
           return
         }
 
-        // Draw particle
+        // Optimized particle rendering - reduce expensive effects
         const lifeRatio = particle.life / particle.maxLife
         const alpha = particle.alpha * lifeRatio
         
@@ -160,35 +171,43 @@ export default function ParticleBackground({
         ctx.arc(particle.x, particle.y, particle.size * lifeRatio, 0, Math.PI * 2)
         ctx.fill()
         
-        // Add glow effect
-        ctx.shadowBlur = 10
-        ctx.shadowColor = particle.color
-        ctx.fill()
+        // Conditional glow effect - only for larger particles to reduce GPU load
+        if (particle.size > 2) {
+          ctx.shadowBlur = 6
+          ctx.shadowColor = particle.color
+          ctx.fill()
+        }
         ctx.restore()
       })
 
-      // Draw connections between nearby particles
-      particlesRef.current.forEach((particle, i) => {
-        for (let j = i + 1; j < particlesRef.current.length; j++) {
+      // Optimized connections - limit calculations and use distance squared
+      const maxConnections = Math.min(particleCount * 2, 100) // Limit total connections
+      let connectionCount = 0
+      
+      for (let i = 0; i < particlesRef.current.length && connectionCount < maxConnections; i++) {
+        const particle = particlesRef.current[i]
+        for (let j = i + 1; j < particlesRef.current.length && connectionCount < maxConnections; j++) {
           const other = particlesRef.current[j]
           const dx = particle.x - other.x
           const dy = particle.y - other.y
-          const distance = Math.hypot(dx, dy)
+          const distanceSquared = dx * dx + dy * dy
           
-          if (distance < 100) {
-            const opacity = (100 - distance) / 100 * 0.1
+          if (distanceSquared < 10_000) { // 100^2
+            const distance = Math.sqrt(distanceSquared)
+            const opacity = (100 - distance) / 100 * 0.08 // Reduced opacity for performance
             ctx.save()
             ctx.globalAlpha = opacity
-            ctx.strokeStyle = isDark ? 'rgba(96, 165, 250, 0.3)' : 'rgba(59, 130, 246, 0.4)'
-            ctx.lineWidth = 0.5
+            ctx.strokeStyle = isDark ? 'rgba(96, 165, 250, 0.25)' : 'rgba(59, 130, 246, 0.3)'
+            ctx.lineWidth = 0.4
             ctx.beginPath()
             ctx.moveTo(particle.x, particle.y)
             ctx.lineTo(other.x, other.y)
             ctx.stroke()
             ctx.restore()
+            connectionCount++
           }
         }
-      })
+      }
 
       animationRef.current = requestAnimationFrame(animate)
     }
@@ -200,7 +219,7 @@ export default function ParticleBackground({
 
     // Start animation
     initParticles()
-    animate()
+    animationRef.current = requestAnimationFrame(animate)
 
     // Cleanup
     return () => {
@@ -211,7 +230,7 @@ export default function ParticleBackground({
       window.removeEventListener('scroll', handleScroll)
       window.removeEventListener('resize', resizeCanvas)
     }
-  }, [particleCount, isDark])
+  }, [particleCount, isDark, frameInterval])
 
   if (!isVisible) return null
 
