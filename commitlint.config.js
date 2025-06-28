@@ -1,6 +1,9 @@
 module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
+    // Disable default rules that conflict with emoji format
+    'subject-empty': [0],
+    'type-empty': [0],
     'type-enum': [
       2,
       'always',
