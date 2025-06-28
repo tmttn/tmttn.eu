@@ -3,6 +3,8 @@ name: CI
 on:
   push:
     branches: [ main ]
+    # Explicitly exclude production branch to prevent CI on production
+    branches-ignore: [ production ]
   pull_request:
     branches: [ main ]
 
@@ -33,6 +35,9 @@ jobs:
     - name: Run linting
       run: npm run lint
     
+    - name: Run tests
+      run: npm test
+    
     - name: Run build
       run: npm run build
     
@@ -47,13 +52,3 @@ jobs:
           exit 1
         fi
         echo "Build verification successful"
-    
-    - name: Deploy to production
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git fetch origin production
-        git checkout production
-        git merge main --no-ff --allow-unrelated-histories -m "🚀 deploy: merge main to production after CI success"
-        git push origin production
