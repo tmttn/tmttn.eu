@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { useTheme } from '../contexts/ThemeContext'
+import { useTheme } from '../../contexts/ThemeContext'
 import { ParticleCanvas } from './ParticleBackground.styled'
 
 

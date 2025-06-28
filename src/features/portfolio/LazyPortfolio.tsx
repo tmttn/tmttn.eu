@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-import ClientOnlyIcon from './ClientOnlyIcon'
+import ClientOnlyIcon from '../../components/ClientOnlyIcon'
 
 const Portfolio = dynamic(() => import('./portfolio'), {
   loading: () => (
