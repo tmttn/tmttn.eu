@@ -243,7 +243,7 @@ jobs:
         wait-on-timeout: 120
         browser: chrome
         spec: 'cypress/e2e/**/*.feature'
-        config-file: cypress.config.ts
+        config-file: cypress.config.cucumber.ts
       env:
         CYPRESS_baseUrl: http://localhost:3000
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

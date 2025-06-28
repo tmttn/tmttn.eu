@@ -4,6 +4,7 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  
   images: {
     domains: [],
     unoptimized: true, // Required for static export

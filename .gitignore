@@ -77,3 +77,8 @@ yarn-error.log
 
 # Claude artifacts and config
 .claude
+
+# Cypress
+cypress/videos
+cypress/screenshots
+cypress/reports

@@ -4,7 +4,8 @@ import { SkipLink, SkipContainer } from './SkipNavigation.styled'
 export default function SkipNavigation() {
   return (
     <SkipContainer>
-      <SkipLink 
+      <SkipLink
+        data-testid="skip-nav"
         href="#main-content" 
         role="navigation"
         aria-label="Skip to main content"

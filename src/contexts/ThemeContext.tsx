@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { darkTheme, lightTheme, Theme } from '@styles'
 
@@ -23,7 +23,7 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [isDark, setIsDark] = useState(true)
+  const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme')
@@ -36,16 +36,27 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     }
   }, [])
 
-  const toggleTheme = () => {
+  // Set data-theme attribute on HTML element whenever theme changes
+  useEffect(() => {
+    document.documentElement.dataset.theme = isDark ? 'dark' : 'light'
+  }, [isDark])
+
+  const toggleTheme = useCallback(() => {
     const newTheme = !isDark
     setIsDark(newTheme)
     localStorage.setItem('theme', newTheme ? 'dark' : 'light')
-  }
+  }, [isDark])
 
   const theme = isDark ? darkTheme : lightTheme
 
+  const contextValue = useMemo(() => ({
+    isDark,
+    toggleTheme,
+    theme
+  }), [isDark, theme, toggleTheme])
+
   return (
-    <ThemeContext.Provider value={{ isDark, toggleTheme, theme }}>
+    <ThemeContext.Provider value={contextValue}>
       <StyledThemeProvider theme={theme}>
         {children}
       </StyledThemeProvider>

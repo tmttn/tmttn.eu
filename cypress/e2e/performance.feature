@@ -21,6 +21,7 @@ Feature: Performance
     And the transition should be smooth
 
   Scenario: Asset optimization
+    Given I visit the portfolio homepage
     When I analyze the page resources
     Then images should be optimized and properly sized
     And CSS should be minified

@@ -65,7 +65,7 @@ export default function Home() {
           <EnhancedThemeToggle />
         </StyledHeaderRight>
       </StyledHeader>
-      <StyledMain id="main-content" role="main" aria-label="Main content">
+      <StyledMain id="main-content" role="main" aria-label="Main content" tabIndex={-1}>
         <StyledWelcomeSection id="welcome" $variant="odd" role="banner" aria-labelledby="welcome-heading">
           <h1 id="welcome-heading">Tom Metten</h1>
           <h2>Developer | Father | Tabletop and Online RPG enthousiast</h2>

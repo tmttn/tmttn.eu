@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["es5", "dom"],
+    "types": ["cypress", "node"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": false,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": false,
+    "outDir": "../dist/cypress"
+  },
+  "include": [
+    "e2e/**/*.ts",
+    "support/e2e.ts",
+    "support/commands.ts",
+    "support/index.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "support/component.ts"
+  ]
+}

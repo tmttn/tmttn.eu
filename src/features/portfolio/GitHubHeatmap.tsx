@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import ClientOnlyIcon from '../../components/ClientOnlyIcon'
 import { GitHubService, ContributionDay, GitHubStats } from '../../services/github'
 import {
@@ -19,26 +19,26 @@ export default function GitHubHeatmap() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchContributionData = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-        
-        const { contributions, stats } = await GitHubService.getContributionData()
-        
-        setContributions(contributions)
-        setStats(stats)
-        setLoading(false)
-      } catch (error_) {
-        console.error('Error fetching GitHub contributions:', error_)
-        setError('Failed to load GitHub activity. Please try again later.')
-        setLoading(false)
-      }
+  const fetchContributionData = useMemo(() => async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      
+      const { contributions, stats } = await GitHubService.getContributionData()
+      
+      setContributions(contributions)
+      setStats(stats)
+      setLoading(false)
+    } catch (error_) {
+      console.error('Error fetching GitHub contributions:', error_)
+      setError('Failed to load GitHub activity. Please try again later.')
+      setLoading(false)
     }
-
-    fetchContributionData()
   }, [])
+
+  useEffect(() => {
+    fetchContributionData()
+  }, [fetchContributionData])
 
   if (loading) {
     return (

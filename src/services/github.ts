@@ -40,6 +40,10 @@ export class GitHubService {
       )
       
       if (!response.ok) {
+        if (response.status === 403) {
+          console.warn('GitHub API rate limit exceeded (403). Using empty repository list.')
+          return []
+        }
         throw new Error(`GitHub API error: ${response.status}`)
       }
       
@@ -69,6 +73,10 @@ export class GitHubService {
       )
 
       if (!eventsResponse.ok) {
+        if (eventsResponse.status === 403) {
+          console.warn('GitHub API rate limit exceeded (403). Using fallback contribution data.')
+          return this.generateFallbackData()
+        }
         throw new Error(`GitHub API error: ${eventsResponse.status}`)
       }
 

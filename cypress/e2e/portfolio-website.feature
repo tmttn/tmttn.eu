@@ -17,6 +17,7 @@ Feature: Portfolio Website Core Functionality
 
   Scenario: Theme toggle functionality
     Given I am on the homepage
+    And the theme is set to light mode
     When I click the theme toggle button
     Then the theme should switch from light to dark mode
     And the toggle button should reflect the current theme

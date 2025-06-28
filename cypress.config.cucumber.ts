@@ -1,12 +1,12 @@
 import { defineConfig } from 'cypress'
-import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor'
+// @ts-ignore
 import webpack from '@cypress/webpack-preprocessor'
+import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor'
 
 async function setupNodeEvents(
   on: Cypress.PluginEvents,
-  config: Cypress.PluginConfigOptions
+  config: Cypress.PluginConfigOptions,
 ): Promise<Cypress.PluginConfigOptions> {
-  // This is required for the preprocessor to be able to generate JSON reports after each run
   await addCucumberPreprocessorPlugin(on, config)
 
   on(
@@ -24,9 +24,6 @@ async function setupNodeEvents(
               use: [
                 {
                   loader: 'ts-loader',
-                  options: {
-                    transpileOnly: true,
-                  },
                 },
               ],
             },
@@ -42,34 +39,22 @@ async function setupNodeEvents(
           ],
         },
       },
-    })
+    }),
   )
 
-  // Make sure to return the config object as it might have been modified by the plugin
   return config
 }
 
 export default defineConfig({
+  video: false,
+  viewportWidth: 1600,
+  viewportHeight: 900,
+  chromeWebSecurity: false,
+  screenshotOnRunFailure: true,
+  env: {},
   e2e: {
-    setupNodeEvents,
-    specPattern: 'cypress/e2e/**/*.feature',
-    supportFile: 'cypress/support/e2e.ts',
     baseUrl: 'http://localhost:3000',
-    viewportWidth: 1280,
-    viewportHeight: 720,
-    video: false,
-    screenshotOnRunFailure: true,
-    env: {
-      failOnSnapshotDiff: false,
-    },
-  },
-  component: {
-    devServer: {
-      framework: 'next',
-      bundler: 'webpack',
-    },
+    specPattern: '**/*.feature',
     setupNodeEvents,
-    specPattern: 'cypress/component/**/*.cy.{js,jsx,ts,tsx}',
-    supportFile: 'cypress/support/component.ts',
   },
 })

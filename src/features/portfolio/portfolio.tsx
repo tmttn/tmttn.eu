@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useMemo } from "react"
 import { GitHubService, GitHubRepository } from '@services'
 import { ClientOnlyIcon, StyledPortfolio, StyledRepoCard } from '@components'
 
@@ -118,23 +118,23 @@ export default function Portfolio({ variant = 'odd' }: PortfolioProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchRepositories = async () => {
-      try {
-        setLoading(true)
-        const repos = await GitHubService.getPublicRepositories()
-        setRepositories(repos)
-        setError(null)
-      } catch (error_) {
-        setError('Failed to load repositories')
-        console.error('Error fetching repositories:', error_)
-      } finally {
-        setLoading(false)
-      }
+  const fetchRepositories = useMemo(() => async () => {
+    try {
+      setLoading(true)
+      const repos = await GitHubService.getPublicRepositories()
+      setRepositories(repos)
+      setError(null)
+    } catch (error_) {
+      setError('Failed to load repositories')
+      console.error('Error fetching repositories:', error_)
+    } finally {
+      setLoading(false)
     }
-
-    fetchRepositories()
   }, [])
+
+  useEffect(() => {
+    fetchRepositories()
+  }, [fetchRepositories])
 
   if (loading) {
     return (
