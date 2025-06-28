@@ -45,9 +45,9 @@ jobs:
           git checkout -b production
         fi
         
-        # Reset production to match main (no merge commits)
-        echo "Resetting production to match main..."
-        git reset --hard origin/main
+        # Rebase production onto main to maintain linear history
+        echo "Rebasing production onto main..."
+        git rebase origin/main
         
         # Push to production
         echo "Pushing to production branch..."
