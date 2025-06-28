@@ -2,6 +2,9 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import SEOHead from '@features/seo/SeoHead'
 
+// Import the interface from the component file
+type SEOHeadProps = React.ComponentProps<typeof SEOHead>
+
 // Mock Next.js Head component to capture props for testing
 const mockHeadChildren: React.ReactNode[] = []
 jest.mock('next/head', () => {
@@ -14,7 +17,12 @@ jest.mock('next/head', () => {
   }
 })
 
-const getRenderedTags = () => {
+interface RenderedTag {
+  type: string
+  props: Record<string, any>
+}
+
+const getRenderedTags = (): RenderedTag[] => {
   return mockHeadChildren
     .map((child: any) => {
       if (React.isValidElement(child)) {
@@ -25,7 +33,7 @@ const getRenderedTags = () => {
       }
       return null
     })
-    .filter(Boolean) // Remove null values
+    .filter((tag): tag is RenderedTag => tag !== null)
 }
 
 describe('SEOHead', () => {
@@ -40,13 +48,15 @@ describe('SEOHead', () => {
     
     // Check title
     const titleTag = tags.find(tag => tag.type === 'title')
-    expect(titleTag?.props.children).toBe('Tom Metten - Full-Stack Developer & Tech Enthusiast')
+    expect(titleTag).toBeTruthy()
+    expect((titleTag as any)?.props?.children).toBe('Tom Metten - Full-Stack Developer & Tech Enthusiast')
     
     // Check description meta tag
     const descriptionTag = tags.find(tag => 
-      tag.type === 'meta' && tag.props.name === 'description'
+      tag.type === 'meta' && (tag as any).props?.name === 'description'
     )
-    expect(descriptionTag?.props.content).toBe(
+    expect(descriptionTag).toBeTruthy()
+    expect((descriptionTag as any)?.props?.content).toBe(
       'Tom Metten is a passionate full-stack developer from Belgium, specializing in modern web technologies, React, TypeScript, and cloud solutions. Explore my portfolio and get in touch.'
     )
   })
@@ -130,7 +140,7 @@ describe('SEOHead', () => {
       ogTitle: 'Twitter Title',
       ogDescription: 'Twitter Description',
       ogImage: '/twitter-image.jpg'
-    }
+    } as Partial<SEOHeadProps>
     
     render(<SEOHead {...props} />)
     
@@ -285,7 +295,7 @@ describe('SEOHead', () => {
     )
     expect(scriptTag).toBeDefined()
     
-    const parsedData = JSON.parse(scriptTag?.props.dangerouslySetInnerHTML.__html || '{}')
+    const parsedData = JSON.parse(scriptTag?.props.dangerouslySetInnerHTML.__html ?? '{}')
     expect(parsedData).toEqual(complexStructuredData)
   })
 })

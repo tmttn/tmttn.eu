@@ -20,7 +20,7 @@ const mockContext = {
   moveTo: jest.fn(),
   lineTo: jest.fn(),
   stroke: jest.fn(),
-}
+} as Partial<CanvasRenderingContext2D>
 
 const mockCanvas = {
   getContext: jest.fn(() => mockContext),
@@ -37,7 +37,7 @@ describe('ParticleBackground', () => {
     jest.clearAllMocks()
     
     // Mock HTMLCanvasElement
-    HTMLCanvasElement.prototype.getContext = jest.fn(() => mockContext)
+    HTMLCanvasElement.prototype.getContext = jest.fn().mockReturnValue(mockContext)
     
     // Mock window methods
     Object.defineProperty(window, 'innerWidth', {

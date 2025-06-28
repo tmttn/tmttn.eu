@@ -10,7 +10,7 @@ jest.mock('@services/github', () => ({
   },
 }))
 
-import { GitHubService } from '@services/github'
+import { GitHubService, ContributionDay, GitHubStats } from '@services/github'
 const mockGetContributionData = GitHubService.getContributionData as jest.MockedFunction<typeof GitHubService.getContributionData>
 
 const renderWithThemeProvider = (component: React.ReactElement) => {
@@ -157,8 +157,8 @@ describe('GitHubHeatmap', () => {
   })
 
   it('handles loading state transition correctly', async () => {
-    let resolvePromise: (value: any) => void
-    const promise = new Promise(resolve => {
+    let resolvePromise: (value: { contributions: ContributionDay[]; stats: GitHubStats }) => void
+    const promise = new Promise<{ contributions: ContributionDay[]; stats: GitHubStats }>(resolve => {
       resolvePromise = resolve
     })
 
