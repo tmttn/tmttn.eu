@@ -67,9 +67,84 @@ This is a **Next.js 15** personal portfolio website configured for **static expo
 
 ### Development Notes
 - Uses `@/*` path alias for src directory imports
+- **Barrel Files & Path Aliases**: Project uses barrel files with path aliases for clean imports
 - Accessibility features implemented (skip navigation, ARIA labels, semantic HTML)
 - Performance optimizations (lazy loading, chunk splitting, image optimization)
 - SEO optimized with structured data and canonical URLs
+
+## Import System & Barrel Files
+
+This project uses **barrel files** and **path aliases** for clean, maintainable imports.
+
+### Available Import Paths
+
+Use these path aliases instead of relative imports:
+
+- **`@components`** - All components including styled components
+- **`@features`** - All features (layout, navigation, portfolio, seo, theme, transitions, background)
+- **`@services`** - GitHub API service and other services
+- **`@styles`** - Themes, global styles, and style utilities
+- **`@utils`** - Utility functions (structured data, etc.)
+- **`@contexts`** - React contexts (theme context, etc.)
+
+### Import Examples
+
+```typescript
+// ✅ Correct - Use barrel imports with path aliases
+import { Layout, Portfolio, SEOHead } from '@features'
+import { ClientOnlyIcon, ThemeToggle } from '@components'
+import { useTheme, ThemeProvider } from '@contexts'
+import { GitHubService } from '@services'
+import { darkTheme, lightTheme, GlobalStyle } from '@styles'
+import { personStructuredData } from '@utils'
+
+// ❌ Avoid - Don't use relative paths
+import Layout from '../src/features/layout'
+import ClientOnlyIcon from '../../components/ClientOnlyIcon'
+import { useTheme } from '../contexts/ThemeContext'
+```
+
+### Configuration Details
+
+**TypeScript paths** (`tsconfig.json`):
+- Path mappings are configured for TypeScript IntelliSense and type checking
+
+**Turbopack aliases** (`next.config.js`):
+- Development server uses Turbopack with `resolveAlias` configuration
+- **IMPORTANT**: Path aliases are configured in `turbopack.resolveAlias`, NOT in webpack config
+- This prevents "Webpack is configured while Turbopack is not" warnings
+
+**Webpack config** (`next.config.js`):
+- Only used for production bundle analysis when `ANALYZE=true`
+- Path aliases are handled by TypeScript + Turbopack, not webpack
+
+### Barrel File Structure
+
+Each directory has an `index.ts` barrel file that re-exports components:
+
+```
+src/
+├── components/index.ts      # Exports all components
+├── features/index.ts        # Exports all features
+├── services/index.ts        # Exports all services
+├── styles/index.ts          # Exports themes and styles
+├── utils/index.ts           # Exports utilities
+└── contexts/index.ts        # Exports contexts
+```
+
+### Adding New Components
+
+When adding new components/features:
+
+1. Create the component file
+2. Add export to the appropriate barrel file (`index.ts`)
+3. Import using the path alias (`@components`, `@features`, etc.)
+
+### Troubleshooting
+
+- **"Webpack configured while Turbopack is not" warning**: Ensure path aliases are in `turbopack.resolveAlias`, not webpack config
+- **Import not found**: Check if the component is exported in the barrel file
+- **TypeScript errors**: Verify paths in `tsconfig.json` match directory structure
 
 ## Git Commit Guidelines
 
