@@ -48,7 +48,38 @@ jobs:
         fi
         echo "Build verification successful"
     
-    - name: Trigger Netlify deployment
+    - name: Deploy to Netlify
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: |
+        # Trigger build
+        echo "Triggering Netlify build..."
         curl -X POST -d '{}' https://api.netlify.com/build_hooks/685fd5bc01fb0bb3cd38e3bc
+        
+        # Wait for build to start
+        sleep 20
+        
+        # Get latest deploy ID and wait for completion
+        echo "Waiting for build to complete..."
+        for i in {1..30}; do
+          LATEST_DEPLOY=$(curl -s "https://api.netlify.com/api/v1/sites/be69a204-608b-4d68-9882-2eee8c608e24/deploys?per_page=1" -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}")
+          DEPLOY_ID=$(echo "$LATEST_DEPLOY" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+          STATE=$(echo "$LATEST_DEPLOY" | grep -o '"state":"[^"]*"' | head -1 | cut -d'"' -f4)
+          
+          echo "Deploy $DEPLOY_ID state: $STATE"
+          
+          if [ "$STATE" = "ready" ]; then
+            echo "Build completed successfully"
+            # Publish the deployment
+            curl -X POST "https://api.netlify.com/api/v1/sites/be69a204-608b-4d68-9882-2eee8c608e24/deploys/$DEPLOY_ID/restore" -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}"
+            echo "✅ Deployment published to production"
+            exit 0
+          elif [ "$STATE" = "error" ]; then
+            echo "❌ Build failed"
+            exit 1
+          fi
+          
+          sleep 15
+        done
+        
+        echo "❌ Build timed out"
+        exit 1
