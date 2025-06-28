@@ -3,8 +3,6 @@ name: CI
 on:
   push:
     branches: [ main ]
-    # Explicitly exclude production branch to prevent CI on production
-    branches-ignore: [ production ]
   pull_request:
     branches: [ main ]
 
