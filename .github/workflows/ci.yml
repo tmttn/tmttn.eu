@@ -55,5 +55,5 @@ jobs:
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git fetch origin production
         git checkout production
-        git merge main --no-ff -m "🚀 deploy: merge main to production after CI success"
+        git merge main --no-ff --allow-unrelated-histories -m "🚀 deploy: merge main to production after CI success"
         git push origin production
