@@ -49,6 +49,6 @@
   "overrides": {
     "tar-fs": "^3.0.9",
     "base-x": "^5.0.1",
-    "brace-expansion": "^2.0.2"
+    "brace-expansion": "^4.0.0"
   }
 }
