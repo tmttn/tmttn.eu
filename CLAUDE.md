@@ -12,6 +12,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run format` - Format code with Prettier
 - `npm run type-check` - TypeScript type checking without emit
 
+## Available CLI Tools
+
+Claude has access to the following CLI tools for development and deployment:
+
+- **GitHub CLI (`gh`)** - For GitHub operations (issues, PRs, releases, repository management)
+- **Netlify CLI (`netlify`)** - For Netlify deployments, functions, and site management
+
 ## Project Architecture
 
 This is a **Next.js 15** personal portfolio website configured for **static export** to Netlify. The site features:
