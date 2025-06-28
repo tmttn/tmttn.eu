@@ -26,14 +26,6 @@ jobs:
     - name: Install dependencies
       run: npm ci --frozen-lockfile
     
-    - name: Cache node_modules
-      uses: actions/cache@v4
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-modules-
-    
     - name: Build application
       run: npm run build
     
@@ -56,13 +48,6 @@ jobs:
         name: build-output
         path: out/
         retention-days: 1
-    
-    - name: Upload dependencies cache
-      uses: actions/upload-artifact@v4
-      with:
-        name: node-modules
-        path: node_modules/
-        retention-days: 1
 
   # Stage 2: Quality Assurance (runs in parallel, only if build succeeds)
   
@@ -83,14 +68,11 @@ jobs:
         node-version: '22.x'
         cache: 'npm'
     
-    - name: Download dependencies cache
-      uses: actions/download-artifact@v4
-      with:
-        name: node-modules
-        path: node_modules/
+    - name: Install dependencies
+      run: npm ci --frozen-lockfile
     
     - name: Run Jest tests with coverage
-      run: npx jest --coverage
+      run: npm run test:coverage
     
     - name: Display coverage summary
       run: |
@@ -135,17 +117,14 @@ jobs:
         node-version: '22.x'
         cache: 'npm'
     
-    - name: Download dependencies cache
-      uses: actions/download-artifact@v4
-      with:
-        name: node-modules
-        path: node_modules/
+    - name: Install dependencies
+      run: npm ci --frozen-lockfile
     
     - name: Run TypeScript type checking
-      run: npx tsc --noEmit
+      run: npm run type-check
     
     - name: Run linting
-      run: npx next lint
+      run: npm run lint
 
   # QA Job 3: CodeQL Security Analysis
   codeql-javascript:
@@ -218,11 +197,8 @@ jobs:
         node-version: '22.x'
         cache: 'npm'
     
-    - name: Download dependencies cache
-      uses: actions/download-artifact@v4
-      with:
-        name: node-modules
-        path: node_modules/
+    - name: Install dependencies
+      run: npm ci --frozen-lockfile
     
     - name: Run security audit
       run: npm audit --audit-level=moderate
