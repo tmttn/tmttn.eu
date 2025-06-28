@@ -197,3 +197,40 @@ Use emojis thematic to the context of the change:
 - **NEVER** add auto-generated signatures like "🤖 Generated with [Claude Code]" or "Co-Authored-By: Claude"
 - Keep commit messages clean and professional without AI-generated footers
 - Focus on the actual changes and their purpose, not the tool used to make them
+
+## Security Vulnerability Management
+
+**ALWAYS** address security vulnerabilities when detected. Follow this process:
+
+### Automated Security Checks
+1. **Run `npm audit`** regularly to check for vulnerabilities
+2. **Check GitHub Dependabot alerts** in the repository security tab
+3. **Address security issues immediately** - they take priority over other tasks
+
+### Vulnerability Resolution Process
+1. **Identify affected packages**: Use `npm audit` and GitHub Dependabot alerts
+2. **Update dependencies**: Try `npm update` first for direct dependencies
+3. **Use npm overrides**: For transitive dependencies that can't be directly updated:
+   ```json
+   "overrides": {
+     "vulnerable-package": "^secure-version"
+   }
+   ```
+4. **Clean install**: `rm package-lock.json && npm install` to ensure fresh resolution
+5. **Verify fixes**: Run `npm audit` to confirm 0 vulnerabilities
+6. **Test thoroughly**: Ensure `npm run build` and `npm run lint` still pass
+
+### Security Best Practices
+- **Never ignore security warnings** - always investigate and fix
+- **Update dependencies regularly** using `npx npm-check-updates -u`
+- **Use compatible versions** that work with the current Node.js/TypeScript setup
+- **Prefer latest stable versions** unless compatibility issues arise
+- **Document security fixes** clearly in commit messages with 🔒 emoji
+
+### Priority Order
+1. **High severity vulnerabilities** - Fix immediately
+2. **Medium severity vulnerabilities** - Fix within 24 hours  
+3. **Low severity vulnerabilities** - Fix within a week
+4. **Update other dependencies** - During regular maintenance
+
+**Security is non-negotiable** - always maintain a clean `npm audit` status.
