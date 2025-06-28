@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { GlassCard } from './GlassmorphismComponents.styled'
+import { GlassCard } from '../../components/GlassmorphismComponents.styled'
 
 export const HeatmapContainer = styled(GlassCard)`
   margin: 2rem 7vw;
