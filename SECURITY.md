@@ -119,12 +119,12 @@ For security-related questions or concerns:
 ## Security Changelog
 
 ### Recent Security Updates
-- **2024-06**: Resolved 7 dependency vulnerabilities (tar-fs, base-x, brace-expansion)
-- **2024-06**: Added ESLint security rules (eslint-plugin-unicorn)
-- **2024-06**: Implemented npm overrides for transitive dependency security
-- **2024-06**: Updated all dependencies to latest secure versions
+- **2025-06**: Resolved 7 dependency vulnerabilities (tar-fs, base-x, brace-expansion)
+- **2025-06**: Added ESLint security rules (eslint-plugin-unicorn)
+- **2025-06**: Implemented npm overrides for transitive dependency security
+- **2025-06**: Updated all dependencies to latest secure versions
 
 ---
 
-*Last Updated: June 2024*  
+*Last Updated: June 2025*  
 *Security Policy Version: 1.0*
