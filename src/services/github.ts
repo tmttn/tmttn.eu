@@ -95,7 +95,7 @@ export class GitHubService {
     const activityMap = new Map<string, number>()
     
     // Process events to extract contribution dates
-    for (const event of events) {
+    events.forEach(event => {
       const eventDate = new Date(event.created_at).toISOString().split('T')[0]
       const currentCount = activityMap.get(eventDate) || 0
       
@@ -122,7 +122,7 @@ export class GitHubService {
       }
       
       activityMap.set(eventDate, currentCount + contributionWeight)
-    }
+    })
     
     // Generate data for the past year
     for (let i = oneYear; i >= 0; i--) {

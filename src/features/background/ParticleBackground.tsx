@@ -26,7 +26,7 @@ export default function ParticleBackground({
 }: ParticleBackgroundProps) {
   const { isDark } = useTheme()
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animationRef = useRef<number>()
+  const animationRef = useRef<number>(0)
   const particlesRef = useRef<Particle[]>([])
   const mouseRef = useRef({ x: 0, y: 0 })
   const scrollRef = useRef(0)
@@ -112,7 +112,7 @@ export default function ParticleBackground({
       const scrollDelta = (scrollRef.current - lastScrollRef.current) * 0.01
       lastScrollRef.current = scrollRef.current
       
-      for (const [index, particle] of particlesRef.current.entries()) {
+      particlesRef.current.forEach((particle, index) => {
         // Update particle position
         particle.x += particle.vx
         particle.y += particle.vy
@@ -165,10 +165,10 @@ export default function ParticleBackground({
         ctx.shadowColor = particle.color
         ctx.fill()
         ctx.restore()
-      }
+      })
 
       // Draw connections between nearby particles
-      for (const [i, particle] of particlesRef.current.entries()) {
+      particlesRef.current.forEach((particle, i) => {
         for (let j = i + 1; j < particlesRef.current.length; j++) {
           const other = particlesRef.current[j]
           const dx = particle.x - other.x
@@ -188,7 +188,7 @@ export default function ParticleBackground({
             ctx.restore()
           }
         }
-      }
+      })
 
       animationRef.current = requestAnimationFrame(animate)
     }

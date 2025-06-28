@@ -192,3 +192,8 @@ Use emojis thematic to the context of the change:
 - `🔧 chore: update dependencies to latest versions`
 - `🎭 feat: add theme persistence with localStorage`
 - `📊 enhance: improve GitHub API data visualization`
+
+### IMPORTANT: Commit Message Rules
+- **NEVER** add auto-generated signatures like "🤖 Generated with [Claude Code]" or "Co-Authored-By: Claude"
+- Keep commit messages clean and professional without AI-generated footers
+- Focus on the actual changes and their purpose, not the tool used to make them
