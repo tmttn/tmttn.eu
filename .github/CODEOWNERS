@@ -1,0 +1,12 @@
+# Global code ownership - all files require review
+* @tmttn
+
+# Critical files require stricter review
+/.github/workflows/ @tmttn
+/netlify.toml @tmttn
+/package.json @tmttn
+/package-lock.json @tmttn
+/next.config.js @tmttn
+/eslint.config.js @tmttn
+/SECURITY.md @tmttn
+/CLAUDE.md @tmttn
