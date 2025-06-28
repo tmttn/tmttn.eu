@@ -117,7 +117,7 @@ export default function Home() {
               <ClientOnlyIcon icon={["fab", "github-square"]} fallback="GitHub" />
             </StyledIcon>
 
-            <StyledIcon href="mailto:contact@tmttn.be" aria-label="Email">
+            <StyledIcon href="mailto:contact@tmttn.eu" aria-label="Email">
               <ClientOnlyIcon icon="at" fallback="Email" />
             </StyledIcon>
 

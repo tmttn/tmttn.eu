@@ -26,7 +26,7 @@
         {
           "sha": "abc123def456",
           "author": {
-            "email": "thomas@tmttn.be",
+            "email": "thomas@tmttn.eu",
             "name": "Thomas Metten"
           },
           "message": "✨ feat: add GitHub activity heatmap component",
@@ -36,7 +36,7 @@
         {
           "sha": "def456abc123",
           "author": {
-            "email": "thomas@tmttn.be",
+            "email": "thomas@tmttn.eu",
             "name": "Thomas Metten"
           },
           "message": "🎨 style: improve responsive layout for mobile devices",
@@ -46,7 +46,7 @@
         {
           "sha": "ghi789jkl012",
           "author": {
-            "email": "thomas@tmttn.be",
+            "email": "thomas@tmttn.eu",
             "name": "Thomas Metten"
           },
           "message": "🐛 fix: resolve theme toggle animation timing",
@@ -215,7 +215,7 @@
         {
           "sha": "xyz789abc012",
           "author": {
-            "email": "thomas@tmttn.be",
+            "email": "thomas@tmttn.eu",
             "name": "Thomas Metten"
           },
           "message": "⚡ perf: optimize bundle size with code splitting",
