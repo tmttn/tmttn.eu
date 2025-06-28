@@ -47,7 +47,12 @@ jobs:
         
         # Rebase production onto main to maintain linear history
         echo "Rebasing production onto main..."
-        git rebase origin/main
+        if ! git rebase origin/main; then
+          echo "❌ Rebase failed. This may indicate conflicts that need manual resolution."
+          echo "Aborting rebase and exiting..."
+          git rebase --abort
+          exit 1
+        fi
         
         # Push to production
         echo "Pushing to production branch..."
