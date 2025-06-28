@@ -45,12 +45,9 @@ jobs:
           git checkout -b production
         fi
         
-        # Merge main into production
-        echo "Merging main into production..."
-        git merge main --no-ff --allow-unrelated-histories -m "🚀 deploy: merge main to production after CI success
-        
-        Latest commit: ${{ github.event.workflow_run.head_sha }}
-        Workflow run: ${{ github.event.workflow_run.html_url }}"
+        # Reset production to match main (no merge commits)
+        echo "Resetting production to match main..."
+        git reset --hard origin/main
         
         # Push to production
         echo "Pushing to production branch..."
