@@ -232,13 +232,20 @@ jobs:
         name: build-output
         path: out/
     
-    - name: Build application for E2E tests
-      run: npm run build
+    - name: Verify build artifacts
+      run: |
+        echo "Verifying build artifacts..."
+        ls -la out/
+        if [ ! -f "out/index.html" ]; then
+          echo "❌ index.html not found in build artifacts"
+          exit 1
+        fi
+        echo "✅ Build artifacts verified"
     
     - name: Run Cypress E2E tests
       uses: cypress-io/github-action@v6
       with:
-        start: npm start
+        start: npx serve out -s -l 3000
         wait-on: 'http://localhost:3000'
         wait-on-timeout: 120
         browser: chrome

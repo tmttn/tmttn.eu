@@ -9,6 +9,7 @@
     "build": "node scripts/generate-sitemap.js && next build",
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",
+    "serve": "npx serve out -s -l 3000",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "type-check": "tsc --noEmit",
@@ -21,7 +22,7 @@
     "cypress:run:headless": "cypress run --headless --config-file cypress.config.cucumber.ts",
     "e2e": "start-server-and-test dev http://localhost:3000 cypress:run",
     "e2e:chrome": "start-server-and-test dev http://localhost:3000 cypress:run:chrome",
-    "e2e:ci": "start-server-and-test start http://localhost:3000 cypress:run:headless"
+    "e2e:ci": "start-server-and-test serve http://localhost:3000 cypress:run:headless"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
@@ -54,6 +55,7 @@
     "jest": "^30.0.3",
     "jest-environment-jsdom": "^30.0.2",
     "prettier": "3.6.2",
+    "serve": "^14.2.4",
     "start-server-and-test": "^2.0.12",
     "ts-loader": "^9.5.2",
     "typescript": "^5.8.3",
