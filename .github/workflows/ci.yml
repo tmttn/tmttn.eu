@@ -51,4 +51,4 @@ jobs:
     - name: Trigger Netlify deployment
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: |
-        curl -X POST -d '{}' https://api.netlify.com/build_hooks/685fd48e97cef8af9c3a8e4e
+        curl -X POST -d '{}' https://api.netlify.com/build_hooks/685fd5bc01fb0bb3cd38e3bc
