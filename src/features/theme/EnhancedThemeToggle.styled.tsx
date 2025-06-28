@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components'
+import { Z_INDEX } from '../../styles/zIndex'
 
 const rippleAnimation = keyframes`
   0% {
@@ -131,7 +132,7 @@ export const ThemeTransitionOverlay = styled.div<{ $isVisible: boolean; $isDark:
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 9999;
+  z-index: ${Z_INDEX.INTERFACE.THEME_TOGGLE};
   pointer-events: none;
   opacity: ${({ $isVisible }) => $isVisible ? 1 : 0};
   transition: opacity 0.3s ease;

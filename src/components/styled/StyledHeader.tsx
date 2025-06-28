@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Z_INDEX } from '../../styles/zIndex'
 
 export const StyledHeader = styled.header<{ $scrolled?: boolean }>`
   --border-width: 1px;
@@ -12,10 +13,15 @@ export const StyledHeader = styled.header<{ $scrolled?: boolean }>`
   left: 0;
   right: 0;
   padding: 8px 16px;
-  z-index: 1000;
+  z-index: ${Z_INDEX.INTERFACE.HEADER};
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
   overflow: hidden;
+
+  /* Allow mobile navigation dropdown to be visible */
+  @media only screen and (max-width: 600px) {
+    overflow: visible;
+  }
 
   ${({ $scrolled, theme }) => $scrolled ? `
     background: ${theme.colors.glass.surface};

@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Z_INDEX } from '../../styles/zIndex'
 
 export const StyledSectionContent = styled.div`
   display: flex;
@@ -57,7 +58,7 @@ export const StyledSectionContent = styled.div`
   div:nth-of-type(1) {
     margin-left: 7vw;
     position: relative;
-    z-index: 1;
+    z-index: ${Z_INDEX.BACKGROUND.GRADIENT};
     
     /* Enhanced image styling for Next.js Image */
     img, 
@@ -119,7 +120,7 @@ export const StyledSectionContent = styled.div`
     margin-left: 16px;
     margin-right: 32px;
     position: relative;
-    z-index: 1;
+    z-index: ${Z_INDEX.BACKGROUND.GRADIENT};
     
     p {
       animation: fadeInUp 1s ease-out 1s both;

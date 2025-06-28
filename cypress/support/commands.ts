@@ -66,14 +66,17 @@ Cypress.Commands.add('checkResponsiveLayout', (device) => {
   const height = device === 'mobile' ? 667 : (device === 'tablet' ? 1024 : 720)
   cy.viewport(width, height)
   
+  // Check layout elements exist
+  cy.get('header').should('be.visible')
+  cy.get('main').should('be.visible')
+  
   if (device === 'mobile') {
-    // Check mobile-specific layouts
-    cy.get('header').should('be.visible')
-    cy.get('main').should('be.visible')
+    // Check mobile-specific layouts - mobile menu button should be visible
+    cy.get('[aria-label*="navigation menu"]').should('be.visible')
   } else {
-    // Check desktop/tablet layouts
+    // Check desktop/tablet layouts - navigation should be visible
     cy.get('nav').should('be.visible')
-    cy.get('header').should('be.visible')
+    cy.get('nav a').should('be.visible')
   }
 })
 

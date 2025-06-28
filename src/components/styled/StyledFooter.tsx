@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Z_INDEX } from '../../styles/zIndex'
 
 export const StyledFooter = styled.footer`
   position: relative;
@@ -36,7 +37,7 @@ export const StyledFooter = styled.footer`
 
   .footer-content {
     position: relative;
-    z-index: 1;
+    z-index: ${Z_INDEX.BACKGROUND.GRADIENT};
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 3rem;
@@ -131,7 +132,7 @@ export const StyledFooter = styled.footer`
 
   .footer-bottom {
     position: relative;
-    z-index: 1;
+    z-index: ${Z_INDEX.BACKGROUND.GRADIENT};
     text-align: center;
     padding-top: 2rem;
     border-top: 1px solid ${({ theme }) => theme.colors.border};

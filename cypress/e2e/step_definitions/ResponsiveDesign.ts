@@ -19,9 +19,21 @@ Then('all content should be readable', () => {
 
 Then('navigation should be accessible', () => {
   cy.get('nav').should('be.visible')
-  cy.get('nav a').should('have.length.greaterThan', 0)
-  cy.get('nav a').each(($link) => {
-    cy.wrap($link).should('be.visible')
+  cy.get('nav').should('have.length.greaterThan', 0)
+  
+  // Check viewport to determine navigation behavior
+  cy.window().then((win) => {
+    if (win.innerWidth <= 600) {
+      // Mobile: Navigation is accessed via mobile menu button
+      cy.get('[aria-label*="navigation menu"]').should('be.visible')
+      // Click mobile menu button to open navigation
+      cy.get('[aria-label*="navigation menu"]').click()
+      // Now nav links should be visible
+      cy.get('nav a').should('be.visible')
+    } else {
+      // Desktop/Tablet: Navigation should be directly visible
+      cy.get('nav a').should('be.visible')
+    }
   })
 })
 
@@ -33,12 +45,30 @@ Then('interactive elements should be properly sized', () => {
 })
 
 When('I interact with the navigation', () => {
-  cy.get('nav a').first().click()
+  cy.window().then((win) => {
+    if (win.innerWidth <= 600) {
+      // Mobile: Open menu first, then click navigation link
+      cy.get('[aria-label*="navigation menu"]').click()
+      cy.get('nav a').first().click()
+    } else {
+      // Desktop/Tablet: Click navigation link directly
+      cy.get('nav a').first().click()
+    }
+  })
 })
 
 Then('navigation should work smoothly', () => {
   cy.get('nav').should('be.visible')
-  cy.get('nav a').should('be.visible')
+  
+  cy.window().then((win) => {
+    if (win.innerWidth <= 600) {
+      // Mobile: Check that mobile menu button works
+      cy.get('[aria-label*="navigation menu"]').should('be.visible')
+    } else {
+      // Desktop/Tablet: Navigation links should be directly visible
+      cy.get('nav a').should('be.visible')
+    }
+  })
 })
 
 Then('all sections should be accessible', () => {
@@ -55,7 +85,8 @@ Then('touch interactions should be responsive', () => {
 })
 
 When('I interact with hover effects', () => {
-  cy.get('a, button').first().trigger('mouseover')
+  // On desktop, we should hover over navigation links, not the mobile menu button
+  cy.get('nav a').first().trigger('mouseover')
 })
 
 Then('hover states should be visible', () => {

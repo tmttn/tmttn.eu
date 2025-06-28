@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Z_INDEX } from '../../styles/zIndex'
 
 export const StyledNavList = styled.ul<{ $isOpen: boolean }>`
   list-style: none;
@@ -11,7 +12,7 @@ export const StyledNavList = styled.ul<{ $isOpen: boolean }>`
   @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     flex-direction: column;
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px);
     right: 0;
     background: ${({ theme }) => theme.colors.glass.surface};
     backdrop-filter: blur(24px) saturate(200%);
@@ -19,7 +20,28 @@ export const StyledNavList = styled.ul<{ $isOpen: boolean }>`
     padding: 1rem;
     min-width: 200px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    z-index: ${Z_INDEX.INTERFACE.MOBILE_NAV};
+    border: 1px solid ${({ theme }) => theme.colors.glass.border};
     display: ${({ $isOpen }) => $isOpen ? 'flex' : 'none'};
+    opacity: ${({ $isOpen }) => $isOpen ? 1 : 0};
+    transform: ${({ $isOpen }) => $isOpen ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.95)'};
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Above mobile breakpoint, always show navigation */
+  @media only screen and (min-width: calc(${({ theme }) => theme.breakpoints.mobile} + 1px)) {
+    display: flex !important;
+    position: static;
+    background: transparent;
+    backdrop-filter: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    z-index: auto;
+    border: none;
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 `
 
@@ -80,6 +102,7 @@ export const MobileMenuButton = styled.button`
   color: ${({ theme }) => theme.colors.textSecondary};
   cursor: pointer;
   transition: all 0.3s ease;
+  z-index: ${Z_INDEX.INTERFACE.MOBILE_NAV};
   
   &:focus {
     outline: 2px solid ${({ theme }) => theme.colors.primary};
@@ -100,13 +123,10 @@ export const MobileMenuButton = styled.button`
 
 export const NavContainer = styled.nav`
   position: relative;
+  z-index: ${Z_INDEX.INTERFACE.NAVIGATION};
   
-  /* Hide desktop nav on mobile */
   @media only screen and (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    ${StyledNavList} {
-      &:not([aria-expanded="true"]) {
-        display: none;
-      }
-    }
+    /* Ensure mobile dropdown has space to appear */
+    overflow: visible;
   }
 `

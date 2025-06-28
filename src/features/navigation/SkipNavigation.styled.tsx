@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Z_INDEX } from '../../styles/zIndex'
 
 export const SkipLink = styled.a`
   position: absolute;
@@ -10,7 +11,7 @@ export const SkipLink = styled.a`
   border-radius: 4px;
   text-decoration: none;
   font-weight: bold;
-  z-index: 10000;
+  z-index: ${Z_INDEX.INTERFACE.SKIP_LINK};
   transition: top 0.2s ease;
 
   &:focus {
@@ -26,5 +27,5 @@ export const SkipLink = styled.a`
 
 export const SkipContainer = styled.div`
   position: relative;
-  z-index: 10000;
+  z-index: ${Z_INDEX.INTERFACE.SKIP_LINK};
 `
