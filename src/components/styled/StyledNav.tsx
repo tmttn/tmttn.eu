@@ -33,7 +33,6 @@ export const StyledNav = styled.nav`
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         overflow: hidden;
         will-change: transform;
-        contain: layout style;
 
         /* Enhanced gradient border with mask technique */
         &::before {

@@ -25,7 +25,7 @@ export const StyledHeader = styled.header<{ $scrolled?: boolean }>`
 
   /* Performance optimizations for smooth scrolling */
   will-change: ${({ $scrolled }) => $scrolled ? 'transform, opacity' : 'auto'};
-  contain: ${({ $scrolled }) => $scrolled ? 'layout style paint' : 'none'};
+  contain: ${({ $scrolled }) => $scrolled ? 'layout style' : 'none'};
 
   ${({ $scrolled, theme }) => $scrolled ? `
     background: ${theme.colors.glass.surface};
