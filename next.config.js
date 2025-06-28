@@ -20,6 +20,14 @@ const nextConfig = {
   // Turbopack configuration for development
   turbopack: {
     rules: {},
+    resolveAlias: {
+      '@components': './src/components',
+      '@features': './src/features',
+      '@services': './src/services',
+      '@styles': './src/styles',
+      '@utils': './src/utils',
+      '@contexts': './src/contexts',
+    },
   },
   
   // Bundle analysis - only when needed for production builds

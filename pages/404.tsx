@@ -1,5 +1,5 @@
 import React from "react"
-import Layout from "../src/features/layout"
+import { Layout } from '@features'
 import Link from "next/link"
 
 export default function Custom404() {

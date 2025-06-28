@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from "react"
 import Image from "next/image"
-import Layout from "../src/features/layout"
-import Section from "../src/features/section"
-import Scrollable from "../src/features/scrollable"
-import Portfolio from "../src/features/portfolio/portfolio"
+import {
+  Layout,
+  Section,
+  Scrollable,
+  Portfolio,
+  SEOHead,
+  AccessibleNavigation,
+  SkipNavigation,
+  ParticleBackground,
+  GitHubHeatmap,
+  EnhancedThemeToggle,
+  PageTransition
+} from '@features'
 import Link from "next/link"
-import ClientOnlyIcon from "../src/components/ClientOnlyIcon"
-import SEOHead from "../src/features/seo/SEOHead"
-import { personStructuredData, websiteStructuredData } from "../src/utils/structuredData"
-import AccessibleNavigation from "../src/features/navigation/AccessibleNavigation"
-import SkipNavigation from "../src/features/navigation/SkipNavigation"
-import ParticleBackground from "../src/features/background/ParticleBackground"
-import GitHubHeatmap from "../src/features/portfolio/GitHubHeatmap"
-import EnhancedThemeToggle from "../src/features/theme/EnhancedThemeToggle"
-import PageTransition from "../src/features/transitions/PageTransition"
+import { ClientOnlyIcon } from '@components'
+import { personStructuredData, websiteStructuredData } from '@utils'
 import {
   StyledHeader,
   StyledLogo,
@@ -26,9 +28,9 @@ import {
   StyledIconBar,
   StyledIcon,
   StyledSection,
-  StyledFooter
-} from "../src/components/StyledComponents"
-import ThemeToggle from "../src/components/ThemeToggle"
+  StyledFooter,
+  ThemeToggle
+} from '@components'
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false)
