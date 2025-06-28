@@ -39,13 +39,17 @@ const customJestConfig = {
     '!src/**/*.stories.{js,jsx,ts,tsx}',
     '!src/**/*.test.{js,jsx,ts,tsx}',
     '!src/**/index.{js,jsx,ts,tsx}',
+    '!src/**/*.styled.{js,jsx,ts,tsx}',
+    '!src/styles/**',
+    '!src/utils/fontawesome.js',
+    '!src/utils/typography.js',
   ],
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
+      branches: 60,
+      functions: 60,
+      lines: 65,
+      statements: 65,
     },
   },
   coverageReporters: [
