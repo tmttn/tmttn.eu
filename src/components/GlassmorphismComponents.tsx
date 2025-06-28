@@ -13,8 +13,8 @@ export const GlassCard = styled.div<{
   background: ${({ theme, $intensity = 'medium' }) => {
     const intensities = {
       light: theme.colors.glass.surface,
-      medium: `rgba(${theme.isDark ? '255, 255, 255' : '255, 255, 255'}, ${theme.isDark ? '0.08' : '0.25'})`,
-      heavy: `rgba(${theme.isDark ? '255, 255, 255' : '255, 255, 255'}, ${theme.isDark ? '0.12' : '0.35'})`
+      medium: `rgba(${theme.isDark ? '255, 255, 255' : '255, 255, 255'}, ${theme.isDark ? '0.08' : '0.75'})`,
+      heavy: `rgba(${theme.isDark ? '255, 255, 255' : '255, 255, 255'}, ${theme.isDark ? '0.12' : '0.9'})`
     }
     return intensities[$intensity]
   }};
@@ -47,15 +47,20 @@ export const GlassCard = styled.div<{
     background: ${({ theme, $intensity = 'medium' }) => {
       const intensities = {
         light: theme.colors.glass.surfaceHover,
-        medium: `rgba(${theme.isDark ? '255, 255, 255' : '255, 255, 255'}, ${theme.isDark ? '0.12' : '0.35'})`,
-        heavy: `rgba(${theme.isDark ? '255, 255, 255' : '255, 255, 255'}, ${theme.isDark ? '0.16' : '0.45'})`
+        medium: `rgba(${theme.isDark ? '255, 255, 255' : '255, 255, 255'}, ${theme.isDark ? '0.12' : '0.85'})`,
+        heavy: `rgba(${theme.isDark ? '255, 255, 255' : '255, 255, 255'}, ${theme.isDark ? '0.16' : '0.95'})`
       }
       return intensities[$intensity]
     }};
     transform: translateY(-2px);
-    box-shadow: 
+    box-shadow: ${({ theme }) => theme.isDark ? `
       0 8px 32px rgba(0, 0, 0, 0.15),
       0 0 0 1px rgba(255, 255, 255, 0.1);
+    ` : `
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      0 4px 16px rgba(0, 0, 0, 0.05),
+      0 0 0 1px rgba(0, 0, 0, 0.05);
+    `};
   }
 `
 
