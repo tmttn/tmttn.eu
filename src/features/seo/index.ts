@@ -1,2 +1,2 @@
 // SEO feature barrel file
-export { default as SEOHead } from './SEOHead';
+export { default as SEOHead } from './SeoHead';
