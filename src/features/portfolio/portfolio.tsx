@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { GitHubService, GitHubRepository } from "../../services/github"
-import ClientOnlyIcon from "../../components/ClientOnlyIcon"
-import { StyledPortfolio, StyledRepoCard } from "../../components/StyledComponents"
+import { GitHubService, GitHubRepository } from '@services'
+import { ClientOnlyIcon, StyledPortfolio, StyledRepoCard } from '@components'
 
 interface RepositoryCardProps {
   repo: GitHubRepository

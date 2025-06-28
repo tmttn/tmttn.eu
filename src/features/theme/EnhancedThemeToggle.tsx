@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useTheme } from '../../contexts/ThemeContext'
-import ClientOnlyIcon from '../../components/ClientOnlyIcon'
+import { useTheme } from '@contexts'
+import { ClientOnlyIcon } from '@components'
 import {
   ToggleContainer,
   ToggleButton,
