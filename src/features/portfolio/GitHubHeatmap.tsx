@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import ClientOnlyIcon from './ClientOnlyIcon'
-import { GitHubService, ContributionDay, GitHubStats } from '../services/github'
+import ClientOnlyIcon from '../../components/ClientOnlyIcon'
+import { GitHubService, ContributionDay, GitHubStats } from '../../services/github'
 import {
   HeatmapContainer,
   HeatmapGrid,
