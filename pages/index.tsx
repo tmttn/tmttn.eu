@@ -134,7 +134,7 @@ export default function Home() {
             </StyledIcon>
           </StyledIconBar>
         </StyledContactSection>
-        <StyledSection id="showcase" $variant="even" role="region" aria-labelledby="showcase-heading">
+        <StyledSection id="showcase" $variant="even" role="region" aria-labelledby="showcase-heading" data-testid="portfolio-section">
           <h1 id="showcase-heading">Showcase</h1>
           <GitHubHeatmap />
           <Portfolio variant="even" />

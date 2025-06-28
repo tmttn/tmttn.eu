@@ -64,7 +64,7 @@ export default function GitHubHeatmap() {
   }
 
   return (
-    <HeatmapContainer $intensity="heavy" $variant="neutral">
+    <HeatmapContainer $intensity="heavy" $variant="neutral" data-testid="github-heatmap">
       <h3>
         <ClientOnlyIcon icon={["fab", "github"]} fallback="GH" />
         GitHub Activity - Past Year
@@ -76,6 +76,7 @@ export default function GitHubHeatmap() {
             key={index}
             $level={day.level}
             title={`${day.date}: ${day.count} contributions`}
+            className="contribution-day"
           />
         ))}
       </HeatmapGrid>

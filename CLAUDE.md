@@ -12,6 +12,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run format` - Format code with Prettier
 - `npm run type-check` - TypeScript type checking without emit
 
+### Testing Commands
+
+- `npm test` - Run Jest unit tests
+- `npm run test:watch` - Run Jest tests in watch mode
+- `npm run test:coverage` - Run Jest tests with coverage report
+- `cypress:open` - Open Cypress interactive test runner
+- `cypress:run` - Run Cypress tests headlessly
+- `e2e` - Run full E2E test suite (starts dev server + runs Cypress)
+- `e2e:chrome` - Run E2E tests in Chrome browser
+- `e2e:ci` - Run E2E tests for CI/CD (starts production server)
+
 ## Available CLI Tools
 
 Claude has access to the following CLI tools for development and deployment:
@@ -256,3 +267,81 @@ Use emojis thematic to the context of the change:
 4. **Update other dependencies** - During regular maintenance
 
 **Security is non-negotiable** - always maintain a clean `npm audit` status.
+
+## Testing Architecture
+
+This project uses a comprehensive testing strategy with both unit tests and end-to-end tests.
+
+### Unit Testing (Jest)
+
+- **Framework**: Jest with React Testing Library
+- **Coverage**: 96.52% coverage with 80% minimum threshold enforced
+- **Location**: `__tests__/` directory with mirrored src structure
+- **Mock Strategy**: Styled-components mocked to avoid React DOM warnings
+- **Key Features**:
+  - Component rendering and interaction tests
+  - Theme context and accessibility testing
+  - Service layer and utility function testing
+  - Performance and error boundary testing
+
+### End-to-End Testing (Cypress + Cucumber)
+
+- **Framework**: Cypress 14.5+ with Cucumber/Gherkin integration
+- **BDD Approach**: Feature files written in Gherkin syntax for non-technical stakeholders
+- **Browser Support**: Chrome (primary), with cross-browser capability
+- **Test Categories**:
+  - **Core Functionality**: Navigation, theme toggle, component rendering
+  - **Responsive Design**: Mobile, tablet, desktop viewport testing
+  - **Accessibility**: Keyboard navigation, screen reader compatibility, ARIA support
+  - **Performance**: Page load times, asset optimization, smooth animations
+
+### Gherkin Feature Files
+
+Located in `cypress/e2e/`, organized by concern:
+
+- `portfolio-website.feature` - Core website functionality
+- `responsive-design.feature` - Multi-device compatibility
+- `accessibility.feature` - WCAG compliance and usability
+- `performance.feature` - Speed and optimization validation
+
+### Step Definitions
+
+Located in `cypress/e2e/step_definitions/`:
+
+- `common.ts` - Shared steps across features
+- `portfolio-website.ts` - Core functionality steps
+- `responsive-design.ts` - Responsive behavior steps
+- `accessibility.ts` - Accessibility testing steps
+- `performance.ts` - Performance measurement steps
+
+### Custom Cypress Commands
+
+- **Navigation**: `visitHomePage()`, `scrollToSection()`, `checkNavigation()`
+- **Theme Testing**: `toggleTheme()`, `assertTheme()`
+- **Responsive**: `setViewport()`, `checkResponsiveLayout()`
+- **Accessibility**: `checkA11y()`, `checkSkipNavigation()`
+- **Performance**: `measurePageLoad()`, `checkGitHubIntegration()`
+
+### CI/CD Integration
+
+E2E tests run in the CI pipeline:
+
+- **Trigger**: On pull requests and main branch pushes
+- **Parallelization**: Runs after build step, parallel to unit tests
+- **Browser**: Chrome headless in CI environment
+- **Artifacts**: Screenshots on failure, videos, and Cucumber reports
+- **Server**: Starts production build for realistic testing conditions
+
+### Test Data Management
+
+- **Test IDs**: Strategic `data-testid` attributes for reliable element selection
+- **Mock Data**: GitHub API responses mocked for consistent testing
+- **Environment**: Separate test configuration with controlled variables
+
+### Best Practices
+
+- **Gherkin Writing**: Focus on user behavior, not implementation details
+- **Step Reusability**: Common steps shared across multiple scenarios
+- **Test Isolation**: Each scenario independent with proper setup/teardown
+- **Reporting**: Cucumber HTML/JSON reports for stakeholder communication
+- **Accessibility First**: Every feature includes accessibility validation
