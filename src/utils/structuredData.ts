@@ -3,7 +3,7 @@ export const personStructuredData = {
   "@type": "Person",
   "name": "Tom Metten",
   "url": "https://tmttn.eu",
-  "image": "https://tmttn.eu/static/square-profile-picture.jpg",
+  "image": "https://tmttn.eu/static/gibli-avatar-portrait.png",
   "jobTitle": "Full-Stack Developer",
   "worksFor": {
     "@type": "Organization",

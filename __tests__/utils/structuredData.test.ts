@@ -10,7 +10,7 @@ describe('structuredData', () => {
     it('contains required person information', () => {
       expect(personStructuredData.name).toBe('Tom Metten')
       expect(personStructuredData.url).toBe('https://tmttn.eu')
-      expect(personStructuredData.image).toBe('https://tmttn.eu/static/square-profile-picture.jpg')
+      expect(personStructuredData.image).toBe('https://tmttn.eu/static/gibli-avatar-portrait.png')
       expect(personStructuredData.jobTitle).toBe('Full-Stack Developer')
     })
 

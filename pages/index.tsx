@@ -75,7 +75,7 @@ export default function Home() {
           <StyledSectionContent>
             <div>
               <Image
-                src="/static/square-profile-picture.jpg"
+                src="/static/gibli-avatar-portrait.png"
                 alt="Portrait photo of Tom Metten, a full-stack developer from Belgium"
                 height={260}
                 width={260}
