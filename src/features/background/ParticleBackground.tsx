@@ -26,7 +26,7 @@ export default function ParticleBackground({
 }: ParticleBackgroundProps) {
   const { isDark } = useTheme()
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animationRef = useRef<number | undefined>(undefined)
+  const animationRef = useRef<number>()
   const particlesRef = useRef<Particle[]>([])
   const mouseRef = useRef({ x: 0, y: 0 })
   const scrollRef = useRef(0)
@@ -112,7 +112,7 @@ export default function ParticleBackground({
       const scrollDelta = (scrollRef.current - lastScrollRef.current) * 0.01
       lastScrollRef.current = scrollRef.current
       
-      particlesRef.current.forEach((particle, index) => {
+      for (const [index, particle] of particlesRef.current.entries()) {
         // Update particle position
         particle.x += particle.vx
         particle.y += particle.vy
@@ -120,7 +120,7 @@ export default function ParticleBackground({
         // Mouse interaction - attract particles to mouse
         const dx = mouseX - particle.x
         const dy = mouseY - particle.y
-        const distance = Math.sqrt(dx * dx + dy * dy)
+        const distance = Math.hypot(dx, dy)
         
         if (distance < 150) {
           const force = (150 - distance) / 150
@@ -165,15 +165,15 @@ export default function ParticleBackground({
         ctx.shadowColor = particle.color
         ctx.fill()
         ctx.restore()
-      })
+      }
 
       // Draw connections between nearby particles
-      particlesRef.current.forEach((particle, i) => {
+      for (const [i, particle] of particlesRef.current.entries()) {
         for (let j = i + 1; j < particlesRef.current.length; j++) {
           const other = particlesRef.current[j]
           const dx = particle.x - other.x
           const dy = particle.y - other.y
-          const distance = Math.sqrt(dx * dx + dy * dy)
+          const distance = Math.hypot(dx, dy)
           
           if (distance < 100) {
             const opacity = (100 - distance) / 100 * 0.1
@@ -188,7 +188,7 @@ export default function ParticleBackground({
             ctx.restore()
           }
         }
-      })
+      }
 
       animationRef.current = requestAnimationFrame(animate)
     }

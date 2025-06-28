@@ -79,6 +79,23 @@ const timelineData: TimelineEvent[] = [
   }
 ]
 
+const getIcon = (type: string) => {
+  switch (type) {
+    case 'work': {
+      return 'briefcase'
+    }
+    case 'project': {
+      return 'code'
+    }
+    case 'education': {
+      return 'graduation-cap'
+    }
+    default: {
+      return 'circle'
+    }
+  }
+}
+
 export default function ProjectTimeline() {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
 
@@ -90,19 +107,6 @@ export default function ProjectTimeline() {
       newExpanded.add(id)
     }
     setExpandedItems(newExpanded)
-  }
-
-  const getIcon = (type: string) => {
-    switch (type) {
-      case 'work':
-        return 'briefcase'
-      case 'project':
-        return 'code'
-      case 'education':
-        return 'graduation-cap'
-      default:
-        return 'circle'
-    }
   }
 
   return (

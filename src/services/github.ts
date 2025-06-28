@@ -95,30 +95,34 @@ export class GitHubService {
     const activityMap = new Map<string, number>()
     
     // Process events to extract contribution dates
-    events.forEach(event => {
+    for (const event of events) {
       const eventDate = new Date(event.created_at).toISOString().split('T')[0]
       const currentCount = activityMap.get(eventDate) || 0
       
       // Weight different event types
       let contributionWeight = 1
       switch (event.type) {
-        case 'PushEvent':
+        case 'PushEvent': {
           contributionWeight = event.payload?.commits?.length || 1
           break
+        }
         case 'CreateEvent':
-        case 'ReleaseEvent':
+        case 'ReleaseEvent': {
           contributionWeight = 2
           break
+        }
         case 'PullRequestEvent':
-        case 'IssuesEvent':
+        case 'IssuesEvent': {
           contributionWeight = 3
           break
-        default:
+        }
+        default: {
           contributionWeight = 1
+        }
       }
       
       activityMap.set(eventDate, currentCount + contributionWeight)
-    })
+    }
     
     // Generate data for the past year
     for (let i = oneYear; i >= 0; i--) {
