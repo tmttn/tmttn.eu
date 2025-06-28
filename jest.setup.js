@@ -58,3 +58,18 @@ global.IntersectionObserver = class IntersectionObserver {
 
 // Mock HTMLCanvasElement.getContext
 HTMLCanvasElement.prototype.getContext = jest.fn()
+
+// Mock FontAwesome icons to prevent console warnings
+jest.mock('@fortawesome/react-fontawesome', () => ({
+  FontAwesomeIcon: ({ icon, fallback, ...props }) => {
+    return React.createElement('i', {
+      ...props,
+      'data-testid': 'font-awesome-icon',
+      'data-icon': Array.isArray(icon) ? icon.join('-') : icon,
+      children: fallback || '⭐'
+    })
+  }
+}))
+
+// Add React import for the mock above
+const React = require('react')

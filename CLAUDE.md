@@ -24,19 +24,22 @@ Claude has access to the following CLI tools for development and deployment:
 This is a **Next.js 15** personal portfolio website configured for **static export** to Netlify. The site features:
 
 ### Core Architecture
+
 - **Framework**: Next.js 15 with TypeScript
 - **Styling**: Styled-components with theme system
 - **Deployment**: Static export to Netlify (`output: 'export'`)
 - **Bundling**: Turbopack for development, custom webpack optimizations for production
 
 ### Theme System
+
 - Dual theme support (dark/light) with system preference detection
 - Theme context in `src/contexts/ThemeContext.tsx`
-- Theme definitions in `src/styles/theme.ts` 
+- Theme definitions in `src/styles/theme.ts`
 - Glassmorphism design system with theme-aware colors
 - User preference persistence in localStorage
 
 ### Key Components
+
 - **ParticleBackground**: Interactive canvas animation with mouse tracking and scroll effects
 - **GitHubHeatmap**: Displays GitHub activity using GitHub API
 - **ThemeToggle/EnhancedThemeToggle**: Theme switching with animations
@@ -45,11 +48,13 @@ This is a **Next.js 15** personal portfolio website configured for **static expo
 - **PageTransition**: Page transition animations
 
 ### Services & Utilities
+
 - **GitHub Service** (`src/services/github.ts`): Fetches public repositories from GitHub API
 - **FontAwesome** setup in `src/utils/fontawesome.js`
 - **Structured Data** utilities for SEO
 
 ### File Structure Patterns
+
 - `/pages/` - Next.js pages (index.tsx, _app.tsx, _document.tsx, 404.tsx)
 - `/src/components/` - Reusable React components
 - `/src/contexts/` - React contexts (ThemeContext)
@@ -59,6 +64,7 @@ This is a **Next.js 15** personal portfolio website configured for **static expo
 - `/public/static/` - Static assets (images, logos)
 
 ### Build Configuration
+
 - Static export configured in `next.config.js`
 - Bundle splitting optimization for vendor/common chunks
 - Bundle analyzer support with `ANALYZE=true`
@@ -66,6 +72,7 @@ This is a **Next.js 15** personal portfolio website configured for **static expo
 - Image optimization disabled for static export compatibility
 
 ### Development Notes
+
 - Uses `@/*` path alias for src directory imports
 - **Barrel Files & Path Aliases**: Project uses barrel files with path aliases for clean imports
 - Accessibility features implemented (skip navigation, ARIA labels, semantic HTML)
@@ -107,14 +114,17 @@ import { useTheme } from '../contexts/ThemeContext'
 ### Configuration Details
 
 **TypeScript paths** (`tsconfig.json`):
+
 - Path mappings are configured for TypeScript IntelliSense and type checking
 
 **Turbopack aliases** (`next.config.js`):
+
 - Development server uses Turbopack with `resolveAlias` configuration
 - **IMPORTANT**: Path aliases are configured in `turbopack.resolveAlias`, NOT in webpack config
 - This prevents "Webpack is configured while Turbopack is not" warnings
 
 **Webpack config** (`next.config.js`):
+
 - Only used for production bundle analysis when `ANALYZE=true`
 - Path aliases are handled by TypeScript + Turbopack, not webpack
 
@@ -122,7 +132,7 @@ import { useTheme } from '../contexts/ThemeContext'
 
 Each directory has an `index.ts` barrel file that re-exports components:
 
-```
+```text
 src/
 ├── components/index.ts      # Exports all components
 ├── features/index.ts        # Exports all features
@@ -151,7 +161,8 @@ When adding new components/features:
 Use **Conventional Commits** with fun, cool emojis for commit messages:
 
 ### Format
-```
+
+```text
 <emoji> <type>: <description>
 
 [optional body]
@@ -160,6 +171,7 @@ Use **Conventional Commits** with fun, cool emojis for commit messages:
 ```
 
 ### Types & Emojis
+
 - ✨ `feat:` - New features or functionality
 - 🐛 `fix:` - Bug fixes
 - 🎨 `style:` - UI/styling changes or code formatting
@@ -172,7 +184,9 @@ Use **Conventional Commits** with fun, cool emojis for commit messages:
 - 🌟 `enhance:` - Enhancements to existing features
 
 ### Contextual Emojis
+
 Use emojis thematic to the context of the change:
+
 - 🌙 Dark mode features
 - 🌞 Light mode features  
 - 🎭 Theme system changes
@@ -185,6 +199,7 @@ Use emojis thematic to the context of the change:
 - 🏗️ Build system or infrastructure
 
 ### Examples
+
 - `✨ feat: add GitHub activity heatmap component`
 - `🐛 fix: prevent particles from falling during scroll`
 - `🌞 style: improve light mode contrast for better accessibility`
@@ -194,6 +209,7 @@ Use emojis thematic to the context of the change:
 - `📊 enhance: improve GitHub API data visualization`
 
 ### IMPORTANT: Commit Message Rules
+
 - **NEVER** add auto-generated signatures like "🤖 Generated with [Claude Code]" or "Co-Authored-By: Claude"
 - Keep commit messages clean and professional without AI-generated footers
 - Focus on the actual changes and their purpose, not the tool used to make them
@@ -203,24 +219,29 @@ Use emojis thematic to the context of the change:
 **ALWAYS** address security vulnerabilities when detected. Follow this process:
 
 ### Automated Security Checks
+
 1. **Run `npm audit`** regularly to check for vulnerabilities
 2. **Check GitHub Dependabot alerts** in the repository security tab
 3. **Address security issues immediately** - they take priority over other tasks
 
 ### Vulnerability Resolution Process
+
 1. **Identify affected packages**: Use `npm audit` and GitHub Dependabot alerts
 2. **Update dependencies**: Try `npm update` first for direct dependencies
 3. **Use npm overrides**: For transitive dependencies that can't be directly updated:
+
    ```json
    "overrides": {
      "vulnerable-package": "^secure-version"
    }
    ```
+
 4. **Clean install**: `rm package-lock.json && npm install` to ensure fresh resolution
 5. **Verify fixes**: Run `npm audit` to confirm 0 vulnerabilities
 6. **Test thoroughly**: Ensure `npm run build` and `npm run lint` still pass
 
 ### Security Best Practices
+
 - **Never ignore security warnings** - always investigate and fix
 - **Update dependencies regularly** using `npx npm-check-updates -u`
 - **Use compatible versions** that work with the current Node.js/TypeScript setup
@@ -228,6 +249,7 @@ Use emojis thematic to the context of the change:
 - **Document security fixes** clearly in commit messages with 🔒 emoji
 
 ### Priority Order
+
 1. **High severity vulnerabilities** - Fix immediately
 2. **Medium severity vulnerabilities** - Fix within 24 hours  
 3. **Low severity vulnerabilities** - Fix within a week
