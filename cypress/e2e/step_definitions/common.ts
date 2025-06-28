@@ -4,6 +4,7 @@ import { Given, When, Then } from '@badeball/cypress-cucumber-preprocessor'
 
 Given('I visit the portfolio homepage', () => {
   cy.visitHomePage()
+  cy.waitForPageLoad()
 })
 
 Given('the page loads successfully', () => {

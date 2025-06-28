@@ -70,13 +70,20 @@ Cypress.Commands.add('checkResponsiveLayout', (device) => {
   cy.get('header').should('be.visible')
   cy.get('main').should('be.visible')
   
+  // Wait for layout to stabilize
+  cy.wait(500)
+  
   if (device === 'mobile') {
     // Check mobile-specific layouts - mobile menu button should be visible
-    cy.get('[aria-label*="navigation menu"]').should('be.visible')
+    cy.get('button[aria-label*="navigation menu"]').should('be.visible')
+    // Navigation links should be hidden initially on mobile
+    cy.get('nav ul').should('not.be.visible')
   } else {
     // Check desktop/tablet layouts - navigation should be visible
     cy.get('nav').should('be.visible')
     cy.get('nav a').should('be.visible')
+    // Mobile menu button should be hidden on larger screens
+    cy.get('button[aria-label*="navigation menu"]').should('not.be.visible')
   }
 })
 
