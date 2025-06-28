@@ -40,23 +40,39 @@ jobs:
           echo "Production branch exists, fetching..."
           git fetch origin production
           git checkout production
+          
+          # Check if we're already up to date
+          if git merge-base --is-ancestor origin/main HEAD; then
+            echo "Production is already up to date with main"
+            exit 0
+          fi
+          
+          # Try to fast-forward first
+          echo "Attempting fast-forward merge..."
+          if git merge --ff-only origin/main; then
+            echo "Successfully fast-forwarded production to main"
+          else
+            echo "Fast-forward not possible, performing rebase..."
+            # Reset to remote state first to avoid conflicts
+            git reset --hard origin/production
+            if ! git rebase origin/main; then
+              echo "❌ Rebase failed. This may indicate conflicts that need manual resolution."
+              echo "Aborting rebase and exiting..."
+              git rebase --abort
+              exit 1
+            fi
+          fi
         else
           echo "Production branch doesn't exist, creating..."
           git checkout -b production
         fi
         
-        # Rebase production onto main to maintain linear history
-        echo "Rebasing production onto main..."
-        if ! git rebase origin/main; then
-          echo "❌ Rebase failed. This may indicate conflicts that need manual resolution."
-          echo "Aborting rebase and exiting..."
-          git rebase --abort
-          exit 1
-        fi
-        
-        # Push to production
+        # Push to production (force push if needed for deployment)
         echo "Pushing to production branch..."
-        git push origin production
+        if ! git push origin production; then
+          echo "Normal push failed, attempting force push for deployment..."
+          git push --force origin production
+        fi
         
         echo "✅ Successfully deployed to production branch"
     
