@@ -15,14 +15,14 @@ import {
 
 export default function GitHubHeatmap() {
   const [contributions, setContributions] = useState<ContributionDay[]>([])
-  const [stats, setStats] = useState<GitHubStats | null>(null)
+  const [stats, setStats] = useState<GitHubStats | undefined>()
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | undefined>()
 
   const fetchContributionData = useMemo(() => async () => {
     try {
       setLoading(true)
-      setError(null)
+      setError(undefined)
       
       const { contributions, stats } = await GitHubService.getContributionData()
       

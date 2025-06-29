@@ -1,6 +1,7 @@
+import React from 'react'
 import Head from 'next/head'
 
-interface SEOHeadProps {
+interface SEOHeadProperties {
   title?: string
   description?: string
   keywords?: string
@@ -35,7 +36,7 @@ export default function SEOHead({
   canonicalUrl,
   noindex = false,
   structuredData
-}: SEOHeadProps) {
+}: SEOHeadProperties) {
   const fullTitle = title === defaultProps.title ? title : `${title} | Tom Metten`
 
   return (

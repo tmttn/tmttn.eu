@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
 
-interface ClientOnlyIconProps extends FontAwesomeIconProps {
+interface ClientOnlyIconProperties extends FontAwesomeIconProps {
   fallback?: React.ReactNode
 }
 
-export default function ClientOnlyIcon({ fallback = null, ...props }: ClientOnlyIconProps) {
+export default function ClientOnlyIcon({ fallback = null, ...properties }: ClientOnlyIconProperties) {
   const [hasMounted, setHasMounted] = useState(false)
 
   useEffect(() => {
@@ -16,5 +16,5 @@ export default function ClientOnlyIcon({ fallback = null, ...props }: ClientOnly
     return <>{fallback}</>
   }
 
-  return <FontAwesomeIcon {...props} />
+  return <FontAwesomeIcon {...properties} />
 }

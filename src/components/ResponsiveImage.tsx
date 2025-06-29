@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 
-interface ResponsiveImageProps {
+interface ResponsiveImageProperties {
   src: string;
   alt: string;
   width: number;
@@ -14,46 +14,46 @@ interface ResponsiveImageProps {
 }
 
 // Extract filename and generate optimized variants
-const getOptimizedSrc = (originalSrc: string, format: 'webp' | 'png' = 'webp') => {
-  if (!originalSrc.startsWith('/static/')) {
-    return originalSrc; // Return as-is if not a static image
+const getOptimizedSource = (originalSource: string, format: 'webp' | 'png' = 'webp') => {
+  if (!originalSource.startsWith('/static/')) {
+    return originalSource; // Return as-is if not a static image
   }
   
-  const filename = originalSrc.replace('/static/', '').replace('.png', '');
+  const filename = originalSource.replace('/static/', '').replace('.png', '');
   return `/static/${filename}.${format}`;
 };
 
-const getSrcSet = (originalSrc: string, sizes: string) => {
-  if (!originalSrc.startsWith('/static/')) {
+const getSourceSet = (originalSource: string, sizes: string) => {
+  if (!originalSource.startsWith('/static/')) {
     return; // Return for non-static images
   }
 
-  const filename = originalSrc.replace('/static/', '').replace('.png', '');
+  const filename = originalSource.replace('/static/', '').replace('.png', '');
   
   // Generate srcset for different sizes and densities based on the sizes prop
   // Parse sizes to determine if we need smaller variants
   const needsSmallVariant = sizes.includes('200px') || sizes.includes('max-width: 768px');
   
-  const webpSrcSet = [];
-  const pngSrcSet = [];
+  const webpSourceSet = [];
+  const pngSourceSet = [];
   
   if (needsSmallVariant) {
     // Add 180px variant for mobile/small screens
-    webpSrcSet.push(`/static/${filename}-180.webp 180w`);
-    pngSrcSet.push(`/static/${filename}-180.png 180w`);
+    webpSourceSet.push(`/static/${filename}-180.webp 180w`);
+    pngSourceSet.push(`/static/${filename}-180.png 180w`);
   }
   
   // Add base size variant
-  webpSrcSet.push(`${getOptimizedSrc(originalSrc, 'webp')} 260w`);
-  pngSrcSet.push(`${getOptimizedSrc(originalSrc, 'png')} 260w`);
+  webpSourceSet.push(`${getOptimizedSource(originalSource, 'webp')} 260w`);
+  pngSourceSet.push(`${getOptimizedSource(originalSource, 'png')} 260w`);
   
   // Add 2x density variant for high-DPI displays
-  webpSrcSet.push(`/static/${filename}@2x.webp 520w`);
-  pngSrcSet.push(`/static/${filename}@2x.png 520w`);
+  webpSourceSet.push(`/static/${filename}@2x.webp 520w`);
+  pngSourceSet.push(`/static/${filename}@2x.png 520w`);
 
   return { 
-    webp: webpSrcSet.join(', '), 
-    png: pngSrcSet.join(', ') 
+    webp: webpSourceSet.join(', '), 
+    png: pngSourceSet.join(', ') 
   };
 };
 
@@ -71,26 +71,26 @@ export default function ResponsiveImage({
   sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw',
   placeholder = 'empty',
   blurDataURL
-}: ResponsiveImageProps) {
+}: ResponsiveImageProperties) {
 
-  const srcSet = getSrcSet(src, sizes);
+  const sourceSet = getSourceSet(src, sizes);
 
   // For optimized images, use picture element with WebP support
-  if (srcSet) {
+  if (sourceSet) {
     return (
       <picture className={className}>
         <source
-          srcSet={srcSet.webp}
+          srcSet={sourceSet.webp}
           sizes={sizes}
           type="image/webp"
         />
         <source
-          srcSet={srcSet.png}
+          srcSet={sourceSet.png}
           sizes={sizes}
           type="image/png"
         />
         <Image
-          src={getOptimizedSrc(src, 'png')}
+          src={getOptimizedSource(src, 'png')}
           alt={alt}
           width={width}
           height={height}

@@ -10,33 +10,33 @@ import {
 } from './EnhancedThemeToggle.styled'
 
 
-interface EnhancedThemeToggleProps {
+interface EnhancedThemeToggleProperties {
   className?: string
 }
 
-export default function EnhancedThemeToggle({ className }: EnhancedThemeToggleProps) {
+export default function EnhancedThemeToggle({ className }: EnhancedThemeToggleProperties) {
   const { isDark, toggleTheme } = useTheme()
   const [hasMounted, setHasMounted] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([])
   const [showOverlay, setShowOverlay] = useState(false)
-  const buttonRef = useRef<HTMLButtonElement>(null)
-  const rippleIdRef = useRef(0)
+  const buttonReference = useRef<HTMLButtonElement>(null)
+  const rippleIdReference = useRef(0)
 
   useEffect(() => {
     setHasMounted(true)
   }, [])
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (!buttonRef.current) return
+    if (!buttonReference.current) return
 
-    const rect = buttonRef.current.getBoundingClientRect()
+    const rect = buttonReference.current.getBoundingClientRect()
     const x = event.clientX - rect.left
     const y = event.clientY - rect.top
 
     // Create ripple effect
-    const rippleId = rippleIdRef.current++
-    setRipples(prev => [...prev, { id: rippleId, x, y }])
+    const rippleId = rippleIdReference.current++
+    setRipples(previous => [...previous, { id: rippleId, x, y }])
 
     // Set CSS custom properties for the overlay animation
     const clickX = (event.clientX / window.innerWidth) * 100
@@ -55,7 +55,7 @@ export default function EnhancedThemeToggle({ className }: EnhancedThemeTogglePr
 
     // Clean up animations
     setTimeout(() => {
-      setRipples(prev => prev.filter(ripple => ripple.id !== rippleId))
+      setRipples(previous => previous.filter(ripple => ripple.id !== rippleId))
     }, 600)
 
     setTimeout(() => {
@@ -83,7 +83,7 @@ export default function EnhancedThemeToggle({ className }: EnhancedThemeTogglePr
       <ThemeTransitionOverlay $isVisible={showOverlay} $isDark={!isDark} />
       
       <ToggleButton 
-        ref={buttonRef}
+        ref={buttonReference}
         onClick={handleClick}
         aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
         $isTransitioning={isTransitioning}

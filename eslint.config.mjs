@@ -64,16 +64,8 @@ export default [
           },
         },
       ],
-      'unicorn/prevent-abbreviations': 'off',
-      'unicorn/no-null': 'off',
-      'unicorn/prefer-module': 'off',
-      'unicorn/prefer-top-level-await': 'off',
-      'unicorn/expiring-todo-comments': 'off',
-      'unicorn/no-array-for-each': 'off',
-      'unicorn/prefer-modern-math-apis': 'off',
-      'unicorn/prefer-global-this': 'off',
-      'react/react-in-jsx-scope': 'off',
-      'react/prop-types': 'off',
+      'unicorn/no-null': 'off', // null is needed for React default props and return values
+      'unicorn/no-useless-undefined': 'off', // undefined is needed for optional params
     },
   },
   {
@@ -89,9 +81,6 @@ export default [
     },
     rules: {
       ...typescriptPlugin.configs.recommended.rules,
-      '@typescript-eslint/no-unused-vars': 'error',
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-empty-object-type': 'off',
     },
   },
 ]

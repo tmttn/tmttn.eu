@@ -1,19 +1,19 @@
 import { useEffect, useCallback, useRef } from "react"
 
-function throttle<T extends (...args: unknown[]) => void>(func: T, delay: number): T {
-  let timeoutId: number | null = null
+function throttle<T extends (...arguments_: unknown[]) => void>(function_: T, delay: number): T {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined
   let lastExecTime = 0
   
-  return ((...args: Parameters<T>) => {
+  return ((...arguments_: Parameters<T>) => {
     const currentTime = Date.now()
     
     if (currentTime - lastExecTime > delay) {
-      func(...args)
+      function_(...arguments_)
       lastExecTime = currentTime
     } else {
       if (timeoutId) clearTimeout(timeoutId)
       timeoutId = setTimeout(() => {
-        func(...args)
+        function_(...arguments_)
         lastExecTime = Date.now()
       }, delay - (currentTime - lastExecTime))
     }
@@ -21,22 +21,23 @@ function throttle<T extends (...args: unknown[]) => void>(func: T, delay: number
 }
 
 export default function Scrollable() {
-  const mainNavLinksRef = useRef<NodeListOf<HTMLAnchorElement> | null>(null)
-  const headerRef = useRef<HTMLElement | null>(null)
+  const mainNavLinksReference = useRef<NodeListOf<HTMLAnchorElement> | null>(null)
+  const headerReference = useRef<HTMLElement | null>(null)
 
   const updateActiveNavigation = useCallback(() => {
     const fromTop = window.scrollY
 
-    if (headerRef.current) {
+    if (headerReference.current) {
       if (fromTop > 10) {
-        headerRef.current.classList.add("scrolled")
+        headerReference.current.classList.add("scrolled")
       } else {
-        headerRef.current.classList.remove("scrolled")
+        headerReference.current.classList.remove("scrolled")
       }
     }
 
-    if (mainNavLinksRef.current) {
-      mainNavLinksRef.current.forEach(link => {
+    if (mainNavLinksReference.current) {
+      for (let index = 0; index < mainNavLinksReference.current.length; index++) {
+        const link = mainNavLinksReference.current[index]
         const section: HTMLElement | null = document.querySelector(link.hash)
 
         if (section && section.offsetTop <= fromTop &&
@@ -46,7 +47,7 @@ export default function Scrollable() {
         } else {
           link.classList.remove("current")
         }
-      })
+      }
     }
   }, [])
 
@@ -55,8 +56,8 @@ export default function Scrollable() {
   }, [updateActiveNavigation])
 
   useEffect(() => {
-    mainNavLinksRef.current = document.querySelectorAll("nav ul li a")
-    headerRef.current = document.querySelector("header")
+    mainNavLinksReference.current = document.querySelectorAll("nav ul li a")
+    headerReference.current = document.querySelector("header")
 
     window.addEventListener("scroll", throttledUpdateActiveNavigation, false)
 

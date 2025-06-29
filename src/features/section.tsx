@@ -1,10 +1,10 @@
 import React from "react"
 
-interface SectionProps {
+interface SectionProperties {
   id?: string
   children: React.ReactNode
 }
 
-export default function Section(props: Readonly<SectionProps>) {
-  return <section id={props.id}>{props.children}</section>
+export default function Section(properties: Readonly<SectionProperties>) {
+  return <section id={properties.id}>{properties.children}</section>
 }

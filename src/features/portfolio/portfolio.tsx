@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react"
 import { GitHubService, GitHubRepository } from '@services'
 import { ClientOnlyIcon, StyledPortfolio, StyledRepoCard } from '@components'
 
-interface RepositoryCardProps {
+interface RepositoryCardProperties {
   repo: GitHubRepository
   variant?: 'odd' | 'even'
 }
@@ -39,7 +39,7 @@ const getLanguageColor = (language: string | null) => {
   return colors[language || ''] || '#858585'
 }
 
-function RepositoryCard({ repo, variant }: RepositoryCardProps) {
+function RepositoryCard({ repo, variant }: RepositoryCardProperties) {
 
   return (
     <StyledRepoCard $variant={variant}>
@@ -109,21 +109,21 @@ function RepositoryCard({ repo, variant }: RepositoryCardProps) {
   )
 }
 
-interface PortfolioProps {
+interface PortfolioProperties {
   variant?: 'odd' | 'even'
 }
 
-export default function Portfolio({ variant = 'odd' }: PortfolioProps) {
+export default function Portfolio({ variant = 'odd' }: PortfolioProperties) {
   const [repositories, setRepositories] = useState<GitHubRepository[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | undefined>()
 
   const fetchRepositories = useMemo(() => async () => {
     try {
       setLoading(true)
       const repos = await GitHubService.getPublicRepositories()
       setRepositories(repos)
-      setError(null)
+      setError(undefined)
     } catch (error_) {
       setError('Failed to load repositories')
       console.error('Error fetching repositories:', error_)

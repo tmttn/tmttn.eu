@@ -18,11 +18,11 @@ export const useTheme = () => {
   return context
 }
 
-interface ThemeProviderProps {
+interface ThemeProviderProperties {
   children: ReactNode
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
+export const ThemeProvider: React.FC<ThemeProviderProperties> = ({ children }) => {
   const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       setIsDark(savedTheme === 'dark')
     } else {
       // Detect system color scheme preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      const prefersDark = globalThis.matchMedia('(prefers-color-scheme: dark)').matches
       setIsDark(prefersDark)
     }
   }, [])

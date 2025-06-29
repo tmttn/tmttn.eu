@@ -8,7 +8,7 @@ import {
 } from './AccessibleNavigation.styled'
 
 
-interface NavigationProps {
+interface NavigationProperties {
   className?: string
 }
 
@@ -19,15 +19,15 @@ const navigationItems = [
   { href: "/#showcase", label: "Showcase", description: "View portfolio" },
 ]
 
-export default function AccessibleNavigation({ className }: NavigationProps) {
+export default function AccessibleNavigation({ className }: NavigationProperties) {
   const [isOpen, setIsOpen] = useState(false)
-  const navRef = useRef<HTMLElement>(null)
-  const buttonRef = useRef<HTMLButtonElement>(null)
+  const navReference = useRef<HTMLElement>(null)
+  const buttonReference = useRef<HTMLButtonElement>(null)
 
   // Close mobile menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (navRef.current && !navRef.current.contains(event.target as Node)) {
+      if (navReference.current && !navReference.current.contains(event.target as Node)) {
         setIsOpen(false)
       }
     }
@@ -43,7 +43,7 @@ export default function AccessibleNavigation({ className }: NavigationProps) {
     function handleEscape(event: KeyboardEvent) {
       if (event.key === 'Escape' && isOpen) {
         setIsOpen(false)
-        buttonRef.current?.focus()
+        buttonReference.current?.focus()
       }
     }
 
@@ -60,9 +60,9 @@ export default function AccessibleNavigation({ className }: NavigationProps) {
   }
 
   return (
-    <NavContainer ref={navRef} className={className} role="navigation" aria-label="Main navigation">
+    <NavContainer ref={navReference} className={className} role="navigation" aria-label="Main navigation">
       <MobileMenuButton
-        ref={buttonRef}
+        ref={buttonReference}
         onClick={toggleMenu}
         aria-expanded={isOpen}
         aria-controls="main-navigation"

@@ -152,8 +152,8 @@ export default function ProjectTimeline() {
                   ))}
                 </TimelineTechnologies>
                 
-                <ExpandButton onClick={(e) => {
-                  e.stopPropagation()
+                <ExpandButton onClick={(event) => {
+                  event.stopPropagation()
                   toggleExpanded(item.id)
                 }}>
                   {isExpanded ? 'Show less' : 'Show more'}

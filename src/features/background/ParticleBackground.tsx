@@ -15,7 +15,7 @@ interface Particle {
   maxLife: number
 }
 
-interface ParticleBackgroundProps {
+interface ParticleBackgroundProperties {
   particleCount?: number
   className?: string
 }
@@ -23,14 +23,14 @@ interface ParticleBackgroundProps {
 export default function ParticleBackground({ 
   particleCount = 50, 
   className 
-}: ParticleBackgroundProps) {
+}: ParticleBackgroundProperties) {
   const { isDark } = useTheme()
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animationRef = useRef<number>(0)
-  const particlesRef = useRef<Particle[]>([])
-  const mouseRef = useRef({ x: 0, y: 0 })
-  const scrollRef = useRef(0)
-  const lastScrollRef = useRef(0)
+  const canvasReference = useRef<HTMLCanvasElement>(null)
+  const animationReference = useRef<number>(0)
+  const particlesReference = useRef<Particle[]>([])
+  const mouseReference = useRef({ x: 0, y: 0 })
+  const scrollReference = useRef(0)
+  const lastScrollReference = useRef(0)
   const [isVisible, setIsVisible] = useState(true)
   const lastFrameTime = useRef(0)
   const fpsTarget = 60
@@ -38,17 +38,17 @@ export default function ParticleBackground({
 
   useEffect(() => {
     // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const prefersReducedMotion = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) {
       setIsVisible(false)
       return
     }
 
-    const canvas = canvasRef.current
+    const canvas = canvasReference.current
     if (!canvas) return
 
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
+    const context = canvas.getContext('2d')
+    if (!context) return
 
     // Set canvas size
     const resizeCanvas = () => {
@@ -87,15 +87,15 @@ export default function ParticleBackground({
 
     // Initialize particles
     const initParticles = () => {
-      particlesRef.current = []
-      for (let i = 0; i < particleCount; i++) {
-        particlesRef.current.push(createParticle())
+      particlesReference.current = []
+      for (let index = 0; index < particleCount; index++) {
+        particlesReference.current.push(createParticle())
       }
     }
 
     // Mouse tracking
     const handleMouseMove = (event: MouseEvent) => {
-      mouseRef.current = {
+      mouseReference.current = {
         x: event.clientX,
         y: event.clientY
       }
@@ -103,26 +103,27 @@ export default function ParticleBackground({
 
     // Scroll tracking
     const handleScroll = () => {
-      scrollRef.current = window.scrollY
+      scrollReference.current = window.scrollY
     }
 
     // Animation loop with frame rate limiting
     const animate = (currentTime: number) => {
       // Frame rate limiting for consistent 60fps
       if (currentTime - lastFrameTime.current < frameInterval) {
-        animationRef.current = requestAnimationFrame(animate)
+        animationReference.current = requestAnimationFrame(animate)
         return
       }
       lastFrameTime.current = currentTime
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      context.clearRect(0, 0, canvas.width, canvas.height)
 
-      const mouseX = mouseRef.current.x
-      const mouseY = mouseRef.current.y
-      const scrollDelta = (scrollRef.current - lastScrollRef.current) * 0.01
-      lastScrollRef.current = scrollRef.current
+      const mouseX = mouseReference.current.x
+      const mouseY = mouseReference.current.y
+      const scrollDelta = (scrollReference.current - lastScrollReference.current) * 0.01
+      lastScrollReference.current = scrollReference.current
       
-      particlesRef.current.forEach((particle, index) => {
+      for (let index = 0; index < particlesReference.current.length; index++) {
+        const particle = particlesReference.current[index]
         // Update particle position
         particle.x += particle.vx
         particle.y += particle.vy
@@ -156,38 +157,38 @@ export default function ParticleBackground({
         // Life cycle
         particle.life--
         if (particle.life <= 0) {
-          particlesRef.current[index] = createParticle()
-          return
+          particlesReference.current[index] = createParticle()
+          continue
         }
 
         // Optimized particle rendering - reduce expensive effects
         const lifeRatio = particle.life / particle.maxLife
         const alpha = particle.alpha * lifeRatio
         
-        ctx.save()
-        ctx.globalAlpha = alpha
-        ctx.fillStyle = particle.color
-        ctx.beginPath()
-        ctx.arc(particle.x, particle.y, particle.size * lifeRatio, 0, Math.PI * 2)
-        ctx.fill()
+        context.save()
+        context.globalAlpha = alpha
+        context.fillStyle = particle.color
+        context.beginPath()
+        context.arc(particle.x, particle.y, particle.size * lifeRatio, 0, Math.PI * 2)
+        context.fill()
         
         // Conditional glow effect - only for larger particles to reduce GPU load
         if (particle.size > 2) {
-          ctx.shadowBlur = 6
-          ctx.shadowColor = particle.color
-          ctx.fill()
+          context.shadowBlur = 6
+          context.shadowColor = particle.color
+          context.fill()
         }
-        ctx.restore()
-      })
+        context.restore()
+      }
 
       // Optimized connections - limit calculations and use distance squared
       const maxConnections = Math.min(particleCount * 2, 100) // Limit total connections
       let connectionCount = 0
       
-      for (let i = 0; i < particlesRef.current.length && connectionCount < maxConnections; i++) {
-        const particle = particlesRef.current[i]
-        for (let j = i + 1; j < particlesRef.current.length && connectionCount < maxConnections; j++) {
-          const other = particlesRef.current[j]
+      for (let index = 0; index < particlesReference.current.length && connectionCount < maxConnections; index++) {
+        const particle = particlesReference.current[index]
+        for (let index_ = index + 1; index_ < particlesReference.current.length && connectionCount < maxConnections; index_++) {
+          const other = particlesReference.current[index_]
           const dx = particle.x - other.x
           const dy = particle.y - other.y
           const distanceSquared = dx * dx + dy * dy
@@ -195,48 +196,48 @@ export default function ParticleBackground({
           if (distanceSquared < 10_000) { // 100^2
             const distance = Math.sqrt(distanceSquared)
             const opacity = (100 - distance) / 100 * 0.08 // Reduced opacity for performance
-            ctx.save()
-            ctx.globalAlpha = opacity
-            ctx.strokeStyle = isDark ? 'rgba(96, 165, 250, 0.25)' : 'rgba(59, 130, 246, 0.3)'
-            ctx.lineWidth = 0.4
-            ctx.beginPath()
-            ctx.moveTo(particle.x, particle.y)
-            ctx.lineTo(other.x, other.y)
-            ctx.stroke()
-            ctx.restore()
+            context.save()
+            context.globalAlpha = opacity
+            context.strokeStyle = isDark ? 'rgba(96, 165, 250, 0.25)' : 'rgba(59, 130, 246, 0.3)'
+            context.lineWidth = 0.4
+            context.beginPath()
+            context.moveTo(particle.x, particle.y)
+            context.lineTo(other.x, other.y)
+            context.stroke()
+            context.restore()
             connectionCount++
           }
         }
       }
 
-      animationRef.current = requestAnimationFrame(animate)
+      animationReference.current = requestAnimationFrame(animate)
     }
 
     // Event listeners
-    window.addEventListener('mousemove', handleMouseMove)
+    globalThis.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('scroll', handleScroll, { passive: true })
     window.addEventListener('resize', resizeCanvas)
 
     // Start animation
     initParticles()
-    animationRef.current = requestAnimationFrame(animate)
+    animationReference.current = requestAnimationFrame(animate)
 
     // Cleanup
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
+      if (animationReference.current) {
+        cancelAnimationFrame(animationReference.current)
       }
-      window.removeEventListener('mousemove', handleMouseMove)
+      globalThis.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('scroll', handleScroll)
       window.removeEventListener('resize', resizeCanvas)
     }
   }, [particleCount, isDark, frameInterval])
 
-  if (!isVisible) return null
+  if (!isVisible) return
 
   return (
     <ParticleCanvas 
-      ref={canvasRef} 
+      ref={canvasReference} 
       className={className}
       aria-hidden="true"
       role="presentation"

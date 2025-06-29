@@ -3,15 +3,15 @@ import { useTheme } from '../../contexts/ThemeContext'
 import { TransitionWrapper } from './PageTransition.styled'
 
 
-interface PageTransitionProps {
+interface PageTransitionProperties {
   children: React.ReactNode
   className?: string
 }
 
-export default function PageTransition({ children, className }: PageTransitionProps) {
+export default function PageTransition({ children, className }: PageTransitionProperties) {
   const { isDark } = useTheme()
   const [isVisible, setIsVisible] = useState(false)
-  const [prevTheme, setPrevTheme] = useState(isDark)
+  const [previousTheme, setPreviousTheme] = useState(isDark)
 
   useEffect(() => {
     // On initial mount
@@ -24,16 +24,16 @@ export default function PageTransition({ children, className }: PageTransitionPr
 
   useEffect(() => {
     // On theme change
-    if (prevTheme !== isDark) {
+    if (previousTheme !== isDark) {
       setIsVisible(false)
       const timer = setTimeout(() => {
         setIsVisible(true)
-        setPrevTheme(isDark)
+        setPreviousTheme(isDark)
       }, 300)
 
       return () => clearTimeout(timer)
     }
-  }, [isDark, prevTheme])
+  }, [isDark, previousTheme])
 
   return (
     <TransitionWrapper $isVisible={isVisible} className={className}>

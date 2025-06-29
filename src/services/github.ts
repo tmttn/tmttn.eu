@@ -36,7 +36,9 @@ export interface GitHubEvent {
   repo?: {
     name: string
   }
-  payload?: unknown
+  payload?: {
+    commits?: Array<{ message: string }>
+  }
 }
 
 export class GitHubService {
@@ -113,7 +115,7 @@ export class GitHubService {
     const activityMap = new Map<string, number>()
     
     // Process events to extract contribution dates
-    events.forEach(event => {
+    for (const event of events) {
       const eventDate = new Date(event.created_at).toISOString().split('T')[0]
       const currentCount = activityMap.get(eventDate) || 0
       
@@ -140,12 +142,12 @@ export class GitHubService {
       }
       
       activityMap.set(eventDate, currentCount + contributionWeight)
-    })
+    }
     
     // Generate data for the past year
-    for (let i = oneYear; i >= 0; i--) {
+    for (let index = oneYear; index >= 0; index--) {
       const date = new Date(today)
-      date.setDate(date.getDate() - i)
+      date.setDate(date.getDate() - index)
       const dateString = date.toISOString().split('T')[0]
       
       const actualCount = activityMap.get(dateString) || 0
@@ -179,9 +181,9 @@ export class GitHubService {
     const today = new Date()
     const oneYear = 365
     
-    for (let i = oneYear; i >= 0; i--) {
+    for (let index = oneYear; index >= 0; index--) {
       const date = new Date(today)
-      date.setDate(date.getDate() - i)
+      date.setDate(date.getDate() - index)
       
       // Generate realistic contribution pattern
       const dayOfWeek = date.getDay()
@@ -214,7 +216,7 @@ export class GitHubService {
     
     let currentStreak = 0
     let longestStreak = 0
-    let tempStreak = 0
+    let temporaryStreak = 0
     let thisWeek = 0
     let thisMonth = 0
     
@@ -223,18 +225,18 @@ export class GitHubService {
     const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
     
     // Calculate streaks and recent activity
-    for (let i = contributions.length - 1; i >= 0; i--) {
-      const day = contributions[i]
+    for (let index = contributions.length - 1; index >= 0; index--) {
+      const day = contributions[index]
       const dayDate = new Date(day.date)
       
       // Calculate streaks
       if (day.count > 0) {
-        tempStreak++
-        if (i === contributions.length - 1) currentStreak = tempStreak
+        temporaryStreak++
+        if (index === contributions.length - 1) currentStreak = temporaryStreak
       } else {
-        longestStreak = Math.max(longestStreak, tempStreak)
-        if (i === contributions.length - 1) currentStreak = 0
-        tempStreak = 0
+        longestStreak = Math.max(longestStreak, temporaryStreak)
+        if (index === contributions.length - 1) currentStreak = 0
+        temporaryStreak = 0
       }
       
       // This week contributions
@@ -248,7 +250,7 @@ export class GitHubService {
       }
     }
     
-    longestStreak = Math.max(longestStreak, tempStreak)
+    longestStreak = Math.max(longestStreak, temporaryStreak)
     
     return {
       totalContributions,
