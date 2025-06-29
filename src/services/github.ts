@@ -44,8 +44,38 @@ export interface GitHubEvent {
 export class GitHubService {
   private static readonly API_BASE = 'https://api.github.com'
   private static readonly USERNAME = 'tmttn'
+  private static rateLimitedUntil: number = 0
+  private static readonly RATE_LIMIT_COOLDOWN = 60 * 1000 // 1 minute
+
+  private static shouldSkipAPICall(): boolean {
+    // Skip API calls during testing
+    const isTest = process.env.NODE_ENV === 'test'
+    const isCypress = process.env.CYPRESS === 'true' || (typeof window !== 'undefined' && (window as any).Cypress)
+    const skipExplicit = process.env.SKIP_GITHUB_API === 'true'
+    
+    return isTest || isCypress || skipExplicit
+  }
+
+  private static isRateLimited(): boolean {
+    return Date.now() < this.rateLimitedUntil
+  }
+
+  private static setRateLimited(): void {
+    this.rateLimitedUntil = Date.now() + this.RATE_LIMIT_COOLDOWN
+    console.warn(`GitHub API rate limited. Cooling down for ${this.RATE_LIMIT_COOLDOWN / 1000} seconds.`)
+  }
 
   static async getPublicRepositories(): Promise<GitHubRepository[]> {
+    if (this.shouldSkipAPICall()) {
+      console.log('Skipping GitHub API call (test environment)')
+      return []
+    }
+
+    if (this.isRateLimited()) {
+      console.log('GitHub API rate limited - using empty repository list')
+      return []
+    }
+
     try {
       const response = await fetch(
         `${this.API_BASE}/users/${this.USERNAME}/repos?type=public&sort=updated&per_page=100`
@@ -54,6 +84,7 @@ export class GitHubService {
       if (!response.ok) {
         if (response.status === 403) {
           console.warn('GitHub API rate limit exceeded (403). Using empty repository list.')
+          this.setRateLimited()
           return []
         }
         throw new Error(`GitHub API error: ${response.status}`)
@@ -78,6 +109,16 @@ export class GitHubService {
   }
 
   static async getContributionData(): Promise<{ contributions: ContributionDay[], stats: GitHubStats }> {
+    if (this.shouldSkipAPICall()) {
+      console.log('Skipping GitHub API call (test environment)')
+      return this.generateFallbackData()
+    }
+
+    if (this.isRateLimited()) {
+      console.log('GitHub API rate limited - using fallback contribution data')
+      return this.generateFallbackData()
+    }
+
     try {
       // Use public REST API to get user events (recent activity)
       const eventsResponse = await fetch(
@@ -87,6 +128,7 @@ export class GitHubService {
       if (!eventsResponse.ok) {
         if (eventsResponse.status === 403) {
           console.warn('GitHub API rate limit exceeded (403). Using fallback contribution data.')
+          this.setRateLimited()
           return this.generateFallbackData()
         }
         throw new Error(`GitHub API error: ${eventsResponse.status}`)
