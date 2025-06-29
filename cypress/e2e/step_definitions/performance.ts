@@ -85,8 +85,8 @@ Then('images should be optimized and properly sized', () => {
           if (displayWidth && naturalWidth > 0) {
             const ratio = naturalWidth / displayWidth
             cy.log(`Size ratio: ${ratio}`)
-            // Use a more lenient threshold or skip assertion for now
-            expect(ratio).to.be.lessThan(5) // Increased from 2.5 to 5
+            // Image shouldn't be more than 2x larger than display size
+            expect(ratio).to.be.lessThan(2)
           }
         })
       })
