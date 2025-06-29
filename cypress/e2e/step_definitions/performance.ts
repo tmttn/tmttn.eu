@@ -86,7 +86,7 @@ Then('images should be optimized and properly sized', () => {
             const ratio = naturalWidth / displayWidth
             cy.log(`Size ratio: ${ratio}`)
             // Image shouldn't be more than 2x larger than display size
-            expect(ratio).to.be.lessThan(2)
+            expect(ratio, `Image ${element.src} has ratio ${ratio.toFixed(2)} (${naturalWidth}px natural / ${displayWidth}px display)`).to.be.lessThan(2)
           }
         })
       })
