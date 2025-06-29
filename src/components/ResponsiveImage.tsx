@@ -13,6 +13,37 @@ interface ResponsiveImageProps {
   blurDataURL?: string;
 }
 
+// Extract filename and generate optimized variants
+const getOptimizedSrc = (originalSrc: string, format: 'webp' | 'png' = 'webp') => {
+  if (!originalSrc.startsWith('/static/')) {
+    return originalSrc; // Return as-is if not a static image
+  }
+  
+  const filename = originalSrc.replace('/static/', '').replace('.png', '');
+  return `/static/${filename}.${format}`;
+};
+
+const getSrcSet = (originalSrc: string, targetWidth: number) => {
+  if (!originalSrc.startsWith('/static/')) {
+    return; // Return for non-static images
+  }
+
+  const filename = originalSrc.replace('/static/', '').replace('.png', '');
+  
+  // Generate srcset for different densities and formats
+  const webpSrcSet = [
+    `${getOptimizedSrc(originalSrc, 'webp')} 1x`,
+    `/static/${filename}@2x.webp 2x`
+  ].join(', ');
+
+  const pngSrcSet = [
+    `${getOptimizedSrc(originalSrc, 'png')} 1x`,
+    `/static/${filename}@2x.png 2x`
+  ].join(', ');
+
+  return { webp: webpSrcSet, png: pngSrcSet };
+};
+
 /**
  * ResponsiveImage component that automatically uses optimized images
  * with WebP format when supported and appropriate sizes for different viewports
@@ -28,36 +59,6 @@ export default function ResponsiveImage({
   placeholder = 'empty',
   blurDataURL
 }: ResponsiveImageProps) {
-  // Extract filename and generate optimized variants
-  const getOptimizedSrc = (originalSrc: string, format: 'webp' | 'png' = 'webp') => {
-    if (!originalSrc.startsWith('/static/')) {
-      return originalSrc; // Return as-is if not a static image
-    }
-    
-    const filename = originalSrc.replace('/static/', '').replace('.png', '');
-    return `/static/${filename}.${format}`;
-  };
-
-  const getSrcSet = (originalSrc: string, targetWidth: number) => {
-    if (!originalSrc.startsWith('/static/')) {
-      return undefined; // Return undefined for non-static images
-    }
-
-    const filename = originalSrc.replace('/static/', '').replace('.png', '');
-    
-    // Generate srcset for different densities and formats
-    const webpSrcSet = [
-      `${getOptimizedSrc(originalSrc, 'webp')} 1x`,
-      `/static/${filename}@2x.webp 2x`
-    ].join(', ');
-
-    const pngSrcSet = [
-      `${getOptimizedSrc(originalSrc, 'png')} 1x`,
-      `/static/${filename}@2x.png 2x`
-    ].join(', ');
-
-    return { webp: webpSrcSet, png: pngSrcSet };
-  };
 
   const srcSet = getSrcSet(src, width);
 
