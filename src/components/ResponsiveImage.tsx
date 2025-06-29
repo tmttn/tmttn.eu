@@ -23,25 +23,38 @@ const getOptimizedSrc = (originalSrc: string, format: 'webp' | 'png' = 'webp') =
   return `/static/${filename}.${format}`;
 };
 
-const getSrcSet = (originalSrc: string, targetWidth: number) => {
+const getSrcSet = (originalSrc: string, sizes: string) => {
   if (!originalSrc.startsWith('/static/')) {
     return; // Return for non-static images
   }
 
   const filename = originalSrc.replace('/static/', '').replace('.png', '');
   
-  // Generate srcset for different densities and formats
-  const webpSrcSet = [
-    `${getOptimizedSrc(originalSrc, 'webp')} 1x`,
-    `/static/${filename}@2x.webp 2x`
-  ].join(', ');
+  // Generate srcset for different sizes and densities based on the sizes prop
+  // Parse sizes to determine if we need smaller variants
+  const needsSmallVariant = sizes.includes('200px') || sizes.includes('max-width: 768px');
+  
+  const webpSrcSet = [];
+  const pngSrcSet = [];
+  
+  if (needsSmallVariant) {
+    // Add 180px variant for mobile/small screens
+    webpSrcSet.push(`/static/${filename}-180.webp 180w`);
+    pngSrcSet.push(`/static/${filename}-180.png 180w`);
+  }
+  
+  // Add base size variant
+  webpSrcSet.push(`${getOptimizedSrc(originalSrc, 'webp')} 260w`);
+  pngSrcSet.push(`${getOptimizedSrc(originalSrc, 'png')} 260w`);
+  
+  // Add 2x density variant for high-DPI displays
+  webpSrcSet.push(`/static/${filename}@2x.webp 520w`);
+  pngSrcSet.push(`/static/${filename}@2x.png 520w`);
 
-  const pngSrcSet = [
-    `${getOptimizedSrc(originalSrc, 'png')} 1x`,
-    `/static/${filename}@2x.png 2x`
-  ].join(', ');
-
-  return { webp: webpSrcSet, png: pngSrcSet };
+  return { 
+    webp: webpSrcSet.join(', '), 
+    png: pngSrcSet.join(', ') 
+  };
 };
 
 /**
@@ -60,7 +73,7 @@ export default function ResponsiveImage({
   blurDataURL
 }: ResponsiveImageProps) {
 
-  const srcSet = getSrcSet(src, width);
+  const srcSet = getSrcSet(src, sizes);
 
   // For optimized images, use picture element with WebP support
   if (srcSet) {
