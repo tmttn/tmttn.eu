@@ -52,10 +52,10 @@ export const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) =
   }), [isDark, theme, toggleTheme])
 
   return (
-    <ThemeContext.Provider value={contextValue}>
+    <ThemeContext value={contextValue}>
       <StyledThemeProvider theme={theme}>
         {children}
       </StyledThemeProvider>
-    </ThemeContext.Provider>
+    </ThemeContext>
   )
 }

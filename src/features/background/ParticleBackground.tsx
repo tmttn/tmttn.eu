@@ -23,7 +23,7 @@ interface ParticleBackgroundProperties {
 export default function ParticleBackground({ 
   particleCount = 50, 
   className 
-}: ParticleBackgroundProperties) {
+}: Readonly<ParticleBackgroundProperties>) {
   const { isDark } = useTheme()
   const canvasReference = useRef<HTMLCanvasElement>(null)
   const animationReference = useRef<number>(0)
@@ -222,14 +222,18 @@ export default function ParticleBackground({
     initParticles()
     animationReference.current = requestAnimationFrame(animate)
 
-    // Cleanup
+    // Enhanced cleanup with React 19 improvements
     return () => {
       if (animationReference.current) {
         cancelAnimationFrame(animationReference.current)
+        animationReference.current = 0
       }
       globalThis.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('scroll', handleScroll)
       window.removeEventListener('resize', resizeCanvas)
+      
+      // Clear particle references
+      particlesReference.current = []
     }
   }, [particleCount, isDark, frameInterval])
 

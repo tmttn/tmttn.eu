@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react"
+import React, { use, Suspense } from "react"
 import { GitHubService, GitHubRepository } from '@services'
 import { ClientOnlyIcon, StyledPortfolio, StyledRepoCard } from '@components'
 
@@ -113,50 +113,8 @@ interface PortfolioProperties {
   variant?: 'odd' | 'even'
 }
 
-export default function Portfolio({ variant = 'odd' }: PortfolioProperties) {
-  const [repositories, setRepositories] = useState<GitHubRepository[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | undefined>()
-
-  const fetchRepositories = useMemo(() => async () => {
-    try {
-      setLoading(true)
-      const repos = await GitHubService.getPublicRepositories()
-      setRepositories(repos)
-      setError(undefined)
-    } catch (error_) {
-      setError('Failed to load repositories')
-      console.error('Error fetching repositories:', error_)
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    fetchRepositories()
-  }, [fetchRepositories])
-
-  if (loading) {
-    return (
-      <div className="portfolio-loading">
-        <ClientOnlyIcon icon="spinner" spin fallback="⟳" />
-        <p>Loading repositories...</p>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="portfolio-error">
-        <p>{error}</p>
-        <p>
-          <a href="https://github.com/tmttn" target="_blank" rel="noopener noreferrer">
-            View on GitHub <ClientOnlyIcon icon="external-link-alt" fallback="→" />
-          </a>
-        </p>
-      </div>
-    )
-  }
+function PortfolioContent({ variant }: Readonly<PortfolioProperties>) {
+  const repositories = use(GitHubService.getPublicRepositories())
 
   if (repositories.length === 0) {
     return (
@@ -186,5 +144,18 @@ export default function Portfolio({ variant = 'odd' }: PortfolioProperties) {
         </a>
       </div>
     </StyledPortfolio>
+  )
+}
+
+export default function Portfolio({ variant = 'odd' }: PortfolioProperties) {
+  return (
+    <Suspense fallback={
+      <div className="portfolio-loading">
+        <ClientOnlyIcon icon="spinner" spin fallback="⟳" />
+        <p>Loading repositories...</p>
+      </div>
+    }>
+      <PortfolioContent variant={variant} />
+    </Suspense>
   )
 }

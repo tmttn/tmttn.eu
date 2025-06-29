@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { use, Suspense } from 'react'
 import ClientOnlyIcon from '../../components/ClientOnlyIcon'
-import { GitHubService, ContributionDay, GitHubStats } from '../../services/github'
+import { GitHubService } from '../../services/github'
 import {
   HeatmapContainer,
   HeatmapGrid,
@@ -13,55 +13,8 @@ import {
 
 
 
-export default function GitHubHeatmap() {
-  const [contributions, setContributions] = useState<ContributionDay[]>([])
-  const [stats, setStats] = useState<GitHubStats | undefined>()
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | undefined>()
-
-  const fetchContributionData = useMemo(() => async () => {
-    try {
-      setLoading(true)
-      setError(undefined)
-      
-      const { contributions, stats } = await GitHubService.getContributionData()
-      
-      setContributions(contributions)
-      setStats(stats)
-      setLoading(false)
-    } catch (error_) {
-      console.error('Error fetching GitHub contributions:', error_)
-      setError('Failed to load GitHub activity. Please try again later.')
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    fetchContributionData()
-  }, [fetchContributionData])
-
-  if (loading) {
-    return (
-      <HeatmapContainer>
-        <LoadingContainer>
-          <ClientOnlyIcon icon="spinner" spin fallback="⟳" />
-          <p>Loading GitHub activity...</p>
-        </LoadingContainer>
-      </HeatmapContainer>
-    )
-  }
-
-  if (error) {
-    return (
-      <HeatmapContainer>
-        <h3>
-          <ClientOnlyIcon icon={["fab", "github"]} fallback="GH" />
-          GitHub Activity
-        </h3>
-        <p style={{ color: 'var(--color-text-muted)' }}>{error}</p>
-      </HeatmapContainer>
-    )
-  }
+function GitHubHeatmapContent() {
+  const { contributions, stats } = use(GitHubService.getContributionData())
 
   return (
     <HeatmapContainer $intensity="heavy" $variant="neutral" data-testid="github-heatmap">
@@ -116,5 +69,20 @@ export default function GitHubHeatmap() {
         </StatsContainer>
       )}
     </HeatmapContainer>
+  )
+}
+
+export default function GitHubHeatmap() {
+  return (
+    <Suspense fallback={
+      <HeatmapContainer>
+        <LoadingContainer>
+          <ClientOnlyIcon icon="spinner" spin fallback="⟳" />
+          <p>Loading GitHub activity...</p>
+        </LoadingContainer>
+      </HeatmapContainer>
+    }>
+      <GitHubHeatmapContent />
+    </Suspense>
   )
 }

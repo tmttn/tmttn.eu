@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useOptimistic } from 'react'
 import { useTheme } from '@contexts'
 import { ClientOnlyIcon } from '@components'
 import {
@@ -14,8 +14,9 @@ interface EnhancedThemeToggleProperties {
   className?: string
 }
 
-export default function EnhancedThemeToggle({ className }: EnhancedThemeToggleProperties) {
+export default function EnhancedThemeToggle({ className }: Readonly<EnhancedThemeToggleProperties>) {
   const { isDark, toggleTheme } = useTheme()
+  const [optimisticTheme, setOptimisticTheme] = useOptimistic(isDark)
   const [hasMounted, setHasMounted] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([])
@@ -44,9 +45,10 @@ export default function EnhancedThemeToggle({ className }: EnhancedThemeTogglePr
     document.documentElement.style.setProperty('--click-x', `${clickX}%`)
     document.documentElement.style.setProperty('--click-y', `${clickY}%`)
 
-    // Start transition animation
+    // Start transition animation with optimistic update
     setIsTransitioning(true)
     setShowOverlay(true)
+    setOptimisticTheme(!optimisticTheme)
 
     // Toggle theme with slight delay for smooth transition
     setTimeout(() => {
@@ -80,19 +82,19 @@ export default function EnhancedThemeToggle({ className }: EnhancedThemeTogglePr
 
   return (
     <ToggleContainer className={className}>
-      <ThemeTransitionOverlay $isVisible={showOverlay} $isDark={!isDark} />
+      <ThemeTransitionOverlay $isVisible={showOverlay} $isDark={!optimisticTheme} />
       
       <ToggleButton 
         ref={buttonReference}
         onClick={handleClick}
-        aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
+        aria-label={`Switch to ${optimisticTheme ? 'light' : 'dark'} theme`}
         $isTransitioning={isTransitioning}
         disabled={isTransitioning}
       >
-        <IconContainer $isDark={isDark} $isTransitioning={isTransitioning}>
+        <IconContainer $isDark={optimisticTheme} $isTransitioning={isTransitioning}>
           <ClientOnlyIcon 
-            icon={isDark ? 'sun' : 'moon'} 
-            fallback={isDark ? '☀️' : '🌙'} 
+            icon={optimisticTheme ? 'sun' : 'moon'} 
+            fallback={optimisticTheme ? '☀️' : '🌙'} 
           />
         </IconContainer>
         
