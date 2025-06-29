@@ -169,14 +169,30 @@ describe('ParticleBackground', () => {
   })
 
   it('creates connections between nearby particles', async () => {
-    renderWithThemeProvider(<ParticleBackground particleCount={5} />)
+    // Mock Math.random to ensure particles are positioned close to each other
+    const originalRandom = Math.random
+    let callCount = 0
+    Math.random = jest.fn(() => {
+      // Position particles close together to guarantee connections
+      if (callCount % 6 < 2) { // x and y positions
+        callCount++
+        return 0.5 // Center area
+      }
+      callCount++
+      return originalRandom() // Other random values (velocity, size, etc)
+    })
+
+    renderWithThemeProvider(<ParticleBackground particleCount={10} />)
     
     await waitFor(() => {
       // Should attempt to draw lines between particles
       expect(mockContext.moveTo).toHaveBeenCalled()
       expect(mockContext.lineTo).toHaveBeenCalled()
       expect(mockContext.stroke).toHaveBeenCalled()
-    })
+    }, { timeout: 2000 })
+
+    // Restore Math.random
+    Math.random = originalRandom
   })
 
   it('handles mouse move events', async () => {
