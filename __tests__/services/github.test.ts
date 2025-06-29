@@ -219,16 +219,21 @@ describe('GitHubService', () => {
   })
 
   describe('error handling scenarios (mocked for testing)', () => {
+    let originalNodeEnv: string | undefined
+    
     beforeEach(() => {
+      // Save original environment
+      originalNodeEnv = process.env.NODE_ENV
       // Override environment to allow API calls for error testing
-      process.env.NODE_ENV = 'production'
+      Object.defineProperty(process.env, 'NODE_ENV', { value: 'production', writable: true })
       process.env.ENABLE_GITHUB_API = 'true'
       delete process.env.SKIP_GITHUB_API
     })
 
     afterEach(() => {
       // Restore test environment
-      process.env.NODE_ENV = 'test'
+      Object.defineProperty(process.env, 'NODE_ENV', { value: originalNodeEnv, writable: true })
+      delete process.env.ENABLE_GITHUB_API
     })
 
     it('handles 403 error and sets rate limit', async () => {
@@ -424,27 +429,27 @@ describe('GitHubService', () => {
   describe('API skipping edge cases', () => {
     it('should skip API calls in development environment', async () => {
       const originalEnv = process.env.NODE_ENV
-      process.env.NODE_ENV = 'development'
+      Object.defineProperty(process.env, 'NODE_ENV', { value: 'development', writable: true })
       
       const repositories = await GitHubService.getPublicRepositories()
       expect(repositories).toEqual([])
       expect(console.log).toHaveBeenCalledWith('Skipping GitHub API call (test environment)')
       
-      process.env.NODE_ENV = originalEnv
+      Object.defineProperty(process.env, 'NODE_ENV', { value: originalEnv, writable: true })
     })
 
     it('should skip API calls during build (production without window)', async () => {
       const originalEnv = process.env.NODE_ENV
       const originalWindow = globalThis.window
       
-      process.env.NODE_ENV = 'production'
+      Object.defineProperty(process.env, 'NODE_ENV', { value: 'production', writable: true })
       // @ts-ignore - testing build environment
       delete globalThis.window
       
       const repositories = await GitHubService.getPublicRepositories()
       expect(repositories).toEqual([])
       
-      process.env.NODE_ENV = originalEnv
+      Object.defineProperty(process.env, 'NODE_ENV', { value: originalEnv, writable: true })
       globalThis.window = originalWindow
     })
 
@@ -452,13 +457,13 @@ describe('GitHubService', () => {
       const originalEnv = process.env.NODE_ENV
       const originalEnable = process.env.ENABLE_GITHUB_API
       
-      process.env.NODE_ENV = 'production'
+      Object.defineProperty(process.env, 'NODE_ENV', { value: 'production', writable: true })
       delete process.env.ENABLE_GITHUB_API
       
       const repositories = await GitHubService.getPublicRepositories()
       expect(repositories).toEqual([])
       
-      process.env.NODE_ENV = originalEnv
+      Object.defineProperty(process.env, 'NODE_ENV', { value: originalEnv, writable: true })
       if (originalEnable) {
         process.env.ENABLE_GITHUB_API = originalEnable
       }
