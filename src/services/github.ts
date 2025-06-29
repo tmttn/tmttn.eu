@@ -82,12 +82,12 @@ export class GitHubService {
       )
       
       if (!response.ok) {
-        if (response.status === 403) {
-          console.warn('GitHub API rate limit exceeded (403). Using empty repository list.')
+        console.warn(`GitHub API error (${response.status}). Using empty repository list.`)
+        if (response.status === 403 || response.status === 429 || response.status >= 500) {
+          // Rate limit (403, 429) or server errors (5xx) - implement cooldown
           this.setRateLimited()
-          return []
         }
-        throw new Error(`GitHub API error: ${response.status}`)
+        return []
       }
       
       const repos: GitHubRepository[] = await response.json()
@@ -104,6 +104,8 @@ export class GitHubService {
         })
     } catch (error) {
       console.error('Failed to fetch GitHub repositories:', error)
+      // Network errors should also trigger cooldown to prevent spam
+      this.setRateLimited()
       return []
     }
   }
@@ -126,12 +128,12 @@ export class GitHubService {
       )
 
       if (!eventsResponse.ok) {
-        if (eventsResponse.status === 403) {
-          console.warn('GitHub API rate limit exceeded (403). Using fallback contribution data.')
+        console.warn(`GitHub API error (${eventsResponse.status}). Using fallback contribution data.`)
+        if (eventsResponse.status === 403 || eventsResponse.status === 429 || eventsResponse.status >= 500) {
+          // Rate limit (403, 429) or server errors (5xx) - implement cooldown
           this.setRateLimited()
-          return this.generateFallbackData()
         }
-        throw new Error(`GitHub API error: ${eventsResponse.status}`)
+        return this.generateFallbackData()
       }
 
       const events = await eventsResponse.json()
@@ -143,7 +145,8 @@ export class GitHubService {
       return { contributions, stats }
     } catch (error) {
       console.error('Failed to fetch GitHub contributions:', error)
-      // Fallback to realistic mock data
+      // Network errors should also trigger cooldown to prevent spam
+      this.setRateLimited()
       return this.generateFallbackData()
     }
   }
