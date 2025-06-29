@@ -54,7 +54,9 @@ export default defineConfig({
   viewportHeight: 900,
   chromeWebSecurity: false,
   screenshotOnRunFailure: true,
-  env: {},
+  env: {
+    SKIP_GITHUB_API: 'true'
+  },
   e2e: {
     baseUrl: 'http://localhost:3000',
     specPattern: '**/*.feature',

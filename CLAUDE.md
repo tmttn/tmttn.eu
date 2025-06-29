@@ -15,10 +15,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Testing Commands
 
 - `npm test` - Run Jest unit tests
-- `npm run test:watch` - Run Jest tests in watch mode
 - `npm run test:coverage` - Run Jest tests with coverage report
-- `cypress:open` - Open Cypress interactive test runner
 - `cypress:run` - Run Cypress tests headlessly
+
+If the dev server is not running, check first...:
+
 - `e2e` - Run full E2E test suite (starts dev server + runs Cypress)
 - `e2e:chrome` - Run E2E tests in Chrome browser
 - `e2e:ci` - Run E2E tests for CI/CD (starts production server)
@@ -345,3 +346,31 @@ E2E tests run in the CI pipeline:
 - **Test Isolation**: Each scenario independent with proper setup/teardown
 - **Reporting**: Cucumber HTML/JSON reports for stakeholder communication
 - **Accessibility First**: Every feature includes accessibility validation
+
+## Important Instruction Reminders
+
+### Critical Testing and Verification Rules
+
+**ALWAYS verify results and run ALL tests before claiming anything is fixed:**
+
+1. **Run unit tests**: `npm test` - Ensure all Jest tests pass
+2. **Run Cypress tests**: Use `npm run e2e` or individual feature tests  
+3. **Run build process**: `npm run build` - Verify no errors in production build
+4. **Verify lint passes**: `npm run lint` - Check for code quality issues
+
+**NEVER say something is "fixed" without running the relevant tests to verify.**
+
+### Development Server Limitations
+
+- **NEVER use `npm run dev &`** - Background processes don't work in this environment
+- Instead use dedicated E2E commands that handle server lifecycle:
+  - `npm run e2e` - Starts dev server and runs all Cypress tests
+  - `npm run e2e:ci` - Uses production build for testing
+  - `npm run e2e:chrome` - Runs tests in Chrome specifically
+
+### General Development Rules
+
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.

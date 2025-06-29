@@ -4,7 +4,7 @@
 // Custom commands for the portfolio website
 
 Cypress.Commands.add('visitHomePage', () => {
-  // Set up GitHub API intercepts before visiting
+  // Set up GitHub API intercepts for completeness (though dev mode skips API calls)
   cy.setupGitHubIntercepts()
   
   cy.visit('/')
@@ -163,18 +163,26 @@ Cypress.Commands.add('measurePageLoad', () => {
 })
 
 Cypress.Commands.add('setupGitHubIntercepts', () => {
-  // Intercept GitHub API calls and return fixture data
-  cy.intercept('GET', '**/api.github.com/users/*/repos**', { 
-    fixture: 'github-repositories.json' 
+  // Intercept specific GitHub API calls and return fixture data
+  cy.intercept('GET', 'https://api.github.com/users/tmttn/repos*', (req) => {
+    cy.log('🔄 Intercepted repositories API call:', req.url)
+    req.reply({ fixture: 'github-repositories.json' })
   }).as('githubRepos')
   
-  cy.intercept('GET', '**/api.github.com/users/*/events**', { 
-    fixture: 'github-events.json' 
+  cy.intercept('GET', 'https://api.github.com/users/tmttn/events/public*', (req) => {
+    cy.log('🔄 Intercepted events API call:', req.url)
+    req.reply({ fixture: 'github-events.json' })
   }).as('githubEvents')
   
-  // Intercept any other GitHub API calls that might be made
-  cy.intercept('GET', '**/api.github.com/**', {
-    statusCode: 200,
-    body: []
-  }).as('githubApi')
+  // Intercept any other GitHub API calls that might be made (fallback)
+  cy.intercept('GET', 'https://api.github.com/**', (req) => {
+    cy.log('🔄 Intercepted fallback GitHub API call:', req.url)
+    req.reply({
+      statusCode: 200,
+      body: []
+    })
+  }).as('githubApiFallback')
+  
+  // Debug: Log when intercepts are set up
+  cy.log('✅ GitHub API intercepts configured')
 })

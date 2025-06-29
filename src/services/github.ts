@@ -48,12 +48,22 @@ export class GitHubService {
   private static readonly RATE_LIMIT_COOLDOWN = 60 * 1000 // 1 minute
 
   private static shouldSkipAPICall(): boolean {
-    // Skip API calls during testing
+    // Always skip API calls in development and testing environments
+    // This prevents rate limiting and makes development/testing more reliable
     const isTest = process.env.NODE_ENV === 'test'
-    const isCypress = process.env.CYPRESS === 'true' || (globalThis.window !== undefined && 'Cypress' in globalThis)
+    const isDevelopment = process.env.NODE_ENV === 'development'
+    const isBuild = process.env.NODE_ENV === 'production' && globalThis.window === undefined
     const skipExplicit = process.env.SKIP_GITHUB_API === 'true'
     
-    return isTest || isCypress || skipExplicit
+    // In production client-side, only make API calls if explicitly enabled
+    const isProductionClient = process.env.NODE_ENV === 'production' && globalThis.window !== undefined
+    const enableAPIInProduction = process.env.ENABLE_GITHUB_API === 'true'
+    
+    if (isProductionClient && !enableAPIInProduction) {
+      return true // Skip API calls in production unless explicitly enabled
+    }
+    
+    return isTest || isDevelopment || isBuild || skipExplicit
   }
 
   private static isRateLimited(): boolean {
@@ -63,6 +73,11 @@ export class GitHubService {
   private static setRateLimited(): void {
     this.rateLimitedUntil = Date.now() + this.RATE_LIMIT_COOLDOWN
     console.warn(`GitHub API rate limited. Cooling down for ${this.RATE_LIMIT_COOLDOWN / 1000} seconds.`)
+  }
+
+  // Method for testing - reset rate limit
+  static resetRateLimit(): void {
+    this.rateLimitedUntil = 0
   }
 
   static async getPublicRepositories(): Promise<GitHubRepository[]> {
