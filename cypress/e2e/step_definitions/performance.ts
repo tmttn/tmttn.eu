@@ -67,6 +67,12 @@ Then('images should be optimized and properly sized', () => {
     if (images.length > 0) {
       cy.get('img').each(($img) => {
         cy.wrap($img).should('be.visible')
+        // Wait for image to load completely
+        cy.wrap($img).should(($el) => {
+          const element = $el[0] as HTMLImageElement
+          expect(element.complete).to.be.true
+          expect(element.naturalWidth).to.be.greaterThan(0)
+        })
         cy.wrap($img).should(($el) => {
           const element = $el[0] as HTMLImageElement
           const naturalWidth = element.naturalWidth
