@@ -24,32 +24,32 @@ module.exports = {
     'subject-max-length': [2, 'always', 100],
     'subject-case': [2, 'always', 'sentence-case'],
     'header-max-length': [2, 'always', 120],
-    // Custom rule to allow optional emojis at the start
+    // Custom rule to allow any emoji at the start
     'header-pattern': [
       2,
       'always',
-      /^((✨|🐛|🎨|♻️|⚡|🧪|📝|🔧|🚀|🌟|🌙|🌞|🎭|🎯|📊|🔗|📱|♿|🏗️|🔒) )?(feat|fix|style|refactor|perf|test|docs|chore|deploy|enhance): .+$/
+      /^([\p{Emoji}\u200d]+ )?(feat|fix|style|refactor|perf|test|docs|chore|deploy|enhance): .+$/u
     ]
   },
   plugins: [
     {
       rules: {
         'header-pattern': ({ header }) => {
-          const pattern = /^((✨|🐛|🎨|♻️|⚡|🧪|📝|🔧|🚀|🌟|🌙|🌞|🎭|🎯|📊|🔗|📱|♿|🏗️|🔒) )?(feat|fix|style|refactor|perf|test|docs|chore|deploy|enhance): .+$/;
+          const pattern = /^([\p{Emoji}\u200d]+ )?(feat|fix|style|refactor|perf|test|docs|chore|deploy|enhance): .+$/u;
           
           if (!pattern.test(header)) {
             return [
               false,
               `Header must match format: [emoji] <type>: <description>
               
-Optional emojis: ✨ 🐛 🎨 ♻️ ⚡ 🧪 📝 🔧 🚀 🌟 🌙 🌞 🎭 🎯 📊 🔗 📱 ♿ 🏗️ 🔒
+You can use any emoji! Examples: 🖼️ 🎉 🚀 🌈 💎 🔥 🎨 🐛 ⚡ 🎯
 Valid types: feat, fix, style, refactor, perf, test, docs, chore, deploy, enhance
 
 Examples:
   feat: add GitHub activity heatmap component
-  ✨ feat: add GitHub activity heatmap component
-  fix: prevent particles from falling during scroll
-  🐛 fix: prevent particles from falling during scroll`
+  🎉 feat: add GitHub activity heatmap component
+  🖼️ fix: prevent particles from falling during scroll
+  🌈 enhance: improve user experience`
             ];
           }
           
