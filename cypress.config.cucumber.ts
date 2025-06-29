@@ -1,7 +1,6 @@
 import { defineConfig } from 'cypress'
-// @ts-ignore
-import webpack from '@cypress/webpack-preprocessor'
 import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor'
+import webpack from '@cypress/webpack-preprocessor'
 
 async function setupNodeEvents(
   on: Cypress.PluginEvents,
@@ -24,6 +23,9 @@ async function setupNodeEvents(
               use: [
                 {
                   loader: 'ts-loader',
+                  options: {
+                    transpileOnly: true,
+                  },
                 },
               ],
             },
@@ -39,6 +41,7 @@ async function setupNodeEvents(
           ],
         },
       },
+      watchOptions: {},
     }),
   )
 

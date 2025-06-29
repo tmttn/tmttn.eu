@@ -80,5 +80,10 @@ declare namespace Cypress {
      * Custom command to measure page load performance
      */
     measurePageLoad(): Chainable<void>
+
+    /**
+     * Custom command to set up GitHub API intercepts with fixture data
+     */
+    setupGitHubIntercepts(): Chainable<void>
   }
 }

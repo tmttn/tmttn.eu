@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useOptimistic } from 'react'
+import React, { useState, useEffect, useRef, useOptimistic, startTransition } from 'react'
 import { useTheme } from '@contexts'
 import { ClientOnlyIcon } from '@components'
 import {
@@ -48,7 +48,9 @@ export default function EnhancedThemeToggle({ className }: Readonly<EnhancedThem
     // Start transition animation with optimistic update
     setIsTransitioning(true)
     setShowOverlay(true)
-    setOptimisticTheme(!optimisticTheme)
+    startTransition(() => {
+      setOptimisticTheme(!optimisticTheme)
+    })
 
     // Toggle theme with slight delay for smooth transition
     setTimeout(() => {
