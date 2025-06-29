@@ -3,6 +3,26 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { ThemeProvider } from '@contexts'
 import GitHubHeatmap from '@features/portfolio/GitHubHeatmap'
 
+// Suppress React act warnings for async useEffect hooks in tests
+const originalError = console.error
+beforeAll(() => {
+  console.error = (...args: any[]) => {
+    if (
+      typeof args[0] === 'string' &&
+      (args[0].includes('Warning: An update to') ||
+       args[0].includes('An update to')) &&
+      args[0].includes('was not wrapped in act')
+    ) {
+      return
+    }
+    originalError.call(console, ...args)
+  }
+})
+
+afterAll(() => {
+  console.error = originalError
+})
+
 // Mock GitHubService
 jest.mock('@services/github', () => ({
   GitHubService: {
@@ -103,6 +123,9 @@ describe('GitHubHeatmap', () => {
   })
 
   it('handles error state correctly', async () => {
+    // Mock console.error to suppress error output during tests
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    
     const errorMessage = 'Failed to fetch contributions'
     mockGetContributionData.mockRejectedValue(new Error(errorMessage))
 
@@ -117,6 +140,9 @@ describe('GitHubHeatmap', () => {
     expect(screen.queryByText('Loading GitHub activity...')).not.toBeInTheDocument()
     
     // Should not show stats when error occurs
+    
+    // Restore console.error
+    consoleErrorSpy.mockRestore()
     expect(screen.queryByText('Total')).not.toBeInTheDocument()
   })
 

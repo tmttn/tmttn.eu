@@ -240,6 +240,9 @@ describe('GitHubService', () => {
     })
 
     it('handles API errors and provides fallback data', async () => {
+      // Mock console.warn to suppress the warning output during tests
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+      
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 403,
@@ -250,6 +253,9 @@ describe('GitHubService', () => {
       expect(result).toHaveProperty('contributions')
       expect(result).toHaveProperty('stats')
       expect(result.contributions.length).toBe(366)
+      
+      // Restore console.warn
+      consoleSpy.mockRestore()
     })
 
     it('handles network errors and provides fallback data', async () => {

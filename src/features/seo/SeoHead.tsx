@@ -18,7 +18,7 @@ const defaultProps = {
   title: 'Tom Metten - Full-Stack Developer & Tech Enthusiast',
   description: 'Tom Metten is a passionate full-stack developer from Belgium, specializing in modern web technologies, React, TypeScript, and cloud solutions. Explore my portfolio and get in touch.',
   keywords: 'Tom Metten, full-stack developer, React, TypeScript, Next.js, web development, Belgium, software engineer, portfolio',
-  ogImage: '/static/gibli-avatar-portrait.png',
+  ogImage: '/static/gibli-avatar-portrait-og.png',
   ogUrl: 'https://tmttn.eu',
   twitterCard: 'summary_large_image' as const,
 }
@@ -71,7 +71,7 @@ export default function SEOHead({
       
       {/* Favicons */}
       <link rel="icon" href="/favicon.ico" />
-      <link rel="apple-touch-icon" sizes="180x180" href="/static/gibli-avatar-portrait.png" />
+      <link rel="apple-touch-icon" sizes="180x180" href="/static/gibli-avatar-portrait-180.png" />
       
       {/* Additional meta tags */}
       <meta name="theme-color" content="#60a5fa" />

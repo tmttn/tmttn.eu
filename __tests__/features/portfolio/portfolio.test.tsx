@@ -1,7 +1,27 @@
 import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, act } from '@testing-library/react'
 import { ThemeProvider } from '@contexts'
 import Portfolio from '@features/portfolio/portfolio'
+
+// Suppress React act warnings for async useEffect hooks in tests
+const originalError = console.error
+beforeAll(() => {
+  console.error = (...args: any[]) => {
+    if (
+      typeof args[0] === 'string' &&
+      (args[0].includes('Warning: An update to') ||
+       args[0].includes('An update to')) &&
+      args[0].includes('was not wrapped in act')
+    ) {
+      return
+    }
+    originalError.call(console, ...args)
+  }
+})
+
+afterAll(() => {
+  console.error = originalError
+})
 
 // Mock GitHubService
 jest.mock('@services/github', () => ({
@@ -161,15 +181,23 @@ describe('Portfolio', () => {
   })
 
   it('handles error state correctly', async () => {
+    // Mock console.error to suppress error output during tests
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    
     const errorMessage = 'Failed to fetch repositories'
     mockGetPublicRepositories.mockRejectedValue(new Error(errorMessage))
 
-    renderWithThemeProvider(<Portfolio />)
+    await act(async () => {
+      renderWithThemeProvider(<Portfolio />)
+    })
 
     await waitFor(() => {
       expect(screen.getByText('Failed to load repositories')).toBeInTheDocument()
       expect(screen.getByRole('link', { name: /View on GitHub/ })).toBeInTheDocument()
     })
+    
+    // Restore console.error
+    consoleErrorSpy.mockRestore()
 
     // Should not show loading state anymore
     expect(screen.queryByText('Loading repositories...')).not.toBeInTheDocument()

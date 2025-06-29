@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react"
-import Image from "next/image"
 import {
   Layout,
-  Section,
   Scrollable,
   Portfolio,
   SEOHead,
@@ -13,13 +11,11 @@ import {
   EnhancedThemeToggle,
   PageTransition
 } from '@features'
-import Link from "next/link"
-import { ClientOnlyIcon } from '@components'
-import { personStructuredData, websiteStructuredData } from '@utils'
-import {
+import { 
+  ClientOnlyIcon, 
+  ResponsiveImage,
   StyledHeader,
   StyledLogo,
-  StyledNav,
   StyledHeaderRight,
   StyledMain,
   StyledWelcomeSection,
@@ -28,9 +24,9 @@ import {
   StyledIconBar,
   StyledIcon,
   StyledSection,
-  StyledFooter,
-  ThemeToggle
+  StyledFooter
 } from '@components'
+import { personStructuredData, websiteStructuredData } from '@utils'
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false)
@@ -74,12 +70,13 @@ export default function Home() {
           <h1 id="about-heading">About me</h1>
           <StyledSectionContent>
             <div>
-              <Image
+              <ResponsiveImage
                 src="/static/gibli-avatar-portrait.png"
                 alt="Portrait photo of Tom Metten, a full-stack developer from Belgium"
                 height={260}
                 width={260}
                 priority
+                sizes="(max-width: 768px) 200px, 260px"
               />
             </div>
             <div>

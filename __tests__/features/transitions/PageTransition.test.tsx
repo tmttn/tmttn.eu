@@ -1,14 +1,49 @@
 import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, act } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import PageTransition from '../../../src/features/transitions/PageTransition'
 import { ThemeProvider } from '../../../src/contexts/ThemeContext'
 
-// Mock styled components
+// Suppress React act warnings and styled-components prop warnings
+const originalError = console.error
+beforeAll(() => {
+  console.error = (...args: any[]) => {
+    if (
+      typeof args[0] === 'string' &&
+      (args[0].includes('Warning: An update to') ||
+       args[0].includes('An update to') ||
+       args[0].includes('React does not recognize the `$') ||
+       args[0].includes('Invalid attribute name: `$')) &&
+      (args[0].includes('was not wrapped in act') ||
+       args[0].includes('prop on a DOM element') ||
+       args[0].includes('isVisible'))
+    ) {
+      return
+    }
+    originalError.call(console, ...args)
+  }
+})
+
+afterAll(() => {
+  console.error = originalError
+})
+
+// Mock styled components - filter out $ prefixed props
 jest.mock('../../../src/features/transitions/PageTransition.styled', () => ({
-  TransitionWrapper: ({ children, ...props }: any) => (
-    <div data-testid="transition-wrapper" {...props}>{children}</div>
-  ),
+  TransitionWrapper: ({ children, className, ...props }: any) => {
+    const filteredProps = Object.fromEntries(
+      Object.entries(props).filter(([key]) => !key.startsWith('$'))
+    )
+    return (
+      <div 
+        data-testid="transition-wrapper" 
+        className={className}
+        {...filteredProps}
+      >
+        {children}
+      </div>
+    )
+  },
 }))
 
 const renderWithThemeProvider = (component: React.ReactElement) => {
@@ -21,7 +56,9 @@ describe('PageTransition', () => {
   })
 
   afterEach(() => {
-    jest.runOnlyPendingTimers()
+    act(() => {
+      jest.runOnlyPendingTimers()
+    })
     jest.useRealTimers()
   })
 
@@ -60,7 +97,9 @@ describe('PageTransition', () => {
     expect(wrapper).toBeInTheDocument()
     
     // Fast-forward timers to trigger visibility
-    jest.advanceTimersByTime(200)
+    act(() => {
+      jest.advanceTimersByTime(200)
+    })
     
     await waitFor(() => {
       expect(wrapper).toBeInTheDocument()
@@ -140,7 +179,9 @@ describe('PageTransition', () => {
     expect(wrapper).toBeInTheDocument()
     
     // Advance timers
-    jest.advanceTimersByTime(500)
+    act(() => {
+      jest.advanceTimersByTime(500)
+    })
     
     expect(wrapper).toBeInTheDocument()
   })
@@ -153,7 +194,9 @@ describe('PageTransition', () => {
     )
     
     // Fast-forward to make visible
-    jest.advanceTimersByTime(200)
+    act(() => {
+      jest.advanceTimersByTime(200)
+    })
     
     rerender(
       <ThemeProvider>

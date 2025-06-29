@@ -7,7 +7,7 @@ import { ThemeProvider } from '../../../src/contexts/ThemeContext'
 // Mock the loading component
 const LoadingComponent = () => (
   <div className="portfolio-loading" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '2rem', gap: '1rem' }}>
-    <i data-icon="spinner" data-testid="font-awesome-icon">⭐</i>
+    <span data-icon="spinner" data-testid="font-awesome-icon">⭐</span>
     <p>Loading portfolio...</p>
   </div>
 )
