@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react'
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { darkTheme, lightTheme, Theme } from '@styles'
 
@@ -18,11 +18,7 @@ export const useTheme = () => {
   return context
 }
 
-interface ThemeProviderProperties {
-  children: ReactNode
-}
-
-export const ThemeProvider: React.FC<ThemeProviderProperties> = ({ children }) => {
+export const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
