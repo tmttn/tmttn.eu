@@ -1,5 +1,5 @@
 import js from '@eslint/js'
-import nextPlugin from '@next/eslint-plugin-next'
+import { flatConfig } from '@next/eslint-plugin-next'
 import reactPlugin from 'eslint-plugin-react'
 import reactHooksPlugin from 'eslint-plugin-react-hooks'
 import unicornPlugin from 'eslint-plugin-unicorn'
@@ -24,10 +24,11 @@ export default [
     ],
   },
   js.configs.recommended,
+  flatConfig.recommended,
+  flatConfig.coreWebVitals,
   {
     files: ['src/**/*.{js,jsx,ts,tsx}', 'pages/**/*.{js,jsx,ts,tsx}'],
     plugins: {
-      '@next/next': nextPlugin,
       'react': reactPlugin,
       'react-hooks': reactHooksPlugin,
       'unicorn': unicornPlugin,
@@ -51,7 +52,6 @@ export default [
       },
     },
     rules: {
-      ...nextPlugin.configs.recommended.rules,
       ...reactPlugin.configs.recommended.rules,
       ...reactHooksPlugin.configs.recommended.rules,
       ...unicornPlugin.configs.recommended.rules,

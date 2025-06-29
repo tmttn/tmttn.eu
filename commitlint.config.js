@@ -28,14 +28,14 @@ module.exports = {
     'header-pattern': [
       2,
       'always',
-      /^([\p{Emoji}\u200d]+ )?(feat|fix|style|refactor|perf|test|docs|chore|deploy|enhance): .+$/u
+      /^([\p{Emoji}][\u200d\ufe0f]* )?(feat|fix|style|refactor|perf|test|docs|chore|deploy|enhance): .+$/u
     ]
   },
   plugins: [
     {
       rules: {
         'header-pattern': ({ header }) => {
-          const pattern = /^([\p{Emoji}\u200d]+ )?(feat|fix|style|refactor|perf|test|docs|chore|deploy|enhance): .+$/u;
+          const pattern = /^([\p{Emoji}][\u200d\ufe0f]* )?(feat|fix|style|refactor|perf|test|docs|chore|deploy|enhance): .+$/u;
           
           if (!pattern.test(header)) {
             return [

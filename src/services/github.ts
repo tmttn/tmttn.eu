@@ -50,7 +50,7 @@ export class GitHubService {
   private static shouldSkipAPICall(): boolean {
     // Skip API calls during testing
     const isTest = process.env.NODE_ENV === 'test'
-    const isCypress = process.env.CYPRESS === 'true' || (typeof window !== 'undefined' && (window as any).Cypress)
+    const isCypress = process.env.CYPRESS === 'true' || (globalThis.window !== undefined && 'Cypress' in globalThis)
     const skipExplicit = process.env.SKIP_GITHUB_API === 'true'
     
     return isTest || isCypress || skipExplicit
