@@ -29,6 +29,16 @@ export interface GitHubStats {
   thisMonth: number
 }
 
+export interface GitHubEvent {
+  id: string
+  type: string
+  created_at: string
+  repo?: {
+    name: string
+  }
+  payload?: unknown
+}
+
 export class GitHubService {
   private static readonly API_BASE = 'https://api.github.com'
   private static readonly USERNAME = 'tmttn'
@@ -94,7 +104,7 @@ export class GitHubService {
     }
   }
 
-  private static generateContributionDataFromEvents(events: any[]): ContributionDay[] {
+  private static generateContributionDataFromEvents(events: GitHubEvent[]): ContributionDay[] {
     const contributions: ContributionDay[] = []
     const today = new Date()
     const oneYear = 365

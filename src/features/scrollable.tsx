@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useRef } from "react"
 
-function throttle<T extends (...args: any[]) => void>(func: T, delay: number): T {
-  let timeoutId: NodeJS.Timeout | null = null
+function throttle<T extends (...args: unknown[]) => void>(func: T, delay: number): T {
+  let timeoutId: number | null = null
   let lastExecTime = 0
   
   return ((...args: Parameters<T>) => {
