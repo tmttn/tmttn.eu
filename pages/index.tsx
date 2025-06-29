@@ -30,8 +30,15 @@ import { personStructuredData, websiteStructuredData } from '@utils'
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false)
+  const [currentYear, setCurrentYear] = useState(2025) // Static fallback
+  const [age, setAge] = useState(37) // Static fallback
 
   useEffect(() => {
+    // Set dynamic values only on client side to prevent hydration mismatch
+    const year = new Date().getFullYear()
+    setCurrentYear(year)
+    setAge(year - 1987)
+
     const handleScroll = () => {
       setScrolled(window.scrollY > 10)
     }
@@ -81,7 +88,7 @@ export default function Home() {
             </div>
             <div>
               <p>
-                Hi! I&apos;m Tom Metten, a {new Date().getFullYear() - 1987}{" "}
+                Hi! I&apos;m Tom Metten, a {age}{" "}
                 year old developer from Belgium. During the day, I work for{" "}
                 <a href="https://www.acagroup.be">ACA Group</a>. After work
                 I like spending quality time with my family, enjoying myself
@@ -176,7 +183,7 @@ export default function Home() {
           <div className="footer-section">
             <h3>Copyright</h3>
             <p>
-              © {new Date().getFullYear()} Tom Metten
+              © {currentYear} Tom Metten
             </p>
             <p>
               All rights reserved. This website and its content are protected by copyright law.

@@ -217,4 +217,251 @@ describe('GitHubService', () => {
       expect(() => GitHubService.resetRateLimit()).not.toThrow()
     })
   })
+
+  describe('error handling scenarios (mocked for testing)', () => {
+    beforeEach(() => {
+      // Override environment to allow API calls for error testing
+      process.env.NODE_ENV = 'production'
+      process.env.ENABLE_GITHUB_API = 'true'
+      delete process.env.SKIP_GITHUB_API
+    })
+
+    afterEach(() => {
+      // Restore test environment
+      process.env.NODE_ENV = 'test'
+    })
+
+    it('handles 403 error and sets rate limit', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 403,
+      })
+
+      const result = await GitHubService.getPublicRepositories()
+      expect(result).toEqual([])
+      expect(console.warn).toHaveBeenCalledWith('GitHub API error (403). Using empty repository list.')
+    })
+
+    it('handles 429 error and sets rate limit', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 429,
+      })
+
+      const result = await GitHubService.getPublicRepositories()
+      expect(result).toEqual([])
+      expect(console.warn).toHaveBeenCalledWith('GitHub API error (429). Using empty repository list.')
+    })
+
+    it('handles 500 server error and sets rate limit', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+      })
+
+      const result = await GitHubService.getPublicRepositories()
+      expect(result).toEqual([])
+      expect(console.warn).toHaveBeenCalledWith('GitHub API error (500). Using empty repository list.')
+    })
+
+    it('handles network error and sets rate limit', async () => {
+      mockFetch.mockRejectedValueOnce(new Error('Network error'))
+
+      const result = await GitHubService.getPublicRepositories()
+      expect(result).toEqual([])
+      expect(console.error).toHaveBeenCalledWith('Failed to fetch GitHub repositories:', expect.any(Error))
+    })
+
+    it('handles successful response and processes data', async () => {
+      const mockRepos = [
+        {
+          id: 1,
+          name: 'test-repo',
+          full_name: 'tmttn/test-repo',
+          description: 'Test repo',
+          html_url: 'https://github.com/tmttn/test-repo',
+          homepage: null,
+          language: 'TypeScript',
+          stargazers_count: 5,
+          forks_count: 1,
+          created_at: '2023-01-01T00:00:00Z',
+          updated_at: '2023-06-01T00:00:00Z',
+          topics: ['typescript'],
+          archived: false,
+          fork: false,
+        }
+      ]
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockRepos,
+      })
+
+      const result = await GitHubService.getPublicRepositories()
+      expect(result).toEqual(mockRepos)
+    })
+
+    it('handles contribution data API errors', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 403,
+      })
+
+      const result = await GitHubService.getContributionData()
+      expect(result).toHaveProperty('contributions')
+      expect(result).toHaveProperty('stats')
+      expect(console.warn).toHaveBeenCalledWith('GitHub API error (403). Using fallback contribution data.')
+    })
+
+    it('processes events data correctly', async () => {
+      const mockEvents = [
+        {
+          id: '1',
+          type: 'PushEvent',
+          created_at: '2023-06-01T12:00:00Z',
+          repo: { name: 'test-repo' },
+          payload: { commits: [{ message: 'test commit' }, { message: 'another commit' }] }
+        },
+        {
+          id: '2',
+          type: 'CreateEvent',
+          created_at: '2023-06-02T12:00:00Z',
+          repo: { name: 'test-repo' }
+        },
+        {
+          id: '3',
+          type: 'PullRequestEvent',
+          created_at: '2023-06-03T12:00:00Z',
+          repo: { name: 'test-repo' }
+        },
+        {
+          id: '4',
+          type: 'WatchEvent',
+          created_at: '2023-06-04T12:00:00Z',
+          repo: { name: 'test-repo' }
+        }
+      ]
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockEvents,
+      })
+
+      const result = await GitHubService.getContributionData()
+      expect(result).toHaveProperty('contributions')
+      expect(result).toHaveProperty('stats')
+      expect(result.contributions.length).toBe(366)
+    })
+
+    it('handles rate limited state correctly', async () => {
+      // First call triggers rate limit
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 429,
+      })
+
+      await GitHubService.getPublicRepositories()
+      
+      // Second call should skip due to rate limit
+      const result = await GitHubService.getPublicRepositories()
+      expect(result).toEqual([])
+      expect(console.log).toHaveBeenCalledWith('GitHub API rate limited - using empty repository list')
+      
+      // Reset for next test
+      GitHubService.resetRateLimit()
+    })
+
+    it('handles contribution data rate limiting', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 429,
+      })
+
+      await GitHubService.getContributionData()
+      
+      // Next call should be rate limited
+      const result = await GitHubService.getContributionData()
+      expect(result).toHaveProperty('contributions')
+      expect(console.log).toHaveBeenCalledWith('GitHub API rate limited - using fallback contribution data')
+      
+      GitHubService.resetRateLimit()
+    })
+
+    it('handles events without commits payload', async () => {
+      const mockEvents = [
+        {
+          id: '1',
+          type: 'PushEvent',
+          created_at: '2023-06-01T12:00:00Z',
+          repo: { name: 'test-repo' },
+          payload: {} // No commits array
+        },
+        {
+          id: '2',
+          type: 'ReleaseEvent',
+          created_at: '2023-06-02T12:00:00Z',
+          repo: { name: 'test-repo' }
+        },
+        {
+          id: '3',
+          type: 'IssuesEvent',
+          created_at: '2023-06-03T12:00:00Z',
+          repo: { name: 'test-repo' }
+        }
+      ]
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockEvents,
+      })
+
+      const result = await GitHubService.getContributionData()
+      expect(result).toHaveProperty('contributions')
+      expect(result.contributions.length).toBe(366)
+    })
+  })
+
+  describe('API skipping edge cases', () => {
+    it('should skip API calls in development environment', async () => {
+      const originalEnv = process.env.NODE_ENV
+      process.env.NODE_ENV = 'development'
+      
+      const repositories = await GitHubService.getPublicRepositories()
+      expect(repositories).toEqual([])
+      expect(console.log).toHaveBeenCalledWith('Skipping GitHub API call (test environment)')
+      
+      process.env.NODE_ENV = originalEnv
+    })
+
+    it('should skip API calls during build (production without window)', async () => {
+      const originalEnv = process.env.NODE_ENV
+      const originalWindow = globalThis.window
+      
+      process.env.NODE_ENV = 'production'
+      // @ts-ignore - testing build environment
+      delete globalThis.window
+      
+      const repositories = await GitHubService.getPublicRepositories()
+      expect(repositories).toEqual([])
+      
+      process.env.NODE_ENV = originalEnv
+      globalThis.window = originalWindow
+    })
+
+    it('should skip API calls in production client without explicit enable', async () => {
+      const originalEnv = process.env.NODE_ENV
+      const originalEnable = process.env.ENABLE_GITHUB_API
+      
+      process.env.NODE_ENV = 'production'
+      delete process.env.ENABLE_GITHUB_API
+      
+      const repositories = await GitHubService.getPublicRepositories()
+      expect(repositories).toEqual([])
+      
+      process.env.NODE_ENV = originalEnv
+      if (originalEnable) {
+        process.env.ENABLE_GITHUB_API = originalEnable
+      }
+    })
+  })
 })
