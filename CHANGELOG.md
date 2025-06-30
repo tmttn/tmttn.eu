@@ -2,6 +2,15 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.2.7 (2025-06-30)</small>
+
+### Summary
+Release with improvements and updates.
+
+* 🔧 fix: ensure release workflow runs on production branch and sync missing v0.2.6 changelog ([5540106](https://github.com/tmttn/tmttn.eu/commit/5540106e13b04e6dde8f47666e345369aacd1b6f))
+* 🔧 fix: prevent version-only package.json changes from triggering deployments ([4d72554](https://github.com/tmttn/tmttn.eu/commit/4d72554ddde1443bd0cb6faeba8d3088e3415b6d))
+
+
 ## <small>0.2.6 (2025-06-30)</small>
 
 ### Summary
