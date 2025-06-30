@@ -94,7 +94,7 @@ jobs:
         version-path: 'version'
         create-summary: 'true'
         skip-on-empty: 'false'
-        skip-version-file: 'true'
+        skip-version-file: 'false'
         skip-commit: 'false'
         git-message: '📝 docs: update CHANGELOG.md for v{version}'
         git-user-name: 'github-actions[bot]'
@@ -102,30 +102,32 @@ jobs:
         preset: 'conventionalcommits'
         config-file-path: '.versionrc.json'
     
-    - name: Sync CHANGELOG.md to main branch
+    - name: Sync version and CHANGELOG.md to main branch
       if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
       run: |
-        echo "🔄 Syncing CHANGELOG.md back to main branch..."
+        echo "🔄 Syncing version bump and CHANGELOG.md back to main branch..."
         
-        # Store the updated CHANGELOG.md
+        # Store the updated files
         cp CHANGELOG.md /tmp/updated-changelog.md
+        cp package.json /tmp/updated-package.json
         
         # Switch to main branch
         git fetch origin main
         git checkout main
         
-        # Copy the updated changelog
+        # Copy the updated files
         cp /tmp/updated-changelog.md CHANGELOG.md
+        cp /tmp/updated-package.json package.json
         
         # Check if there are actual changes
-        if git diff --quiet CHANGELOG.md; then
-          echo "No changelog differences to sync"
+        if git diff --quiet CHANGELOG.md package.json; then
+          echo "No changes to sync"
         else
-          echo "Committing CHANGELOG.md to main branch..."
-          git add CHANGELOG.md
-          git commit -m "📝 docs: sync CHANGELOG.md from release v${{ steps.package-version.outputs.version }} [skip ci]"
+          echo "Committing version bump and CHANGELOG.md to main branch..."
+          git add CHANGELOG.md package.json
+          git commit -m "📝 docs: sync version v${{ steps.changelog.outputs.version }} and CHANGELOG.md [skip ci]"
           git push origin main
-          echo "✅ CHANGELOG.md synced to main branch"
+          echo "✅ Version and CHANGELOG.md synced to main branch"
         fi
     
     - name: Create Release with auto-generated notes
@@ -150,7 +152,7 @@ jobs:
         echo "- **Version**: v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Branch**: production" >> $GITHUB_STEP_SUMMARY
         echo "- **Release URL**: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **CHANGELOG**: Updated on production branch and synced to main" >> $GITHUB_STEP_SUMMARY
+        echo "- **Version & CHANGELOG**: Updated on production branch and synced to main" >> $GITHUB_STEP_SUMMARY
         echo "- **CI Impact**: Changelog sync uses [skip ci] to prevent new pipeline" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "The release includes all changes that were rebased to the production branch." >> $GITHUB_STEP_SUMMARY

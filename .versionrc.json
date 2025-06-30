@@ -53,7 +53,7 @@
   "userUrlFormat": "https://github.com/{{user}}",
   "releaseCommitMessageFormat": "📝 docs: update CHANGELOG.md for v{{currentTag}}",
   "skip": {
-    "bump": true,
+    "bump": false,
     "commit": false,
     "tag": true
   }
