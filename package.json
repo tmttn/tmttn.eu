@@ -68,7 +68,7 @@
     "sharp": "^0.34.2",
     "start-server-and-test": "^2.0.12",
     "ts-loader": "^9.5.2",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.0-dev",
     "webpack": "^5.99.9",
     "webpack-bundle-analyzer": "^4.10.2"
   },
