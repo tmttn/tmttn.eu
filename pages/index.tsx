@@ -109,31 +109,31 @@ export default function Home() {
           <h1 id="contact-heading">Contact</h1>
           <h2>Get in touch with me:</h2>
           <StyledIconBar>
-            <StyledIcon href="https://github.com/tmttn" aria-label="GitHub">
+            <StyledIcon href="https://github.com/tmttn" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
               <ClientOnlyIcon icon={["fab", "github-square"]} fallback="GitHub" />
             </StyledIcon>
 
-            <StyledIcon href="https://www.linkedin.com/in/tmetten/" aria-label="LinkedIn">
+            <StyledIcon href="https://www.linkedin.com/in/tmetten/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
               <ClientOnlyIcon icon={["fab", "linkedin"]} fallback="LinkedIn" />
             </StyledIcon>
 
-            <StyledIcon href="https://github.com/less-is-code" aria-label="Less is Code">
+            <StyledIcon href="https://github.com/less-is-code" target="_blank" rel="noopener noreferrer" aria-label="Less is Code">
               <ClientOnlyIcon icon={["fab", "github-square"]} fallback="GitHub" />
             </StyledIcon>
 
-            <StyledIcon href="mailto:contact@tmttn.eu" aria-label="Email">
+            <StyledIcon href="mailto:thomas.metten@gmail.com" aria-label="Email">
               <ClientOnlyIcon icon="at" fallback="Email" />
             </StyledIcon>
 
-            <StyledIcon href="https://www.twitch.tv/bizarius" aria-label="Twitch">
+            <StyledIcon href="https://www.twitch.tv/bizarius" target="_blank" rel="noopener noreferrer" aria-label="Twitch">
               <ClientOnlyIcon icon={["fab", "twitch"]} fallback="Twitch" />
             </StyledIcon>
 
-            <StyledIcon href="https://discord.gg/G5E8XWR" aria-label="Discord">
+            <StyledIcon href="https://discord.gg/G5E8XWR" target="_blank" rel="noopener noreferrer" aria-label="Discord">
               <ClientOnlyIcon icon={["fab", "discord"]} fallback="Discord" />
             </StyledIcon>
 
-            <StyledIcon href="https://www.facebook.com/mettentom" aria-label="Facebook">
+            <StyledIcon href="https://www.facebook.com/mettentom" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
               <ClientOnlyIcon icon={["fab", "facebook-square"]} fallback="Facebook" />
             </StyledIcon>
           </StyledIconBar>
@@ -155,16 +155,16 @@ export default function Home() {
               remotely with teams worldwide.
             </p>
             <div className="footer-social">
-              <a href="https://github.com/tmttn" aria-label="GitHub">
+              <a href="https://github.com/tmttn" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
                 <ClientOnlyIcon icon={["fab", "github"]} fallback="GH" />
               </a>
-              <a href="https://www.linkedin.com/in/tmetten/" aria-label="LinkedIn">
+              <a href="https://www.linkedin.com/in/tmetten/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                 <ClientOnlyIcon icon={["fab", "linkedin"]} fallback="LI" />
               </a>
-              <a href="https://www.twitch.tv/bizarius" aria-label="Twitch">
+              <a href="https://www.twitch.tv/bizarius" target="_blank" rel="noopener noreferrer" aria-label="Twitch">
                 <ClientOnlyIcon icon={["fab", "twitch"]} fallback="TW" />
               </a>
-              <a href="https://discord.gg/G5E8XWR" aria-label="Discord">
+              <a href="https://discord.gg/G5E8XWR" target="_blank" rel="noopener noreferrer" aria-label="Discord">
                 <ClientOnlyIcon icon={["fab", "discord"]} fallback="DC" />
               </a>
             </div>
