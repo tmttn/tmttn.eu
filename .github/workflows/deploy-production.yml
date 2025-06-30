@@ -97,6 +97,7 @@ jobs:
               ".gitignore"
               ".eslintrc"
               "jest.config.js"
+              ".versionrc.json"
               "cypress.config"
               ".env.example"
               "docs/"
