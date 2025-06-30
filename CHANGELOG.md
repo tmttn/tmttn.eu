@@ -1,11 +1,19 @@
-## 0.2.2 (2025-06-30)
+##  (2025-06-30)
+
+* 🐛 fix: prevent duplicate [skip ci] in changelog commit messages ([66a2c2c](https://github.com/tmttn/tmttn.eu/commit/66a2c2c))
+
+
+
+## <small>0.2.2 (2025-06-30)</small>
 
 * ✨ feat: enhance changelog generation with intelligent summaries and structured format ([a7f2a93](https://github.com/tmttn/tmttn.eu/commit/a7f2a93))
 * ✨ feat: hide entire portfolio section when GitHub API fails ([1e100bf](https://github.com/tmttn/tmttn.eu/commit/1e100bf))
 * 🎨 style: remove logo from header and improve CI pipeline ([b6173aa](https://github.com/tmttn/tmttn.eu/commit/b6173aa))
 * 🐛 fix: adjust header layout after logo removal ([faa7e89](https://github.com/tmttn/tmttn.eu/commit/faa7e89))
 * 🐛 fix: prevent vnull tag creation in release workflow ([a7dfafa](https://github.com/tmttn/tmttn.eu/commit/a7dfafa))
+* 🐛 fix: restore version 0.2.2 in package.json and fix changelog header ([650c51f](https://github.com/tmttn/tmttn.eu/commit/650c51f))
 * 📝 docs: sync version v0.2.1 and CHANGELOG.md [skip ci] ([74830b5](https://github.com/tmttn/tmttn.eu/commit/74830b5))
+* 📝 docs: update CHANGELOG.md for vvnull [skip ci] [skip ci] ([0646802](https://github.com/tmttn/tmttn.eu/commit/0646802))
 * 📝 docs: update CHANGELOG.md for vvnull [skip ci] [skip ci] ([2e3d627](https://github.com/tmttn/tmttn.eu/commit/2e3d627))
 * 🔧 fix: exclude .versionrc.json from user-facing deployment triggers ([0dc5b33](https://github.com/tmttn/tmttn.eu/commit/0dc5b33))
 * 🔧 fix: trigger deployment to test release workflow after vnull tag removal ([ba06b29](https://github.com/tmttn/tmttn.eu/commit/ba06b29))
