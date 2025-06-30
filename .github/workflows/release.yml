@@ -67,6 +67,32 @@ jobs:
         preset: 'conventionalcommits'
         config-file-path: '.versionrc.json'
     
+    - name: Sync CHANGELOG.md to main branch
+      if: steps.check-release.outputs.exists == 'false'
+      run: |
+        echo "🔄 Syncing CHANGELOG.md back to main branch..."
+        
+        # Store the updated CHANGELOG.md
+        cp CHANGELOG.md /tmp/updated-changelog.md
+        
+        # Switch to main branch
+        git fetch origin main
+        git checkout main
+        
+        # Copy the updated changelog
+        cp /tmp/updated-changelog.md CHANGELOG.md
+        
+        # Check if there are actual changes
+        if git diff --quiet CHANGELOG.md; then
+          echo "No changelog differences to sync"
+        else
+          echo "Committing CHANGELOG.md to main branch..."
+          git add CHANGELOG.md
+          git commit -m "📝 docs: sync CHANGELOG.md from release v${{ steps.package-version.outputs.version }} [skip ci]"
+          git push origin main
+          echo "✅ CHANGELOG.md synced to main branch"
+        fi
+    
     - name: Create Release with auto-generated notes
       if: steps.check-release.outputs.exists == 'false'
       uses: softprops/action-gh-release@v2
@@ -89,7 +115,8 @@ jobs:
         echo "- **Version**: v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Branch**: production" >> $GITHUB_STEP_SUMMARY
         echo "- **Release URL**: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **CHANGELOG**: Updated and committed to repository" >> $GITHUB_STEP_SUMMARY
+        echo "- **CHANGELOG**: Updated on production branch and synced to main" >> $GITHUB_STEP_SUMMARY
+        echo "- **CI Impact**: Changelog sync uses [skip ci] to prevent new pipeline" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "The release includes all changes that were rebased to the production branch." >> $GITHUB_STEP_SUMMARY
     
