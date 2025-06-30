@@ -123,15 +123,24 @@ jobs:
                   echo "📦 Analyzing package.json changes..."
                   PACKAGE_DIFF=$(git diff origin/production...origin/main -- package.json)
                   
-                  # Check for user-facing package.json changes
-                  if echo "$PACKAGE_DIFF" | grep -E '^[+-].*"(dependencies|engines|overrides|version|main|module|exports|scripts)"' | grep -vE '"(test|dev|lint|format|cypress)"'; then
-                    echo "✅ User-facing package.json changes detected (dependencies/engines/overrides/version/build scripts)"
+                  # Check if only version changed (version bump from release workflow)
+                  if echo "$PACKAGE_DIFF" | grep -E '^[+-].*"version"' && ! echo "$PACKAGE_DIFF" | grep -vE '^[+-].*"version"' | grep -E '^[+-]'; then
+                    echo "⏭️ Skipping package.json version-only changes (from release workflow)"
+                  # Check for other user-facing package.json changes (excluding version and metadata)
+                  elif echo "$PACKAGE_DIFF" | grep -E '^[+-].*"(dependencies|engines|overrides|main|module|exports|scripts)"' | grep -vE '"(test|dev|lint|format|cypress|version)"'; then
+                    echo "✅ User-facing package.json changes detected (dependencies/engines/overrides/build scripts)"
                     USER_FACING_CHANGES=true
                   elif echo "$PACKAGE_DIFF" | grep -E '^[+-].*"(description|keywords|author|license|repository|bugs|homepage|devDependencies)"'; then
                     echo "⏭️ Skipping package.json metadata-only changes"
                   else
-                    echo "✅ User-facing package.json changes detected (other production changes)"
-                    USER_FACING_CHANGES=true
+                    # Check if there are any other significant changes beyond version/metadata
+                    SIGNIFICANT_CHANGES=$(echo "$PACKAGE_DIFF" | grep -E '^[+-]' | grep -vE '"(version|description|keywords|author|license|repository|bugs|homepage|devDependencies)"')
+                    if [ -n "$SIGNIFICANT_CHANGES" ]; then
+                      echo "✅ User-facing package.json changes detected (other production changes)"
+                      USER_FACING_CHANGES=true
+                    else
+                      echo "⏭️ Skipping package.json changes (version/metadata only)"
+                    fi
                   fi
                 # Special handling for package-lock.json - only if dependencies changed
                 elif [[ "$file" == "package-lock.json" ]]; then
