@@ -47,6 +47,7 @@ jobs:
       if: steps.deployment-check.outputs.deployment_occurred == 'true'
       uses: actions/checkout@v4
       with:
+        ref: production  # Checkout production branch, not main
         fetch-depth: 0  # Need full history for changelog generation
         token: ${{ secrets.GITHUB_TOKEN }}
     

@@ -2,6 +2,18 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.2.6 (2025-06-30)</small>
+
+### Summary
+Release with improvements and updates.
+
+### 🔧 Maintenance & Build
+* 🔧 fix: resolve versioning pipeline issues with comprehensive improvements ([2d76cdd](https://github.com/tmttn/tmttn.eu/commit/2d76cdde9334bdb675b1ef243a713214753d54fb))
+
+### 📝 Documentation
+* 📝 docs: sync version v0.2.5 and CHANGELOG.md [skip ci] ([4e4e235](https://github.com/tmttn/tmttn.eu/commit/4e4e235a72220c2e90356d71a5f4d44c26a4107b))
+* 📝 docs: update CHANGELOG.md for vvnull [skip ci] ([e938c88](https://github.com/tmttn/tmttn.eu/commit/e938c883eab9bd8974a80d47c022292a492db201))
+
 ## <small>0.2.5 (2025-06-30)</small>
 
 ### Summary
