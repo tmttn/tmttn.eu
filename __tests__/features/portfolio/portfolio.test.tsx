@@ -215,7 +215,7 @@ describe('Portfolio', () => {
 
     renderWithThemeProvider(<Portfolio />)
 
-    const githubLink = screen.getByRole('link', { name: /View all repositories on GitHub/ })
+    const githubLink = screen.getByRole('link', { name: /Explore more projects on GitHub/ })
     expect(githubLink).toHaveAttribute('href', 'https://github.com/tmttn')
     expect(githubLink).toHaveAttribute('target', '_blank')
     expect(githubLink).toHaveAttribute('rel', 'noopener noreferrer')

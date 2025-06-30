@@ -140,7 +140,7 @@ function PortfolioContent({ variant }: Readonly<PortfolioProperties>) {
           className="github-profile-link"
         >
           <ClientOnlyIcon icon={["fab", "github"]} fallback="GitHub" />
-          View all repositories on GitHub
+          Explore more projects on GitHub
         </a>
       </div>
     </StyledPortfolio>
