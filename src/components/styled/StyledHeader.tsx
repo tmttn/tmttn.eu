@@ -6,7 +6,7 @@ export const StyledHeader = styled.header<{ $scrolled?: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   position: fixed;
   width: 100%;
   top: 0;
