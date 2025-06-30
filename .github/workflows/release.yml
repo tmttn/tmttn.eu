@@ -1,0 +1,103 @@
+name: Release & Changelog
+
+on:
+  push:
+    branches: [production]
+
+jobs:
+  release:
+    name: Create Release & Generate Changelog
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+    
+    steps:
+    - name: Checkout production branch
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Need full history for changelog generation
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci --frozen-lockfile
+    
+    - name: Get package version
+      id: package-version
+      run: |
+        VERSION=$(node -p "require('./package.json').version")
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Current package.json version: $VERSION"
+    
+    - name: Check if release already exists
+      id: check-release
+      run: |
+        if gh release view "v${{ steps.package-version.outputs.version }}" >/dev/null 2>&1; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+          echo "Release v${{ steps.package-version.outputs.version }} already exists"
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+          echo "Release v${{ steps.package-version.outputs.version }} does not exist"
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Generate Changelog from Conventional Commits
+      id: changelog
+      if: steps.check-release.outputs.exists == 'false'
+      uses: TriPSs/conventional-changelog-action@v5
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        output-file: 'CHANGELOG.md'
+        version-file: 'package.json'
+        version-path: 'version'
+        create-summary: 'true'
+        skip-on-empty: 'false'
+        skip-version-file: 'true'
+        skip-commit: 'false'
+        git-message: '📝 docs: update CHANGELOG.md for v{version}'
+        git-user-name: 'github-actions[bot]'
+        git-user-email: 'github-actions[bot]@users.noreply.github.com'
+        preset: 'conventionalcommits'
+        config-file-path: '.versionrc.json'
+    
+    - name: Create Release with auto-generated notes
+      if: steps.check-release.outputs.exists == 'false'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ steps.package-version.outputs.version }}
+        name: Release v${{ steps.package-version.outputs.version }}
+        body: ${{ steps.changelog.outputs.clean_changelog }}
+        target_commitish: production
+        make_latest: true
+        generate_release_notes: true
+        append_body: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Release Summary
+      if: steps.check-release.outputs.exists == 'false'
+      run: |
+        echo "## 🎉 Release Created Successfully" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Version**: v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Branch**: production" >> $GITHUB_STEP_SUMMARY
+        echo "- **Release URL**: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **CHANGELOG**: Updated and committed to repository" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "The release includes all changes that were rebased to the production branch." >> $GITHUB_STEP_SUMMARY
+    
+    - name: Skip Release (Already Exists)
+      if: steps.check-release.outputs.exists == 'true'
+      run: |
+        echo "## ℹ️ Release Already Exists" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Version**: v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: Release already exists, skipping creation" >> $GITHUB_STEP_SUMMARY
+        echo "- **Release URL**: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY

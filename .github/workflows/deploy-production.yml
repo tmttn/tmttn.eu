@@ -22,12 +22,73 @@ jobs:
         fetch-depth: 0  # Fetch full history for merging
         token: ${{ secrets.GITHUB_TOKEN }}
     
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci --frozen-lockfile
+    
+    - name: Build current main branch
+      run: npm run build
+    
+    - name: Store current build artifacts
+      run: |
+        echo "📦 Storing current build artifacts..."
+        mkdir -p /tmp/current-build
+        cp -r out/* /tmp/current-build/
+        echo "Current build size: $(du -sh /tmp/current-build/)"
+    
     - name: Configure Git
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
     
+    - name: Check production branch and compare builds
+      id: build-comparison
+      run: |
+        echo "🔍 Checking if production branch exists and comparing builds..."
+        
+        # Fetch the latest main branch
+        git fetch origin main
+        git checkout main
+        
+        BUILD_CHANGED=true
+        
+        # Check if production branch exists
+        if git ls-remote --exit-code --heads origin production; then
+          echo "Production branch exists, checking for build differences..."
+          git fetch origin production
+          git checkout production
+          
+          # Build the current production branch
+          npm run build
+          
+          # Compare build outputs
+          echo "Comparing build artifacts..."
+          if diff -r --brief /tmp/current-build/ out/ > /dev/null 2>&1; then
+            echo "✅ Build artifacts are identical - no deployment needed"
+            BUILD_CHANGED=false
+          else
+            echo "🔄 Build artifacts differ - deployment needed"
+            echo "Differences found:"
+            diff -r --brief /tmp/current-build/ out/ || true
+            BUILD_CHANGED=true
+          fi
+        else
+          echo "Production branch doesn't exist - deployment needed"
+          BUILD_CHANGED=true
+        fi
+        
+        echo "build_changed=$BUILD_CHANGED" >> $GITHUB_OUTPUT
+        
+        # Switch back to main for deployment
+        git checkout main
+    
     - name: Deploy to production
+      if: steps.build-comparison.outputs.build_changed == 'true'
       run: |
         echo "🚀 Starting deployment to production branch..."
         
@@ -76,7 +137,14 @@ jobs:
         
         echo "✅ Successfully deployed to production branch"
     
-    - name: Create deployment summary
+    - name: Skip deployment (no build changes)
+      if: steps.build-comparison.outputs.build_changed == 'false'
+      run: |
+        echo "⏭️ Skipping deployment - no changes in build artifacts"
+        echo "The website content is identical to what's already in production."
+    
+    - name: Create deployment summary (deployed)
+      if: steps.build-comparison.outputs.build_changed == 'true'
       run: |
         echo "## 🚀 Production Deployment Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
@@ -84,4 +152,17 @@ jobs:
         echo "- **Target Branch**: production" >> $GITHUB_STEP_SUMMARY
         echo "- **Commit**: ${{ github.event.workflow_run.head_sha }}" >> $GITHUB_STEP_SUMMARY
         echo "- **CI Run**: [${{ github.event.workflow_run.html_url }}](${{ github.event.workflow_run.html_url }})" >> $GITHUB_STEP_SUMMARY
-        echo "- **Status**: ✅ Success" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: ✅ Deployed (build artifacts changed)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Result**: Production branch updated, Netlify will deploy changes" >> $GITHUB_STEP_SUMMARY
+    
+    - name: Create deployment summary (skipped)
+      if: steps.build-comparison.outputs.build_changed == 'false'
+      run: |
+        echo "## ⏭️ Production Deployment Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Source Branch**: main" >> $GITHUB_STEP_SUMMARY
+        echo "- **Target Branch**: production" >> $GITHUB_STEP_SUMMARY
+        echo "- **Commit**: ${{ github.event.workflow_run.head_sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **CI Run**: [${{ github.event.workflow_run.html_url }}](${{ github.event.workflow_run.html_url }})" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: ⏭️ Skipped (no build changes)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Result**: Build artifacts identical, no Netlify deployment needed" >> $GITHUB_STEP_SUMMARY
