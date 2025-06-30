@@ -90,17 +90,20 @@ jobs:
             # Compare HTML files (normalize build IDs)
             for file in $(find /tmp/current-build -name "*.html" | sed "s|/tmp/current-build/||"); do
               if [ -f "out/$file" ]; then
-                # Normalize build IDs before comparison
-                sed 's/_next\/static\/[a-zA-Z0-9_-]*\//_next\/static\/BUILD_ID\//g' "/tmp/current-build/$file" > "/tmp/current-$file.norm"
-                sed 's/_next\/static\/[a-zA-Z0-9_-]*\//_next\/static\/BUILD_ID\//g' "out/$file" > "/tmp/production-$file.norm"
+                # Create safe filename for temp files (replace slashes with underscores)
+                safe_file=$(echo "$file" | tr '/' '_')
                 
-                if ! diff "/tmp/current-$file.norm" "/tmp/production-$file.norm" > /dev/null 2>&1; then
+                # Normalize build IDs before comparison
+                sed 's/_next\/static\/[a-zA-Z0-9_-]*\//_next\/static\/BUILD_ID\//g' "/tmp/current-build/$file" > "/tmp/current-$safe_file.norm"
+                sed 's/_next\/static\/[a-zA-Z0-9_-]*\//_next\/static\/BUILD_ID\//g' "out/$file" > "/tmp/production-$safe_file.norm"
+                
+                if ! diff "/tmp/current-$safe_file.norm" "/tmp/production-$safe_file.norm" > /dev/null 2>&1; then
                   echo "HTML content differs: $file"
                   CONTENT_CHANGED=true
                   break
                 fi
                 
-                rm -f "/tmp/current-$file.norm" "/tmp/production-$file.norm"
+                rm -f "/tmp/current-$safe_file.norm" "/tmp/production-$safe_file.norm"
               fi
             done
             
