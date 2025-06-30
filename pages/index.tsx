@@ -14,7 +14,6 @@ import {
   ClientOnlyIcon, 
   ResponsiveImage,
   StyledHeader,
-  StyledLogo,
   StyledHeaderRight,
   StyledMain,
   StyledWelcomeSection,
@@ -57,11 +56,6 @@ export default function Home() {
       <PageTransition>
         <Layout>
       <StyledHeader $scrolled={scrolled}>
-        <StyledLogo
-          src="/static/tmttn-logo2.svg"
-          alt="tmttn logo"
-          $scrolled={scrolled}
-        />
         <StyledHeaderRight>
           <AccessibleNavigation />
           <EnhancedThemeToggle />

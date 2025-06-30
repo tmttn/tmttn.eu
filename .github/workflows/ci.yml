@@ -7,10 +7,52 @@ on:
     branches: [ main ]
 
 jobs:
-  # Stage 1: Build
+  # Stage 0: Conventional Commit Validation (First Gate)
+  commit-lint:
+    name: Validate Commit Messages
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22.x'
+    
+    - name: Install commitlint
+      run: |
+        npm install --save-dev @commitlint/config-conventional @commitlint/cli
+    
+    - name: Validate current commit (push)
+      if: github.event_name == 'push'
+      run: npx commitlint --from HEAD~1 --to HEAD --verbose
+    
+    - name: Validate PR commits  
+      if: github.event_name == 'pull_request'
+      run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+    
+    - name: Create commit validation summary
+      run: |
+        echo "## ✅ Commit Message Validation" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Format**: Conventional Commits specification" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: ✅ All commit messages are properly formatted" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Validation Rules" >> $GITHUB_STEP_SUMMARY
+        echo "- Must follow \`type: description\` format" >> $GITHUB_STEP_SUMMARY
+        echo "- Allowed types: feat, fix, docs, style, refactor, test, chore" >> $GITHUB_STEP_SUMMARY
+        echo "- Description must be lowercase and descriptive" >> $GITHUB_STEP_SUMMARY
+
+  # Stage 1: Build (depends on commit validation)
   build:
     name: Build Application
     runs-on: ubuntu-latest
+    needs: commit-lint
     timeout-minutes: 15
     
     steps:

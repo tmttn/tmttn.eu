@@ -61,31 +61,17 @@ jobs:
       if: steps.deployment-check.outputs.deployment_occurred == 'true'
       run: npm ci --frozen-lockfile
     
-    - name: Get package version
+    - name: Get current package version
       if: steps.deployment-check.outputs.deployment_occurred == 'true'
-      id: package-version
+      id: current-version
       run: |
         VERSION=$(node -p "require('./package.json').version")
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "current-version=$VERSION" >> $GITHUB_OUTPUT
         echo "Current package.json version: $VERSION"
-    
-    - name: Check if release already exists
-      if: steps.deployment-check.outputs.deployment_occurred == 'true'
-      id: check-release
-      run: |
-        if gh release view "v${{ steps.package-version.outputs.version }}" >/dev/null 2>&1; then
-          echo "exists=true" >> $GITHUB_OUTPUT
-          echo "Release v${{ steps.package-version.outputs.version }} already exists"
-        else
-          echo "exists=false" >> $GITHUB_OUTPUT
-          echo "Release v${{ steps.package-version.outputs.version }} does not exist"
-        fi
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Generate Changelog from Conventional Commits
       id: changelog
-      if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
+      if: steps.deployment-check.outputs.deployment_occurred == 'true'
       uses: TriPSs/conventional-changelog-action@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -103,19 +89,41 @@ jobs:
         config-file-path: '.versionrc.json'
         fallback-version: 'patch'
         
+    - name: Get new package version after changelog
+      if: steps.deployment-check.outputs.deployment_occurred == 'true'
+      id: new-version
+      run: |
+        NEW_VERSION=$(node -p "require('./package.json').version")
+        echo "new-version=$NEW_VERSION" >> $GITHUB_OUTPUT
+        echo "New package.json version after changelog: $NEW_VERSION"
+    
+    - name: Check if release already exists for new version
+      if: steps.deployment-check.outputs.deployment_occurred == 'true'
+      id: check-release
+      run: |
+        if gh release view "v${{ steps.new-version.outputs.new-version }}" >/dev/null 2>&1; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+          echo "Release v${{ steps.new-version.outputs.new-version }} already exists"
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+          echo "Release v${{ steps.new-version.outputs.new-version }} does not exist - will create"
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
     - name: Validate version after changelog generation
       id: validate-version
       if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
       run: |
-        NEW_VERSION=$(node -p "require('./package.json').version")
+        NEW_VERSION="${{ steps.new-version.outputs.new-version }}"
         echo "Generated version: $NEW_VERSION"
         
         if [ "$NEW_VERSION" = "null" ] || [ -z "$NEW_VERSION" ]; then
           echo "❌ Invalid version generated: $NEW_VERSION"
-          echo "Falling back to patch bump from ${{ steps.package-version.outputs.version }}"
+          echo "Falling back to patch bump from ${{ steps.current-version.outputs.current-version }}"
           
           # Parse current version and increment patch
-          CURRENT_VERSION="${{ steps.package-version.outputs.version }}"
+          CURRENT_VERSION="${{ steps.current-version.outputs.current-version }}"
           if [[ $CURRENT_VERSION =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
             MAJOR=${BASH_REMATCH[1]}
             MINOR=${BASH_REMATCH[2]}
@@ -301,9 +309,9 @@ jobs:
       run: |
         echo "## ℹ️ Release Already Exists" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "- **Version**: v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Version**: v${{ steps.new-version.outputs.new-version }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Status**: Release already exists, skipping creation" >> $GITHUB_STEP_SUMMARY
-        echo "- **Release URL**: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Release URL**: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.new-version.outputs.new-version }}" >> $GITHUB_STEP_SUMMARY
     
     - name: Skip Release (No Deployment)
       if: steps.deployment-check.outputs.deployment_occurred == 'false'

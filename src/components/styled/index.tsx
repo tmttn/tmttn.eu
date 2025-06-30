@@ -1,5 +1,4 @@
 export { StyledHeader } from './StyledHeader'
-export { StyledLogo } from './StyledLogo'
 export { StyledHeaderRight } from './StyledHeaderRight'
 export { StyledNav } from './StyledNav'
 export { StyledMain } from './StyledMain'
