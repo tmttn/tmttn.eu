@@ -123,32 +123,41 @@ jobs:
                   echo "📦 Analyzing package.json changes..."
                   PACKAGE_DIFF=$(git diff origin/production...origin/main -- package.json)
                   
-                  # Count different types of changes
+                  # First, let's see what we're actually dealing with
+                  echo "🔍 DEBUG: Full package.json diff:"
+                  echo "$PACKAGE_DIFF"
+                  echo "🔍 DEBUG: Lines with +/- changes:"
+                  echo "$PACKAGE_DIFF" | grep -E '^[+-]'
+                  echo "🔍 DEBUG: End of diff"
+                  
+                  # Count different types of changes (only count actual content lines, not diff metadata)
                   VERSION_CHANGES=$(echo "$PACKAGE_DIFF" | grep -E '^[+-].*"version"' | wc -l)
                   METADATA_CHANGES=$(echo "$PACKAGE_DIFF" | grep -E '^[+-].*"(description|keywords|author|license|repository|bugs|homepage)"' | wc -l)
                   DEV_CHANGES=$(echo "$PACKAGE_DIFF" | grep -E '^[+-].*"devDependencies"' | wc -l)
                   PROD_CHANGES=$(echo "$PACKAGE_DIFF" | grep -E '^[+-].*"(dependencies|engines|overrides|main|module|exports)"' | wc -l)
                   BUILD_SCRIPT_CHANGES=$(echo "$PACKAGE_DIFF" | grep -E '^[+-].*"scripts"' | grep -vE '"(test|dev|lint|format|cypress)"' | wc -l)
-                  TOTAL_CHANGES=$(echo "$PACKAGE_DIFF" | grep -E '^[+-]' | wc -l)
                   
-                  echo "🔍 DEBUG: version=$VERSION_CHANGES, metadata=$METADATA_CHANGES, dev=$DEV_CHANGES, prod=$PROD_CHANGES, scripts=$BUILD_SCRIPT_CHANGES, total=$TOTAL_CHANGES"
+                  # Count only JSON content changes (exclude diff headers and file paths)  
+                  JSON_CONTENT_CHANGES=$(echo "$PACKAGE_DIFF" | grep -E '^[+-]' | grep -vE '^[+-]{3}' | wc -l)
                   
-                  # Calculate non-production changes (version + metadata + dev deps)
-                  NON_PROD_CHANGES=$((VERSION_CHANGES + METADATA_CHANGES + DEV_CHANGES))
+                  echo "🔍 DEBUG: version=$VERSION_CHANGES, metadata=$METADATA_CHANGES, dev=$DEV_CHANGES, prod=$PROD_CHANGES, scripts=$BUILD_SCRIPT_CHANGES, content_total=$JSON_CONTENT_CHANGES"
                   
-                  # If only version/metadata/dev changes (no production impact)
-                  if [ "$TOTAL_CHANGES" -eq "$NON_PROD_CHANGES" ] && [ "$TOTAL_CHANGES" -gt 0 ]; then
-                    echo "⏭️ Skipping package.json changes (version/metadata/dev only - no production impact)"
-                  # If there are production dependencies or build script changes
+                  # Check for version-only changes
+                  if [ "$VERSION_CHANGES" -gt 0 ] && [ "$PROD_CHANGES" -eq 0 ] && [ "$BUILD_SCRIPT_CHANGES" -eq 0 ] && [ "$METADATA_CHANGES" -eq 0 ] && [ "$DEV_CHANGES" -eq 0 ]; then
+                    echo "⏭️ Skipping package.json changes (version-only change from release workflow)"
+                  # Check for production dependencies or build script changes  
                   elif [ "$PROD_CHANGES" -gt 0 ] || [ "$BUILD_SCRIPT_CHANGES" -gt 0 ]; then
                     echo "✅ User-facing package.json changes detected (production dependencies or build scripts)"
                     USER_FACING_CHANGES=true
-                  # Any other changes not categorized above
-                  elif [ "$TOTAL_CHANGES" -gt "$NON_PROD_CHANGES" ]; then
-                    echo "✅ User-facing package.json changes detected (other production changes)"
-                    USER_FACING_CHANGES=true
+                  # Check for metadata-only changes
+                  elif [ "$METADATA_CHANGES" -gt 0 ] && [ "$PROD_CHANGES" -eq 0 ] && [ "$BUILD_SCRIPT_CHANGES" -eq 0 ] && [ "$VERSION_CHANGES" -eq 0 ]; then
+                    echo "⏭️ Skipping package.json changes (metadata-only changes)" 
+                  # Check for dev dependencies only
+                  elif [ "$DEV_CHANGES" -gt 0 ] && [ "$PROD_CHANGES" -eq 0 ] && [ "$BUILD_SCRIPT_CHANGES" -eq 0 ] && [ "$VERSION_CHANGES" -eq 0 ] && [ "$METADATA_CHANGES" -eq 0 ]; then
+                    echo "⏭️ Skipping package.json changes (dev dependencies only)"
                   else
-                    echo "⏭️ Skipping package.json changes (no production impact detected)"
+                    echo "✅ User-facing package.json changes detected (mixed or unclassified changes)"
+                    USER_FACING_CHANGES=true
                   fi
                 # Special handling for package-lock.json - only if dependencies changed
                 elif [[ "$file" == "package-lock.json" ]]; then
