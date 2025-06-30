@@ -31,121 +31,134 @@ jobs:
     - name: Install dependencies
       run: npm ci --frozen-lockfile
     
-    - name: Build current main branch
-      run: npm run build
-    
-    - name: Store current build artifacts
-      run: |
-        echo "📦 Storing current build artifacts..."
-        mkdir -p /tmp/current-build
-        cp -r out/* /tmp/current-build/
-        echo "Current build size: $(du -sh /tmp/current-build/)"
     
     - name: Configure Git
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
     
-    - name: Check production branch and compare builds
-      id: build-comparison
+    - name: Check for user-facing changes
+      id: change-detection
       run: |
-        echo "🔍 Checking if production branch exists and comparing builds..."
+        echo "🔍 Analyzing source code changes to determine if deployment is needed..."
         
         # Fetch the latest main branch
         git fetch origin main
         git checkout main
         
-        BUILD_CHANGED=true
+        DEPLOY_NEEDED=true
         
         # Check if production branch exists
         if git ls-remote --exit-code --heads origin production; then
-          echo "Production branch exists, checking for build differences..."
+          echo "Production branch exists, checking for user-facing changes..."
           git fetch origin production
-          git checkout production
           
-          # Build the current production branch
-          npm run build
+          # Get the list of changed files between production and main
+          CHANGED_FILES=$(git diff --name-only origin/production...origin/main)
           
-          # Compare build content excluding Next.js build-specific artifacts
-          echo "Comparing build content (excluding Next.js build IDs and hashes)..."
-          
-          # Simple approach: compare file lists and key content files
-          # Exclude _next directory which contains build-specific hashes
-          
-          # Create file lists excluding build-specific paths
-          find /tmp/current-build -type f ! -path "*/_next/*" | sed "s|/tmp/current-build/||" | sort > /tmp/current-files.txt
-          find out -type f ! -path "*/_next/*" | sed "s|out/||" | sort > /tmp/production-files.txt
-          
-          # Compare file lists first
-          if ! diff /tmp/current-files.txt /tmp/production-files.txt > /dev/null 2>&1; then
-            echo "🔄 File list differs - deployment needed"
-            echo "File differences:"
-            diff /tmp/current-files.txt /tmp/production-files.txt || true
-            BUILD_CHANGED=true
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "✅ No changes between production and main - no deployment needed"
+            DEPLOY_NEEDED=false
           else
-            # File lists are same, now compare content of key files (HTML, CSS, etc.)
-            echo "File lists identical, comparing content..."
-            CONTENT_CHANGED=false
+            echo "📝 Files changed since last production deploy:"
+            echo "$CHANGED_FILES"
+            echo ""
             
-            # Compare HTML files (normalize build IDs)
-            for file in $(find /tmp/current-build -name "*.html" | sed "s|/tmp/current-build/||"); do
-              if [ -f "out/$file" ]; then
-                # Create safe filename for temp files (replace slashes with underscores)
-                safe_file=$(echo "$file" | tr '/' '_')
-                
-                # Normalize build IDs before comparison
-                sed 's/_next\/static\/[a-zA-Z0-9_-]*\//_next\/static\/BUILD_ID\//g' "/tmp/current-build/$file" > "/tmp/current-$safe_file.norm"
-                sed 's/_next\/static\/[a-zA-Z0-9_-]*\//_next\/static\/BUILD_ID\//g' "out/$file" > "/tmp/production-$safe_file.norm"
-                
-                if ! diff "/tmp/current-$safe_file.norm" "/tmp/production-$safe_file.norm" > /dev/null 2>&1; then
-                  echo "HTML content differs: $file"
-                  CONTENT_CHANGED=true
+            # Check if any changed files affect the user-facing website
+            USER_FACING_CHANGES=false
+            
+            # Paths that affect the live website
+            USER_FACING_PATHS=(
+              "src/"
+              "pages/"
+              "public/"
+              "styles/"
+              "components/"
+              "features/"
+              "contexts/"
+              "services/"
+              "utils/"
+              "package.json"
+              "package-lock.json"
+              "next.config.js"
+              "tsconfig.json"
+              "tailwind.config.js"
+              "scripts/"
+            )
+            
+            # Paths that should NOT trigger deployment
+            NON_DEPLOYMENT_PATHS=(
+              "__tests__/"
+              ".github/"
+              "cypress/"
+              "README.md"
+              "CHANGELOG.md"
+              "CLAUDE.md"
+              ".gitignore"
+              ".eslintrc"
+              "jest.config.js"
+              "cypress.config"
+              ".env.example"
+              "docs/"
+            )
+            
+            echo "🔍 Analyzing changes for user-facing impact..."
+            
+            for file in $CHANGED_FILES; do
+              # Check if file should NOT trigger deployment
+              SKIP_FILE=false
+              for non_deploy_path in "${NON_DEPLOYMENT_PATHS[@]}"; do
+                if [[ "$file" == $non_deploy_path* ]]; then
+                  echo "⏭️ Skipping non-user-facing: $file"
+                  SKIP_FILE=true
                   break
                 fi
+              done
+              
+              # If not skipped, check if it's user-facing
+              if [ "$SKIP_FILE" = "false" ]; then
+                for user_path in "${USER_FACING_PATHS[@]}"; do
+                  if [[ "$file" == $user_path* ]]; then
+                    echo "✅ User-facing change detected: $file"
+                    USER_FACING_CHANGES=true
+                    break
+                  fi
+                done
                 
-                rm -f "/tmp/current-$safe_file.norm" "/tmp/production-$safe_file.norm"
+                # If no user-facing path matched, it might be a root-level config file
+                if [ "$USER_FACING_CHANGES" = "false" ]; then
+                  echo "❓ Unclassified change (treating as user-facing): $file"
+                  USER_FACING_CHANGES=true
+                fi
               fi
             done
             
-            # Compare other non-JS files
-            if [ "$CONTENT_CHANGED" = "false" ]; then
-              for file in $(find /tmp/current-build -type f ! -path "*/_next/*" ! -name "*.html" | sed "s|/tmp/current-build/||"); do
-                if [ -f "out/$file" ]; then
-                  if ! diff "/tmp/current-build/$file" "out/$file" > /dev/null 2>&1; then
-                    echo "Content differs: $file"
-                    CONTENT_CHANGED=true
-                    break
-                  fi
-                fi
-              done
-            fi
-            
-            if [ "$CONTENT_CHANGED" = "true" ]; then
-              echo "🔄 Build content differs - deployment needed"
-              BUILD_CHANGED=true
+            if [ "$USER_FACING_CHANGES" = "true" ]; then
+              echo ""
+              echo "🚀 User-facing changes detected - deployment needed"
+              DEPLOY_NEEDED=true
             else
-              echo "✅ Build content is functionally identical - no deployment needed"
-              echo "Only Next.js build IDs and internal artifacts differ"
-              BUILD_CHANGED=false
+              echo ""
+              echo "✅ Only non-user-facing changes detected - no deployment needed"
+              echo "Changes are limited to tests, docs, CI, or development files"
+              DEPLOY_NEEDED=false
             fi
           fi
-          
-          # Clean up temp files
-          rm -f /tmp/current-files.txt /tmp/production-files.txt
         else
-          echo "Production branch doesn't exist - deployment needed"
-          BUILD_CHANGED=true
+          echo "Production branch doesn't exist - initial deployment needed"
+          DEPLOY_NEEDED=true
         fi
         
-        echo "build_changed=$BUILD_CHANGED" >> $GITHUB_OUTPUT
-        
-        # Switch back to main for deployment
-        git checkout main
+        echo "deploy_needed=$DEPLOY_NEEDED" >> $GITHUB_OUTPUT
     
     - name: Deploy to production
-      if: steps.build-comparison.outputs.build_changed == 'true'
+      if: steps.change-detection.outputs.deploy_needed == 'true'
       run: |
         echo "🚀 Starting deployment to production branch..."
+        
+        # Build the current main branch for deployment
+        echo "📦 Building main branch for deployment..."
+        npm run build
         
         # Fetch the latest main branch
         git fetch origin main
@@ -192,14 +205,14 @@ jobs:
         
         echo "✅ Successfully deployed to production branch"
     
-    - name: Skip deployment (no build changes)
-      if: steps.build-comparison.outputs.build_changed == 'false'
+    - name: Skip deployment (no user-facing changes)
+      if: steps.change-detection.outputs.deploy_needed == 'false'
       run: |
-        echo "⏭️ Skipping deployment - no changes in build artifacts"
-        echo "The website content is identical to what's already in production."
+        echo "⏭️ Skipping deployment - no user-facing changes detected"
+        echo "Changes are limited to tests, docs, CI, or development files."
     
     - name: Create deployment summary (deployed)
-      if: steps.build-comparison.outputs.build_changed == 'true'
+      if: steps.change-detection.outputs.deploy_needed == 'true'
       run: |
         echo "## 🚀 Production Deployment Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
@@ -207,11 +220,11 @@ jobs:
         echo "- **Target Branch**: production" >> $GITHUB_STEP_SUMMARY
         echo "- **Commit**: ${{ github.event.workflow_run.head_sha }}" >> $GITHUB_STEP_SUMMARY
         echo "- **CI Run**: [${{ github.event.workflow_run.html_url }}](${{ github.event.workflow_run.html_url }})" >> $GITHUB_STEP_SUMMARY
-        echo "- **Status**: ✅ Deployed (build artifacts changed)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: ✅ Deployed (user-facing changes detected)" >> $GITHUB_STEP_SUMMARY
         echo "- **Result**: Production branch updated, Netlify will deploy changes" >> $GITHUB_STEP_SUMMARY
     
     - name: Create deployment summary (skipped)
-      if: steps.build-comparison.outputs.build_changed == 'false'
+      if: steps.change-detection.outputs.deploy_needed == 'false'
       run: |
         echo "## ⏭️ Production Deployment Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
@@ -219,5 +232,5 @@ jobs:
         echo "- **Target Branch**: production" >> $GITHUB_STEP_SUMMARY
         echo "- **Commit**: ${{ github.event.workflow_run.head_sha }}" >> $GITHUB_STEP_SUMMARY
         echo "- **CI Run**: [${{ github.event.workflow_run.html_url }}](${{ github.event.workflow_run.html_url }})" >> $GITHUB_STEP_SUMMARY
-        echo "- **Status**: ⏭️ Skipped (no build changes)" >> $GITHUB_STEP_SUMMARY
-        echo "- **Result**: Build artifacts identical, no Netlify deployment needed" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: ⏭️ Skipped (no user-facing changes)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Result**: Only test/docs/CI changes detected, no Netlify deployment needed" >> $GITHUB_STEP_SUMMARY
