@@ -13,39 +13,49 @@
   "commitMessageAction": "chore",
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newValue}}",
-  "commitMessage": "🔧 chore: update {{depName}} to {{newValue}}",
-  "prTitle": "🔧 chore: update {{depName}} to {{newValue}}",
   "packageRules": [
     {
       "matchUpdateTypes": ["major"],
-      "commitMessage": "⬆️ chore: update {{depName}} to {{newValue}}",
-      "prTitle": "⬆️ chore: update {{depName}} to {{newValue}}"
+      "commitMessagePrefix": "⬆️ ",
+      "commitMessageAction": "chore",
+      "commitMessageTopic": "{{depName}}",
+      "commitMessageExtra": "to {{newValue}}"
     },
     {
       "matchUpdateTypes": ["minor"],
-      "commitMessage": "🔧 chore: update {{depName}} to {{newValue}}",
-      "prTitle": "🔧 chore: update {{depName}} to {{newValue}}"
+      "commitMessagePrefix": "🔧 ",
+      "commitMessageAction": "chore",
+      "commitMessageTopic": "{{depName}}",
+      "commitMessageExtra": "to {{newValue}}"
     },
     {
       "matchUpdateTypes": ["patch"],
-      "commitMessage": "🐛 fix: update {{depName}} to {{newValue}}",
-      "prTitle": "🐛 fix: update {{depName}} to {{newValue}}"
+      "commitMessagePrefix": "🐛 ",
+      "commitMessageAction": "fix",
+      "commitMessageTopic": "{{depName}}",
+      "commitMessageExtra": "to {{newValue}}"
     },
     {
       "matchDepTypes": ["devDependencies"],
       "matchUpdateTypes": ["major", "minor"],
-      "commitMessage": "🔧 chore: update {{depName}} to {{newValue}}",
-      "prTitle": "🔧 chore: update {{depName}} to {{newValue}}"
+      "commitMessagePrefix": "🔧 ",
+      "commitMessageAction": "chore",
+      "commitMessageTopic": "{{depName}}",
+      "commitMessageExtra": "to {{newValue}}"
     },
     {
       "matchPackageNames": ["@types/**"],
-      "commitMessage": "🔧 chore: update {{depName}} to {{newValue}}",
-      "prTitle": "🔧 chore: update {{depName}} to {{newValue}}"
+      "commitMessagePrefix": "🔧 ",
+      "commitMessageAction": "chore",
+      "commitMessageTopic": "{{depName}}",
+      "commitMessageExtra": "to {{newValue}}"
     },
     {
       "matchCategories": ["security"],
-      "commitMessage": "🔒 fix: update {{depName}} to {{newValue}}",
-      "prTitle": "🔒 fix: update {{depName}} to {{newValue}}"
+      "commitMessagePrefix": "🔒 ",
+      "commitMessageAction": "fix",
+      "commitMessageTopic": "{{depName}}",
+      "commitMessageExtra": "to {{newValue}}"
     }
   ]
 }
