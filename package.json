@@ -21,9 +21,10 @@
     "cypress:run": "cypress run --config-file cypress.config.cucumber.ts",
     "cypress:run:chrome": "cypress run --browser chrome --config-file cypress.config.cucumber.ts",
     "cypress:run:headless": "cypress run --headless --config-file cypress.config.cucumber.ts",
-    "e2e": "start-server-and-test dev http://localhost:3000 cypress:run",
-    "e2e:chrome": "start-server-and-test dev http://localhost:3000 cypress:run:chrome",
-    "e2e:ci": "start-server-and-test serve http://localhost:3000 cypress:run:headless"
+    "e2e": "start-server-and-test dev:e2e http://localhost:3000 cypress:run",
+    "e2e:chrome": "start-server-and-test dev:e2e http://localhost:3000 cypress:run:chrome",
+    "e2e:ci": "start-server-and-test serve http://localhost:3000 cypress:run:headless",
+    "dev:e2e": "ENABLE_GITHUB_API=true next dev --turbopack"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
