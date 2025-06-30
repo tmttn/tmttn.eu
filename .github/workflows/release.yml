@@ -156,6 +156,16 @@ jobs:
         const fs = require('fs');
         const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
         
+        // Validate no duplicate versions exist
+        const versionHeaders = changelog.match(/^## .*?\d+\.\d+\.\d+/gm) || [];
+        const versions = versionHeaders.map(h => h.match(/\d+\.\d+\.\d+/)[0]);
+        const duplicates = versions.filter((v, i) => versions.indexOf(v) !== i);
+        if (duplicates.length > 0) {
+          console.error('❌ ERROR: Duplicate versions found in changelog:', duplicates);
+          process.exit(1);
+        }
+        console.log('✅ No duplicate versions found');
+        
         // Extract the first version section
         const lines = changelog.split('\n');
         let versionStart = -1;

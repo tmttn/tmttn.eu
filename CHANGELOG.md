@@ -7,12 +7,8 @@ All notable changes to Thomas Metten's personal portfolio website are documented
 ### Summary
 Maintenance release focused on bug fixes and stability improvements.
 
-This release includes 3 bug fixes.
+This release includes 1 bug fix.
 * 🔧 fix: force new release creation and remove duplicate release check ([a55dc6b](https://github.com/tmttn/tmttn.eu/commit/a55dc6b))
-* 🐛 fix: prevent duplicate [skip ci] in changelog commit messages ([66a2c2c](https://github.com/tmttn/tmttn.eu/commit/66a2c2c))
-* 🐛 fix: resolve illegal return statement in changelog enhancement script ([e1eaa36](https://github.com/tmttn/tmttn.eu/commit/e1eaa36))
-* 📝 docs: update CHANGELOG.md for vv0.1.0 [skip ci] ([9cc82ed](https://github.com/tmttn/tmttn.eu/commit/9cc82ed))
-* 📝 docs: update CHANGELOG.md for vvnull [skip ci] ([bde6162](https://github.com/tmttn/tmttn.eu/commit/bde6162))
 
 ## 0.2.2 (2025-06-30)
 
@@ -29,13 +25,13 @@ This release includes 3 bug fixes.
 * 🔧 fix: trigger deployment to test release workflow after vnull tag removal ([ba06b29](https://github.com/tmttn/tmttn.eu/commit/ba06b29))
 * 🔧 fix: update E2E tests to handle hidden portfolio section ([fcc94d0](https://github.com/tmttn/tmttn.eu/commit/fcc94d0))
 
-## <small>0.2.1 (2025-06-30)</small>
+## 0.2.1 (2025-06-30)
 
 * 📝 docs: update CHANGELOG.md for vvnull [skip ci] ([09a05c3](https://github.com/tmttn/tmttn.eu/commit/09a05c3))
 * 🔧 fix: resolve vvnull changelog issue and enhance automated versioning ([6457cce](https://github.com/tmttn/tmttn.eu/commit/6457cce))
 * 🔧 fix: update Renovate config to use modern commitMessage subcomponents ([632b46b](https://github.com/tmttn/tmttn.eu/commit/632b46b))
 
-## <small>0.1.1 (2025-06-30)</small>
+## 0.1.1 (2025-06-30)
 
 * ✨ feat: add 'modern web technologies' to meta keywords for better SEO ([d9e7fe2](https://github.com/tmttn/tmttn.eu/commit/d9e7fe2))
 * ✨ feat: update GitHub portfolio link text for better UX ([52df89c](https://github.com/tmttn/tmttn.eu/commit/52df89c))
