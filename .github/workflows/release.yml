@@ -96,11 +96,67 @@ jobs:
         skip-on-empty: 'false'
         skip-version-file: 'false'
         skip-commit: 'false'
-        git-message: '📝 docs: update CHANGELOG.md for v{version}'
+        git-message: '📝 docs: update CHANGELOG.md for v{version} [skip ci]'
         git-user-name: 'github-actions[bot]'
         git-user-email: 'github-actions[bot]@users.noreply.github.com'
         preset: 'conventionalcommits'
         config-file-path: '.versionrc.json'
+        fallback-version: 'patch'
+        
+    - name: Validate version after changelog generation
+      id: validate-version
+      if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
+      run: |
+        NEW_VERSION=$(node -p "require('./package.json').version")
+        echo "Generated version: $NEW_VERSION"
+        
+        if [ "$NEW_VERSION" = "null" ] || [ -z "$NEW_VERSION" ]; then
+          echo "❌ Invalid version generated: $NEW_VERSION"
+          echo "Falling back to patch bump from ${{ steps.package-version.outputs.version }}"
+          
+          # Parse current version and increment patch
+          CURRENT_VERSION="${{ steps.package-version.outputs.version }}"
+          if [[ $CURRENT_VERSION =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            MAJOR=${BASH_REMATCH[1]}
+            MINOR=${BASH_REMATCH[2]}
+            PATCH=${BASH_REMATCH[3]}
+            PATCH=$((PATCH + 1))
+            FALLBACK_VERSION="$MAJOR.$MINOR.$PATCH"
+          else
+            FALLBACK_VERSION="0.2.1"
+          fi
+          
+          echo "Setting version to: $FALLBACK_VERSION"
+          npm version $FALLBACK_VERSION --no-git-tag-version
+          
+          # Update changelog header to use correct version
+          sed -i "1s/.*/## $FALLBACK_VERSION ($(date +%Y-%m-%d))/" CHANGELOG.md
+          
+          echo "version=$FALLBACK_VERSION" >> $GITHUB_OUTPUT
+        else
+          echo "✅ Valid version generated: $NEW_VERSION"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Fix CHANGELOG.md formatting
+      if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
+      run: |
+        echo "🧹 Fixing CHANGELOG.md markdown formatting..."
+        
+        # Ensure file starts with proper header if missing
+        if ! grep -q "^# Changelog" CHANGELOG.md; then
+          echo "Adding changelog header..."
+          sed -i '1i# Changelog\n' CHANGELOG.md
+        fi
+        
+        # Remove excessive blank lines (more than 2 consecutive)
+        sed -i '/^$/N;/^\n$/d' CHANGELOG.md
+        
+        # Ensure single trailing newline
+        sed -i -e :a -e '/^\s*$/{$d;N;ba' -e '}' CHANGELOG.md
+        echo "" >> CHANGELOG.md
+        
+        echo "✅ CHANGELOG.md formatting fixed"
     
     - name: Sync version and CHANGELOG.md to main branch
       if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
@@ -125,7 +181,7 @@ jobs:
         else
           echo "Committing version bump and CHANGELOG.md to main branch..."
           git add CHANGELOG.md package.json
-          git commit -m "📝 docs: sync version v${{ steps.changelog.outputs.version }} and CHANGELOG.md [skip ci]"
+          git commit -m "📝 docs: sync version v${{ steps.validate-version.outputs.version }} and CHANGELOG.md [skip ci]"
           git push origin main
           echo "✅ Version and CHANGELOG.md synced to main branch"
         fi
@@ -134,8 +190,8 @@ jobs:
       if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v${{ steps.package-version.outputs.version }}
-        name: Release v${{ steps.package-version.outputs.version }}
+        tag_name: v${{ steps.validate-version.outputs.version }}
+        name: Release v${{ steps.validate-version.outputs.version }}
         body: ${{ steps.changelog.outputs.clean_changelog }}
         target_commitish: production
         make_latest: true
@@ -149,9 +205,9 @@ jobs:
       run: |
         echo "## 🎉 Release Created Successfully" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "- **Version**: v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Version**: v${{ steps.validate-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Branch**: production" >> $GITHUB_STEP_SUMMARY
-        echo "- **Release URL**: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Release URL**: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.validate-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Version & CHANGELOG**: Updated on production branch and synced to main" >> $GITHUB_STEP_SUMMARY
         echo "- **CI Impact**: Changelog sync uses [skip ci] to prevent new pipeline" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY

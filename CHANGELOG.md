@@ -1,4 +1,6 @@
-##  (2025-06-30)
+# Changelog
+
+## 0.2.0 (2025-06-30)
 
 * ✨ feat: add 'modern web technologies' to meta keywords for better SEO ([d9e7fe2](https://github.com/tmttn/tmttn.eu/commit/d9e7fe2))
 * ✨ feat: update GitHub portfolio link text for better UX ([52df89c](https://github.com/tmttn/tmttn.eu/commit/52df89c))
@@ -10,8 +12,6 @@
 * 🔧 enhance: automate release workflow to trigger on user-facing deployments ([505f2bf](https://github.com/tmttn/tmttn.eu/commit/505f2bf))
 * 🔧 fix: improve deployment workflow to use git-based change detection ([d4c3019](https://github.com/tmttn/tmttn.eu/commit/d4c3019))
 * 🧪 test: fix intermittent ParticleBackground connection test failure ([e078a05](https://github.com/tmttn/tmttn.eu/commit/e078a05))
-
-
 
 ## 0.1.0 (2025-06-30)
 
@@ -213,6 +213,3 @@
 * ci: create auto-approve.yaml ([7a0b97e](https://github.com/tmttn/tmttn.eu/commit/7a0b97e))
 * ci: create codeql.yml ([dced0a0](https://github.com/tmttn/tmttn.eu/commit/dced0a0))
 * ci: create eslint.yml ([20dc3c4](https://github.com/tmttn/tmttn.eu/commit/20dc3c4))
-
-
-

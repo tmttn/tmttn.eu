@@ -56,5 +56,11 @@
     "bump": false,
     "commit": false,
     "tag": true
-  }
+  },
+  "bumpFiles": [
+    {
+      "filename": "package.json",
+      "type": "json"
+    }
+  ]
 }
