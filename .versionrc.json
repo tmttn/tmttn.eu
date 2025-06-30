@@ -1,50 +1,71 @@
 {
   "preset": "conventionalcommits",
-  "header": "# Changelog\n\nAll notable changes to this project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n",
+  "header": "# Changelog\n\nAll notable changes to Thomas Metten's personal portfolio website are documented in this file.\n",
   "types": [
     {
       "type": "feat",
-      "section": "✨ New Features"
+      "section": "### ✨ Features & Enhancements",
+      "hidden": false
     },
     {
       "type": "fix", 
-      "section": "🐛 Bug Fixes"
+      "section": "### 🐛 Bug Fixes",
+      "hidden": false
     },
     {
       "type": "perf",
-      "section": "⚡ Performance Improvements"
+      "section": "### ⚡ Performance & Optimization",
+      "hidden": false
     },
     {
       "type": "style",
-      "section": "🎨 Styling & UI"
+      "section": "### 🎨 Styling & UI",
+      "hidden": false
     },
     {
       "type": "refactor",
-      "section": "♻️ Code Refactoring"
+      "section": "### ♻️ Code Refactoring",
+      "hidden": false
     },
     {
       "type": "test",
-      "section": "🧪 Tests"
+      "section": "### 🧪 Testing & Quality",
+      "hidden": false
     },
     {
       "type": "docs",
-      "section": "📝 Documentation"
+      "section": "### 📝 Documentation",
+      "hidden": false
     },
     {
       "type": "chore",
-      "section": "🔧 Maintenance"
+      "section": "### 🔧 Maintenance & Build",
+      "hidden": false
     },
     {
       "type": "build",
-      "section": "🏗️ Build System"
+      "section": "### 🏗️ Build System",
+      "hidden": false
     },
     {
       "type": "ci",
-      "section": "👷 CI/CD"
+      "section": "### 👷 CI/CD & Automation",
+      "hidden": false
     },
     {
       "type": "revert",
-      "section": "⏪ Reverts"
+      "section": "### ⏪ Reverts",
+      "hidden": false
+    },
+    {
+      "type": "security",
+      "section": "### 🔒 Security",
+      "hidden": false
+    },
+    {
+      "type": "deps",
+      "section": "### 📦 Dependencies",
+      "hidden": false
     }
   ],
   "commitUrlFormat": "https://github.com/tmttn/tmttn.eu/commit/{{hash}}",

@@ -138,15 +138,98 @@ jobs:
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
         fi
         
-    - name: Fix CHANGELOG.md formatting
+    - name: Enhance CHANGELOG.md with summaries and structure
       if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
       run: |
+        echo "✨ Enhancing CHANGELOG.md with intelligent summaries..."
+        
+        # Get the version for processing
+        VERSION=$(node -p "require('./package.json').version")
+        
+        # Create enhanced changelog with summary
+        node -e "
+        const fs = require('fs');
+        const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
+        
+        // Extract the first version section
+        const lines = changelog.split('\n');
+        let versionStart = -1;
+        let versionEnd = lines.length;
+        
+        for (let i = 0; i < lines.length; i++) {
+          if (lines[i].startsWith('## ')) {
+            if (versionStart === -1) {
+              versionStart = i;
+            } else {
+              versionEnd = i;
+              break;
+            }
+          }
+        }
+        
+        if (versionStart === -1) return;
+        
+        const versionSection = lines.slice(versionStart, versionEnd);
+        const commits = versionSection.filter(line => line.startsWith('* '));
+        
+        // Analyze commits for summary generation
+        const features = commits.filter(line => line.includes('✨') || line.includes('feat:')).length;
+        const fixes = commits.filter(line => line.includes('🐛') || line.includes('fix:')).length;
+        const perf = commits.filter(line => line.includes('⚡') || line.includes('perf:')).length;
+        const security = commits.filter(line => line.includes('🔒') || line.includes('security:')).length;
+        const tests = commits.filter(line => line.includes('🧪') || line.includes('test:')).length;
+        const total = commits.length;
+        
+        // Generate intelligent summary
+        let summary = '';
+        if (features >= 5) {
+          summary = '**Major Release** - Significant new features and functionality improvements.';
+        } else if (features >= 2) {
+          summary = 'Feature release with new functionality and enhancements.';
+        } else if (fixes >= 3) {
+          summary = 'Maintenance release focused on bug fixes and stability improvements.';
+        } else if (security > 0) {
+          summary = 'Security update with vulnerability fixes and improvements.';
+        } else if (perf > 0) {
+          summary = 'Performance improvements and optimization updates.';
+        } else {
+          summary = 'Minor updates with dependency changes and maintenance improvements.';
+        }
+        
+        // Add feature highlights
+        let highlights = [];
+        if (features > 0) highlights.push(\`\${features} new feature\${features > 1 ? 's' : ''}\`);
+        if (fixes > 0) highlights.push(\`\${fixes} bug fix\${fixes > 1 ? 'es' : ''}\`);
+        if (security > 0) highlights.push(\`\${security} security update\${security > 1 ? 's' : ''}\`);
+        if (perf > 0) highlights.push(\`\${perf} performance improvement\${perf > 1 ? 's' : ''}\`);
+        
+        // Insert summary after version header
+        const enhancedSection = [
+          versionSection[0], // Version header
+          '',
+          '### Summary',
+          summary,
+          ...(highlights.length ? ['', \`This release includes \${highlights.join(', ')}.\`] : []),
+          '',
+          ...versionSection.slice(1)
+        ];
+        
+        // Reconstruct changelog
+        const newChangelog = [
+          ...lines.slice(0, versionStart),
+          ...enhancedSection,
+          ...lines.slice(versionEnd)
+        ].join('\n');
+        
+        fs.writeFileSync('CHANGELOG.md', newChangelog);
+        "
+        
         echo "🧹 Fixing CHANGELOG.md markdown formatting..."
         
         # Ensure file starts with proper header if missing
         if ! grep -q "^# Changelog" CHANGELOG.md; then
           echo "Adding changelog header..."
-          sed -i '1i# Changelog\n' CHANGELOG.md
+          sed -i '1i# Changelog\n\nAll notable changes to Thomas Metten'\''s personal portfolio website are documented in this file.\n' CHANGELOG.md
         fi
         
         # Remove excessive blank lines (more than 2 consecutive)
@@ -156,7 +239,7 @@ jobs:
         sed -i -e :a -e '/^\s*$/{$d;N;ba' -e '}' CHANGELOG.md
         echo "" >> CHANGELOG.md
         
-        echo "✅ CHANGELOG.md formatting fixed"
+        echo "✅ CHANGELOG.md enhanced with summaries and formatting fixed"
     
     - name: Sync version and CHANGELOG.md to main branch
       if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
