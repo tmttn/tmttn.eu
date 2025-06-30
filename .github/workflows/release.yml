@@ -61,13 +61,72 @@ jobs:
       if: steps.deployment-check.outputs.deployment_occurred == 'true'
       run: npm ci --frozen-lockfile
     
-    - name: Get current package version
+    - name: Determine next version with proper semver logic
       if: steps.deployment-check.outputs.deployment_occurred == 'true'
-      id: current-version
+      id: semver
       run: |
-        VERSION=$(node -p "require('./package.json').version")
-        echo "current-version=$VERSION" >> $GITHUB_OUTPUT
-        echo "Current package.json version: $VERSION"
+        # Get the highest tag from all branches
+        HIGHEST_TAG=$(git tag -l | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+        
+        if [ -z "$HIGHEST_TAG" ]; then
+          echo "No previous tags found, starting with v0.1.0"
+          HIGHEST_TAG="v0.0.0"  # Will increment to 0.1.0
+        fi
+        
+        echo "🏷️ Highest existing tag: $HIGHEST_TAG"
+        
+        # Get commits since the highest tag
+        COMMITS_SINCE_TAG=$(git log ${HIGHEST_TAG}..HEAD --oneline --pretty=format:"%s")
+        
+        if [ -z "$COMMITS_SINCE_TAG" ]; then
+          echo "❌ No commits since $HIGHEST_TAG"
+          exit 1
+        fi
+        
+        echo "📝 Commits since $HIGHEST_TAG:"
+        echo "$COMMITS_SINCE_TAG"
+        
+        # Parse version numbers from highest tag
+        CURRENT_VERSION=${HIGHEST_TAG#v}  # Remove 'v' prefix
+        IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+        
+        # Determine increment type based on conventional commits
+        HAS_BREAKING=$(echo "$COMMITS_SINCE_TAG" | grep -E "(BREAKING CHANGE|!:)" | wc -l)
+        HAS_FEAT=$(echo "$COMMITS_SINCE_TAG" | grep -E "^(feat|✨)" | wc -l)
+        HAS_FIX=$(echo "$COMMITS_SINCE_TAG" | grep -E "^(fix|🐛|🔧)" | wc -l)
+        
+        # Apply semver increment rules
+        if [ "$HAS_BREAKING" -gt 0 ]; then
+          MAJOR=$((MAJOR + 1))
+          MINOR=0
+          PATCH=0
+          INCREMENT_TYPE="major"
+        elif [ "$HAS_FEAT" -gt 0 ]; then
+          MINOR=$((MINOR + 1))
+          PATCH=0
+          INCREMENT_TYPE="minor"
+        elif [ "$HAS_FIX" -gt 0 ]; then
+          PATCH=$((PATCH + 1))
+          INCREMENT_TYPE="patch"
+        else
+          echo "❌ No significant changes found (feat/fix/BREAKING)"
+          exit 1
+        fi
+        
+        NEXT_VERSION="$MAJOR.$MINOR.$PATCH"
+        echo "🎯 Next version: $NEXT_VERSION (${INCREMENT_TYPE} increment)"
+        echo "📊 Changes: $HAS_BREAKING breaking, $HAS_FEAT features, $HAS_FIX fixes"
+        
+        # Update package.json with the calculated version
+        node -e "
+          const pkg = JSON.parse(require('fs').readFileSync('package.json', 'utf8'));
+          pkg.version = '$NEXT_VERSION';
+          require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+        "
+        
+        echo "calculated-version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+        echo "increment-type=$INCREMENT_TYPE" >> $GITHUB_OUTPUT
+        echo "highest-tag=$HIGHEST_TAG" >> $GITHUB_OUTPUT
     
     - name: Generate Changelog from Conventional Commits
       id: changelog
@@ -91,57 +150,25 @@ jobs:
         skip-tag: 'true'
         skip-ci: 'false'
         
-    - name: Get new package version after changelog
-      if: steps.deployment-check.outputs.deployment_occurred == 'true'
-      id: new-version
-      run: |
-        NEW_VERSION=$(node -p "require('./package.json').version")
-        echo "new-version=$NEW_VERSION" >> $GITHUB_OUTPUT
-        echo "New package.json version after changelog: $NEW_VERSION"
-    
     - name: Force new release creation
       if: steps.deployment-check.outputs.deployment_occurred == 'true'
       id: check-release
       run: |
         echo "exists=false" >> $GITHUB_OUTPUT
-        echo "🚀 Force creating new release for v${{ steps.new-version.outputs.new-version }}"
+        echo "🚀 Force creating new release for v${{ steps.semver.outputs.calculated-version }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
-    - name: Validate version after changelog generation
+    - name: Validate calculated version
       id: validate-version
       if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
       run: |
-        NEW_VERSION="${{ steps.new-version.outputs.new-version }}"
-        echo "Generated version: $NEW_VERSION"
+        NEW_VERSION="${{ steps.semver.outputs.calculated-version }}"
+        echo "🎯 Using calculated version: $NEW_VERSION"
+        echo "📈 Increment type: ${{ steps.semver.outputs.increment-type }}"
+        echo "🏷️ Previous tag: ${{ steps.semver.outputs.highest-tag }}"
         
-        if [ "$NEW_VERSION" = "null" ] || [ -z "$NEW_VERSION" ]; then
-          echo "❌ Invalid version generated: $NEW_VERSION"
-          echo "Falling back to patch bump from ${{ steps.current-version.outputs.current-version }}"
-          
-          # Parse current version and increment patch
-          CURRENT_VERSION="${{ steps.current-version.outputs.current-version }}"
-          if [[ $CURRENT_VERSION =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-            MAJOR=${BASH_REMATCH[1]}
-            MINOR=${BASH_REMATCH[2]}
-            PATCH=${BASH_REMATCH[3]}
-            PATCH=$((PATCH + 1))
-            FALLBACK_VERSION="$MAJOR.$MINOR.$PATCH"
-          else
-            FALLBACK_VERSION="0.2.1"
-          fi
-          
-          echo "Setting version to: $FALLBACK_VERSION"
-          npm version $FALLBACK_VERSION --no-git-tag-version
-          
-          # Update changelog header to use correct version
-          sed -i "1s/.*/## $FALLBACK_VERSION ($(date +%Y-%m-%d))/" CHANGELOG.md
-          
-          echo "version=$FALLBACK_VERSION" >> $GITHUB_OUTPUT
-        else
-          echo "✅ Valid version generated: $NEW_VERSION"
-          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
-        fi
+        echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
         
     - name: Enhance CHANGELOG.md with summaries and structure
       if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
