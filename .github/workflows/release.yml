@@ -177,7 +177,7 @@ jobs:
           }
         }
         
-        if (versionStart === -1) return;
+        if (versionStart === -1) process.exit(0);
         
         const versionSection = lines.slice(versionStart, versionEnd);
         const commits = versionSection.filter(line => line.startsWith('* '));
