@@ -2,19 +2,19 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
-## 0.1.1 (2025-06-30)
+## 0.2.3 (2025-06-30)
 
 ### Summary
 Maintenance release focused on bug fixes and stability improvements.
 
 This release includes 3 bug fixes.
+* 🔧 fix: force new release creation and remove duplicate release check ([a55dc6b](https://github.com/tmttn/tmttn.eu/commit/a55dc6b))
 * 🐛 fix: prevent duplicate [skip ci] in changelog commit messages ([66a2c2c](https://github.com/tmttn/tmttn.eu/commit/66a2c2c))
 * 🐛 fix: resolve illegal return statement in changelog enhancement script ([e1eaa36](https://github.com/tmttn/tmttn.eu/commit/e1eaa36))
 * 📝 docs: update CHANGELOG.md for vv0.1.0 [skip ci] ([9cc82ed](https://github.com/tmttn/tmttn.eu/commit/9cc82ed))
 * 📝 docs: update CHANGELOG.md for vvnull [skip ci] ([bde6162](https://github.com/tmttn/tmttn.eu/commit/bde6162))
-* 🔧 fix: force new release creation and remove duplicate release check ([a55dc6b](https://github.com/tmttn/tmttn.eu/commit/a55dc6b))
 
-## <small>0.2.2 (2025-06-30)</small>
+## 0.2.2 (2025-06-30)
 
 * ✨ feat: enhance changelog generation with intelligent summaries and structured format ([a7f2a93](https://github.com/tmttn/tmttn.eu/commit/a7f2a93))
 * ✨ feat: hide entire portfolio section when GitHub API fails ([1e100bf](https://github.com/tmttn/tmttn.eu/commit/1e100bf))
