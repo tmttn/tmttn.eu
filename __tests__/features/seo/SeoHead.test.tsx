@@ -57,7 +57,7 @@ describe('SEOHead', () => {
     )
     expect(descriptionTag).toBeTruthy()
     expect((descriptionTag as any)?.props?.content).toBe(
-      'Tom Metten is a passionate full-stack developer from Belgium, specializing in modern web technologies, React, TypeScript, and cloud solutions. Explore my portfolio and get in touch.'
+      'Tom Metten is a passionate full-stack developer from Belgium, specializing in modern web technologies, React, TypeScript, and cloud solutions. Explore my portfolio and connect with me.'
     )
   })
 
