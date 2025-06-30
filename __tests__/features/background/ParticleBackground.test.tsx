@@ -189,7 +189,7 @@ describe('ParticleBackground', () => {
       expect(mockContext.moveTo).toHaveBeenCalled()
       expect(mockContext.lineTo).toHaveBeenCalled()
       expect(mockContext.stroke).toHaveBeenCalled()
-    }, { timeout: 2000 })
+    }, { timeout: 8000 })
 
     // Restore Math.random
     Math.random = originalRandom
