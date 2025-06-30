@@ -86,7 +86,7 @@ jobs:
     - name: Generate Changelog from Conventional Commits
       id: changelog
       if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
-      uses: TriPSs/conventional-changelog-action@v5
+      uses: TriPSs/conventional-changelog-action@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         output-file: 'CHANGELOG.md'
