@@ -1,35 +1,68 @@
 name: Release & Changelog
 
 on:
-  push:
-    branches: [production]
+  workflow_run:
+    workflows: ["Deploy to Production"]
+    types:
+      - completed
+    branches: [main]
   workflow_dispatch:
 
 jobs:
   release:
     name: Create Release & Generate Changelog
     runs-on: ubuntu-latest
+    
+    # Only run if Deploy to Production workflow succeeded and deployed changes
+    if: github.event.workflow_run.conclusion == 'success'
+    
     permissions:
       contents: write
       pull-requests: read
     
     steps:
+    - name: Check if deployment actually occurred
+      id: deployment-check
+      run: |
+        # Check if the Deploy to Production workflow actually deployed changes
+        # by looking for the deployment summary in the workflow run
+        
+        WORKFLOW_RUN_ID="${{ github.event.workflow_run.id }}"
+        echo "🔍 Checking if deployment workflow $WORKFLOW_RUN_ID actually deployed changes..."
+        
+        # Get the workflow run jobs and check for deployment summary
+        JOBS_OUTPUT=$(gh api /repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID/jobs --jq '.jobs[].steps[] | select(.name == "Create deployment summary (deployed)") | .conclusion')
+        
+        if [ "$JOBS_OUTPUT" = "success" ]; then
+          echo "✅ Deployment occurred - release should be created"
+          echo "deployment_occurred=true" >> $GITHUB_OUTPUT
+        else
+          echo "⏭️ No deployment occurred - skipping release"
+          echo "deployment_occurred=false" >> $GITHUB_OUTPUT
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Checkout production branch
+      if: steps.deployment-check.outputs.deployment_occurred == 'true'
       uses: actions/checkout@v4
       with:
         fetch-depth: 0  # Need full history for changelog generation
         token: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Setup Node.js
+      if: steps.deployment-check.outputs.deployment_occurred == 'true'
       uses: actions/setup-node@v4
       with:
         node-version: '22.x'
         cache: 'npm'
     
     - name: Install dependencies
+      if: steps.deployment-check.outputs.deployment_occurred == 'true'
       run: npm ci --frozen-lockfile
     
     - name: Get package version
+      if: steps.deployment-check.outputs.deployment_occurred == 'true'
       id: package-version
       run: |
         VERSION=$(node -p "require('./package.json').version")
@@ -37,6 +70,7 @@ jobs:
         echo "Current package.json version: $VERSION"
     
     - name: Check if release already exists
+      if: steps.deployment-check.outputs.deployment_occurred == 'true'
       id: check-release
       run: |
         if gh release view "v${{ steps.package-version.outputs.version }}" >/dev/null 2>&1; then
@@ -51,7 +85,7 @@ jobs:
     
     - name: Generate Changelog from Conventional Commits
       id: changelog
-      if: steps.check-release.outputs.exists == 'false'
+      if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
       uses: TriPSs/conventional-changelog-action@v5
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -69,7 +103,7 @@ jobs:
         config-file-path: '.versionrc.json'
     
     - name: Sync CHANGELOG.md to main branch
-      if: steps.check-release.outputs.exists == 'false'
+      if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
       run: |
         echo "🔄 Syncing CHANGELOG.md back to main branch..."
         
@@ -95,7 +129,7 @@ jobs:
         fi
     
     - name: Create Release with auto-generated notes
-      if: steps.check-release.outputs.exists == 'false'
+      if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
       uses: softprops/action-gh-release@v2
       with:
         tag_name: v${{ steps.package-version.outputs.version }}
@@ -109,7 +143,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Release Summary
-      if: steps.check-release.outputs.exists == 'false'
+      if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
       run: |
         echo "## 🎉 Release Created Successfully" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
@@ -122,10 +156,21 @@ jobs:
         echo "The release includes all changes that were rebased to the production branch." >> $GITHUB_STEP_SUMMARY
     
     - name: Skip Release (Already Exists)
-      if: steps.check-release.outputs.exists == 'true'
+      if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'true'
       run: |
         echo "## ℹ️ Release Already Exists" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "- **Version**: v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Status**: Release already exists, skipping creation" >> $GITHUB_STEP_SUMMARY
         echo "- **Release URL**: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.package-version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+    
+    - name: Skip Release (No Deployment)
+      if: steps.deployment-check.outputs.deployment_occurred == 'false'
+      run: |
+        echo "## ⏭️ Release Skipped" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Reason**: No user-facing deployment occurred" >> $GITHUB_STEP_SUMMARY
+        echo "- **Deploy Workflow**: Only test/docs/CI changes were detected" >> $GITHUB_STEP_SUMMARY
+        echo "- **Result**: No release created since no production changes were deployed" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "A release will be created automatically when user-facing changes are deployed to production." >> $GITHUB_STEP_SUMMARY
