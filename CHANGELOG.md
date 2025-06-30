@@ -1,86 +1,44 @@
-# Changelog
+##  (2025-06-30)
 
-All notable changes to Thomas Metten's personal portfolio website are documented in this file.
+* ✨ feat: enhance changelog generation with intelligent summaries and structured format ([a7f2a93](https://github.com/tmttn/tmttn.eu/commit/a7f2a93))
+* ✨ feat: hide entire portfolio section when GitHub API fails ([1e100bf](https://github.com/tmttn/tmttn.eu/commit/1e100bf))
+* 🎨 style: remove logo from header and improve CI pipeline ([b6173aa](https://github.com/tmttn/tmttn.eu/commit/b6173aa))
+* 🐛 fix: adjust header layout after logo removal ([faa7e89](https://github.com/tmttn/tmttn.eu/commit/faa7e89))
+* 🐛 fix: prevent vnull tag creation in release workflow ([a7dfafa](https://github.com/tmttn/tmttn.eu/commit/a7dfafa))
+* 📝 docs: sync version v0.2.1 and CHANGELOG.md [skip ci] ([74830b5](https://github.com/tmttn/tmttn.eu/commit/74830b5))
+* 📝 docs: update CHANGELOG.md for vvnull [skip ci] [skip ci] ([2e3d627](https://github.com/tmttn/tmttn.eu/commit/2e3d627))
+* 🔧 fix: exclude .versionrc.json from user-facing deployment triggers ([0dc5b33](https://github.com/tmttn/tmttn.eu/commit/0dc5b33))
+* 🔧 fix: trigger deployment to test release workflow after vnull tag removal ([ba06b29](https://github.com/tmttn/tmttn.eu/commit/ba06b29))
+* 🔧 fix: update E2E tests to handle hidden portfolio section ([fcc94d0](https://github.com/tmttn/tmttn.eu/commit/fcc94d0))
 
-## 0.2.1 (2025-06-30)
 
-### Summary
 
-Bug fixes for automated changelog generation and dependency management configuration.
-
-### 🔧 Maintenance & Build
+## <small>0.2.1 (2025-06-30)</small>
 
 * 📝 docs: update CHANGELOG.md for vvnull [skip ci] ([09a05c3](https://github.com/tmttn/tmttn.eu/commit/09a05c3))
 * 🔧 fix: resolve vvnull changelog issue and enhance automated versioning ([6457cce](https://github.com/tmttn/tmttn.eu/commit/6457cce))
 * 🔧 fix: update Renovate config to use modern commitMessage subcomponents ([632b46b](https://github.com/tmttn/tmttn.eu/commit/632b46b))
 
-## 0.1.1 (2025-06-30)
 
-### Release Summary
 
-Minor content improvements and CI/CD pipeline enhancements for better automation and reliability.
-
-### ✨ Features & Enhancements
+## <small>0.1.1 (2025-06-30)</small>
 
 * ✨ feat: add 'modern web technologies' to meta keywords for better SEO ([d9e7fe2](https://github.com/tmttn/tmttn.eu/commit/d9e7fe2))
 * ✨ feat: update GitHub portfolio link text for better UX ([52df89c](https://github.com/tmttn/tmttn.eu/commit/52df89c))
+* ⬆️ chore: update TriPSs/conventional-changelog-action to v6 (#48) ([dca8586](https://github.com/tmttn/tmttn.eu/commit/dca8586)), closes [#48](https://github.com/tmttn/tmttn.eu/issues/48)
 * 🔗 feat: update contact email and add target="_blank" to external links ([38d956b](https://github.com/tmttn/tmttn.eu/commit/38d956b))
-
-### 🔧 CI/CD & Automation
-
+* 🔧 chore: configure Renovate to use conventional commits with emojis ([e9e0194](https://github.com/tmttn/tmttn.eu/commit/e9e0194))
 * 🔧 chore: enable automatic semantic versioning in CI pipeline ([055ee81](https://github.com/tmttn/tmttn.eu/commit/055ee81))
 * 🔧 enhance: add comprehensive build output summaries for all CI jobs ([232d20d](https://github.com/tmttn/tmttn.eu/commit/232d20d))
 * 🔧 enhance: automate release workflow to trigger on user-facing deployments ([505f2bf](https://github.com/tmttn/tmttn.eu/commit/505f2bf))
 * 🔧 fix: improve deployment workflow to use git-based change detection ([d4c3019](https://github.com/tmttn/tmttn.eu/commit/d4c3019))
-
-### 📦 Dependencies
-
-* ⬆️ chore: update TriPSs/conventional-changelog-action to v6 (#48) ([dca8586](https://github.com/tmttn/tmttn.eu/commit/dca8586))
-* 🔧 chore: configure Renovate to use conventional commits with emojis ([e9e0194](https://github.com/tmttn/tmttn.eu/commit/e9e0194))
-
-### 🧪 Testing & Quality
-
 * 🧪 test: fix intermittent ParticleBackground connection test failure ([e078a05](https://github.com/tmttn/tmttn.eu/commit/e078a05))
+
+
 
 ## 0.1.0 (2025-06-30)
 
-### Major Release Summary
-
-#### 🎉 Complete Next.js 15 Portfolio Rewrite
-
-This release represents a complete transformation from a Gatsby site to a modern Next.js 15 application with TypeScript, featuring a stunning glassmorphism design system, comprehensive testing suite, and advanced CI/CD automation.
-
-### 🚀 Major New Features
-
-#### Core Application Framework
-
-* ⚛️ Convert to Typescript ([9bb9a09](https://github.com/tmttn/tmttn.eu/commit/9bb9a09))
-* ✨ feat: migrate to Next.js 15 with modern typography and styled-components ([13e9814](https://github.com/tmttn/tmttn.eu/commit/13e9814))
-* 🏗️ feat: implement barrel files and path aliases for clean imports ([6816d24](https://github.com/tmttn/tmttn.eu/commit/6816d24))
-* 🏗️ refactor: reorganize components into features and subcomponents structure ([699b280](https://github.com/tmttn/tmttn.eu/commit/699b280))
-
-#### Visual Design & User Experience
-
-* 🌓 add light/dark theme toggle & fix header navigation ([f5e5dd9](https://github.com/tmttn/tmttn.eu/commit/f5e5dd9))
-* 🎨 feat: add automatic system color scheme detection ([c08a097](https://github.com/tmttn/tmttn.eu/commit/c08a097))
-* 🎨 implement stunning dark theme system & enhanced navigation ([68efff6](https://github.com/tmttn/tmttn.eu/commit/68efff6))
-* ✨ add stunning glassmorphism effects and animations ([6c4f804](https://github.com/tmttn/tmttn.eu/commit/6c4f804))
-* ✨ feat: enhance glassmorphism effects with advanced gradient borders ([1bb6b23](https://github.com/tmttn/tmttn.eu/commit/1bb6b23))
-* ✨ enhance contact section with modern glassmorphism design ([a6b0e87](https://github.com/tmttn/tmttn.eu/commit/a6b0e87))
-* ✨ add stunning footer and enhance About section ([a68e3e8](https://github.com/tmttn/tmttn.eu/commit/a68e3e8))
-
-#### Portfolio & Content Features
-
-* ✨ feat: add dynamic GitHub portfolio showcase ([7a9bcb4](https://github.com/tmttn/tmttn.eu/commit/7a9bcb4))
-* 🚀 feat: add GitHub API rate limiting to prevent spam ([a1b6a6e](https://github.com/tmttn/tmttn.eu/commit/a1b6a6e))
-* 🛡️ feat: add comprehensive API error handling ([4daaf23](https://github.com/tmttn/tmttn.eu/commit/4daaf23))
-
-### ⚡ Performance & Optimization
-
-* ⚡ perf: optimize particle system and glassmorphism effects for 60fps on weaker devices ([f7eb56a](https://github.com/tmttn/tmttn.eu/commit/f7eb56a))
-* ⚡ perf: upgrade to React 19 features for better performance ([41e9b92](https://github.com/tmttn/tmttn.eu/commit/41e9b92))
-* ✨ feat: add comprehensive responsive image optimization system ([7abe8aa](https://github.com/tmttn/tmttn.eu/commit/7abe8aa))
-* 🖼️ refactor: migrate from HTML img to Next.js Image components ([44ca982](https://github.com/tmttn/tmttn.eu/commit/44ca982))
+* :cartwheeling: Add animation to header when scrolling ([84e7421](https://github.com/tmttn/tmttn.eu/commit/84e7421))
 * [ImgBot] Optimize images ([48e3958](https://github.com/tmttn/tmttn.eu/commit/48e3958))
 * ↔️ Add margin to text on the right ([8d0a034](https://github.com/tmttn/tmttn.eu/commit/8d0a034))
 * ☄️ Add active navigation, scrolling, more styling ([8f3da5d](https://github.com/tmttn/tmttn.eu/commit/8f3da5d))
@@ -278,4 +236,6 @@ This release represents a complete transformation from a Gatsby site to a modern
 * ci: create auto-approve.yaml ([7a0b97e](https://github.com/tmttn/tmttn.eu/commit/7a0b97e))
 * ci: create codeql.yml ([dced0a0](https://github.com/tmttn/tmttn.eu/commit/dced0a0))
 * ci: create eslint.yml ([20dc3c4](https://github.com/tmttn/tmttn.eu/commit/20dc3c4))
+
+
 
