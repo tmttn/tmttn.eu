@@ -88,6 +88,7 @@ jobs:
         preset: 'conventionalcommits'
         config-file-path: '.versionrc.json'
         fallback-version: 'patch'
+        skip-tag: 'true'
         
     - name: Get new package version after changelog
       if: steps.deployment-check.outputs.deployment_occurred == 'true'
