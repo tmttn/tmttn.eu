@@ -2,6 +2,15 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.2.8 (2025-06-30)</small>
+
+### Summary
+Release with improvements and updates.
+
+* 🔧 fix: improve package.json change detection logic to properly skip version-only changes ([316b973](https://github.com/tmttn/tmttn.eu/commit/316b973b8b356b0147921f19f4da0e066c271afc))
+* 📝 docs: sync version v0.2.7 and CHANGELOG.md [skip ci] ([d518bbe](https://github.com/tmttn/tmttn.eu/commit/d518bbe27bf9d44a46ae0680bf92ed0ff7e21b0b))
+
+
 ## <small>0.2.7 (2025-06-30)</small>
 
 ### Summary
