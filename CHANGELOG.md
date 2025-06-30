@@ -1,10 +1,10 @@
-##  (2025-06-30)
+# Changelog
+
+## 0.2.1 (2025-06-30)
 
 * 📝 docs: update CHANGELOG.md for vvnull [skip ci] ([09a05c3](https://github.com/tmttn/tmttn.eu/commit/09a05c3))
 * 🔧 fix: resolve vvnull changelog issue and enhance automated versioning ([6457cce](https://github.com/tmttn/tmttn.eu/commit/6457cce))
 * 🔧 fix: update Renovate config to use modern commitMessage subcomponents ([632b46b](https://github.com/tmttn/tmttn.eu/commit/632b46b))
-
-
 
 ## <small>0.1.1 (2025-06-30)</small>
 
@@ -18,8 +18,6 @@
 * 🔧 enhance: automate release workflow to trigger on user-facing deployments ([505f2bf](https://github.com/tmttn/tmttn.eu/commit/505f2bf))
 * 🔧 fix: improve deployment workflow to use git-based change detection ([d4c3019](https://github.com/tmttn/tmttn.eu/commit/d4c3019))
 * 🧪 test: fix intermittent ParticleBackground connection test failure ([e078a05](https://github.com/tmttn/tmttn.eu/commit/e078a05))
-
-
 
 ## 0.1.0 (2025-06-30)
 
@@ -221,6 +219,4 @@
 * ci: create auto-approve.yaml ([7a0b97e](https://github.com/tmttn/tmttn.eu/commit/7a0b97e))
 * ci: create codeql.yml ([dced0a0](https://github.com/tmttn/tmttn.eu/commit/dced0a0))
 * ci: create eslint.yml ([20dc3c4](https://github.com/tmttn/tmttn.eu/commit/20dc3c4))
-
-
 
