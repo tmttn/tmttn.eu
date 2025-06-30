@@ -1,6 +1,8 @@
-##  (2025-06-30)
+## 0.1.0 (2025-06-30)
 
 * 🐛 fix: prevent duplicate [skip ci] in changelog commit messages ([66a2c2c](https://github.com/tmttn/tmttn.eu/commit/66a2c2c))
+* 🐛 fix: resolve illegal return statement in changelog enhancement script ([e1eaa36](https://github.com/tmttn/tmttn.eu/commit/e1eaa36))
+* 📝 docs: update CHANGELOG.md for vvnull [skip ci] ([bde6162](https://github.com/tmttn/tmttn.eu/commit/bde6162))
 
 
 
