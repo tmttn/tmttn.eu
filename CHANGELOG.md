@@ -1,4 +1,4 @@
-##  (2025-06-30)
+## 0.2.2 (2025-06-30)
 
 * ✨ feat: enhance changelog generation with intelligent summaries and structured format ([a7f2a93](https://github.com/tmttn/tmttn.eu/commit/a7f2a93))
 * ✨ feat: hide entire portfolio section when GitHub API fails ([1e100bf](https://github.com/tmttn/tmttn.eu/commit/1e100bf))
