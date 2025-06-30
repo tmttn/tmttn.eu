@@ -123,24 +123,32 @@ jobs:
                   echo "📦 Analyzing package.json changes..."
                   PACKAGE_DIFF=$(git diff origin/production...origin/main -- package.json)
                   
-                  # Check if only version changed (version bump from release workflow)
-                  if echo "$PACKAGE_DIFF" | grep -E '^[+-].*"version"' && ! echo "$PACKAGE_DIFF" | grep -vE '^[+-].*"version"' | grep -E '^[+-]'; then
-                    echo "⏭️ Skipping package.json version-only changes (from release workflow)"
-                  # Check for other user-facing package.json changes (excluding version and metadata)
-                  elif echo "$PACKAGE_DIFF" | grep -E '^[+-].*"(dependencies|engines|overrides|main|module|exports|scripts)"' | grep -vE '"(test|dev|lint|format|cypress|version)"'; then
-                    echo "✅ User-facing package.json changes detected (dependencies/engines/overrides/build scripts)"
+                  # Count different types of changes
+                  VERSION_CHANGES=$(echo "$PACKAGE_DIFF" | grep -E '^[+-].*"version"' | wc -l)
+                  METADATA_CHANGES=$(echo "$PACKAGE_DIFF" | grep -E '^[+-].*"(description|keywords|author|license|repository|bugs|homepage)"' | wc -l)
+                  DEV_CHANGES=$(echo "$PACKAGE_DIFF" | grep -E '^[+-].*"devDependencies"' | wc -l)
+                  PROD_CHANGES=$(echo "$PACKAGE_DIFF" | grep -E '^[+-].*"(dependencies|engines|overrides|main|module|exports)"' | wc -l)
+                  BUILD_SCRIPT_CHANGES=$(echo "$PACKAGE_DIFF" | grep -E '^[+-].*"scripts"' | grep -vE '"(test|dev|lint|format|cypress)"' | wc -l)
+                  TOTAL_CHANGES=$(echo "$PACKAGE_DIFF" | grep -E '^[+-]' | wc -l)
+                  
+                  echo "🔍 DEBUG: version=$VERSION_CHANGES, metadata=$METADATA_CHANGES, dev=$DEV_CHANGES, prod=$PROD_CHANGES, scripts=$BUILD_SCRIPT_CHANGES, total=$TOTAL_CHANGES"
+                  
+                  # Calculate non-production changes (version + metadata + dev deps)
+                  NON_PROD_CHANGES=$((VERSION_CHANGES + METADATA_CHANGES + DEV_CHANGES))
+                  
+                  # If only version/metadata/dev changes (no production impact)
+                  if [ "$TOTAL_CHANGES" -eq "$NON_PROD_CHANGES" ] && [ "$TOTAL_CHANGES" -gt 0 ]; then
+                    echo "⏭️ Skipping package.json changes (version/metadata/dev only - no production impact)"
+                  # If there are production dependencies or build script changes
+                  elif [ "$PROD_CHANGES" -gt 0 ] || [ "$BUILD_SCRIPT_CHANGES" -gt 0 ]; then
+                    echo "✅ User-facing package.json changes detected (production dependencies or build scripts)"
                     USER_FACING_CHANGES=true
-                  elif echo "$PACKAGE_DIFF" | grep -E '^[+-].*"(description|keywords|author|license|repository|bugs|homepage|devDependencies)"'; then
-                    echo "⏭️ Skipping package.json metadata-only changes"
+                  # Any other changes not categorized above
+                  elif [ "$TOTAL_CHANGES" -gt "$NON_PROD_CHANGES" ]; then
+                    echo "✅ User-facing package.json changes detected (other production changes)"
+                    USER_FACING_CHANGES=true
                   else
-                    # Check if there are any other significant changes beyond version/metadata
-                    SIGNIFICANT_CHANGES=$(echo "$PACKAGE_DIFF" | grep -E '^[+-]' | grep -vE '"(version|description|keywords|author|license|repository|bugs|homepage|devDependencies)"')
-                    if [ -n "$SIGNIFICANT_CHANGES" ]; then
-                      echo "✅ User-facing package.json changes detected (other production changes)"
-                      USER_FACING_CHANGES=true
-                    else
-                      echo "⏭️ Skipping package.json changes (version/metadata only)"
-                    fi
+                    echo "⏭️ Skipping package.json changes (no production impact detected)"
                   fi
                 # Special handling for package-lock.json - only if dependencies changed
                 elif [[ "$file" == "package-lock.json" ]]; then
