@@ -1,3 +1,18 @@
+##  (2025-06-30)
+
+* ✨ feat: add 'modern web technologies' to meta keywords for better SEO ([d9e7fe2](https://github.com/tmttn/tmttn.eu/commit/d9e7fe2))
+* ✨ feat: update GitHub portfolio link text for better UX ([52df89c](https://github.com/tmttn/tmttn.eu/commit/52df89c))
+* ⬆️ chore: update TriPSs/conventional-changelog-action to v6 (#48) ([dca8586](https://github.com/tmttn/tmttn.eu/commit/dca8586)), closes [#48](https://github.com/tmttn/tmttn.eu/issues/48)
+* 🔗 feat: update contact email and add target="_blank" to external links ([38d956b](https://github.com/tmttn/tmttn.eu/commit/38d956b))
+* 🔧 chore: configure Renovate to use conventional commits with emojis ([e9e0194](https://github.com/tmttn/tmttn.eu/commit/e9e0194))
+* 🔧 chore: enable automatic semantic versioning in CI pipeline ([055ee81](https://github.com/tmttn/tmttn.eu/commit/055ee81))
+* 🔧 enhance: add comprehensive build output summaries for all CI jobs ([232d20d](https://github.com/tmttn/tmttn.eu/commit/232d20d))
+* 🔧 enhance: automate release workflow to trigger on user-facing deployments ([505f2bf](https://github.com/tmttn/tmttn.eu/commit/505f2bf))
+* 🔧 fix: improve deployment workflow to use git-based change detection ([d4c3019](https://github.com/tmttn/tmttn.eu/commit/d4c3019))
+* 🧪 test: fix intermittent ParticleBackground connection test failure ([e078a05](https://github.com/tmttn/tmttn.eu/commit/e078a05))
+
+
+
 ## 0.1.0 (2025-06-30)
 
 * :cartwheeling: Add animation to header when scrolling ([84e7421](https://github.com/tmttn/tmttn.eu/commit/84e7421))
@@ -60,6 +75,7 @@
 * 📝 docs: add comprehensive security vulnerability management guidelines ([a8d2755](https://github.com/tmttn/tmttn.eu/commit/a8d2755))
 * 📝 docs: add conventional commit guidelines with fun emojis ([a577ce0](https://github.com/tmttn/tmttn.eu/commit/a577ce0))
 * 📝 docs: rewrite README with human-friendly usage, architecture, and contribution guide ([907bd9a](https://github.com/tmttn/tmttn.eu/commit/907bd9a))
+* 📝 docs: update CHANGELOG.md for vv0.1.0 [skip ci] ([fd77253](https://github.com/tmttn/tmttn.eu/commit/fd77253))
 * 📱Fix some mobile styling issues ([5170158](https://github.com/tmttn/tmttn.eu/commit/5170158))
 * 🔍 Add 404 page ([fe50a37](https://github.com/tmttn/tmttn.eu/commit/fe50a37))
 * 🔒 docs: comprehensive security policy and vulnerability management ([70c8e32](https://github.com/tmttn/tmttn.eu/commit/70c8e32))
