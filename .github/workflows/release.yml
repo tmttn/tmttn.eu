@@ -65,35 +65,58 @@ jobs:
       if: steps.deployment-check.outputs.deployment_occurred == 'true'
       id: semver
       run: |
+        echo "🔍 DEBUG: Starting version calculation process..."
+        
+        # Get current package.json version for debugging
+        CURRENT_PKG_VERSION=$(node -p "require('./package.json').version || 'null'")
+        echo "🔍 DEBUG: Current package.json version: $CURRENT_PKG_VERSION"
+        
         # Get the highest tag from all branches
+        echo "🔍 DEBUG: Fetching all git tags..."
+        git tag -l | head -20  # Show first 20 tags for debugging
+        
         HIGHEST_TAG=$(git tag -l | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
         
         if [ -z "$HIGHEST_TAG" ]; then
-          echo "No previous tags found, starting with v0.1.0"
+          echo "❌ DEBUG: No previous tags found, starting with v0.1.0"
           HIGHEST_TAG="v0.0.0"  # Will increment to 0.1.0
         fi
         
-        echo "🏷️ Highest existing tag: $HIGHEST_TAG"
+        echo "🏷️ DEBUG: Highest existing tag: $HIGHEST_TAG"
         
         # Get commits since the highest tag
+        echo "🔍 DEBUG: Getting commits since $HIGHEST_TAG..."
         COMMITS_SINCE_TAG=$(git log ${HIGHEST_TAG}..HEAD --oneline --pretty=format:"%s")
         
         if [ -z "$COMMITS_SINCE_TAG" ]; then
-          echo "❌ No commits since $HIGHEST_TAG"
+          echo "❌ DEBUG: No commits since $HIGHEST_TAG"
+          echo "🔍 DEBUG: Checking if we're on the right branch..."
+          git branch -v
+          echo "🔍 DEBUG: Current HEAD:"
+          git log --oneline -5
           exit 1
         fi
         
-        echo "📝 Commits since $HIGHEST_TAG:"
+        echo "📝 DEBUG: Commits since $HIGHEST_TAG:"
         echo "$COMMITS_SINCE_TAG"
+        echo "🔍 DEBUG: Total commits found: $(echo "$COMMITS_SINCE_TAG" | wc -l)"
         
         # Parse version numbers from highest tag
         CURRENT_VERSION=${HIGHEST_TAG#v}  # Remove 'v' prefix
+        echo "🔍 DEBUG: Current version (without v): $CURRENT_VERSION"
         IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+        echo "🔍 DEBUG: Parsed version parts - MAJOR: $MAJOR, MINOR: $MINOR, PATCH: $PATCH"
         
         # Determine increment type based on conventional commits
+        echo "🔍 DEBUG: Analyzing commit types..."
         HAS_BREAKING=$(echo "$COMMITS_SINCE_TAG" | grep -E "(BREAKING CHANGE|!:)" | wc -l)
         HAS_FEAT=$(echo "$COMMITS_SINCE_TAG" | grep -E "^(feat|✨)" | wc -l)
         HAS_FIX=$(echo "$COMMITS_SINCE_TAG" | grep -E "^(fix|🐛|🔧)" | wc -l)
+        
+        echo "🔍 DEBUG: Commit analysis results:"
+        echo "  - Breaking changes: $HAS_BREAKING"
+        echo "  - Features: $HAS_FEAT"
+        echo "  - Fixes: $HAS_FIX"
         
         # Apply semver increment rules
         if [ "$HAS_BREAKING" -gt 0 ]; then
@@ -109,20 +132,35 @@ jobs:
           PATCH=$((PATCH + 1))
           INCREMENT_TYPE="patch"
         else
-          echo "❌ No significant changes found (feat/fix/BREAKING)"
+          echo "❌ DEBUG: No significant changes found (feat/fix/BREAKING)"
+          echo "🔍 DEBUG: All commits:"
+          echo "$COMMITS_SINCE_TAG" | head -10
           exit 1
         fi
         
         NEXT_VERSION="$MAJOR.$MINOR.$PATCH"
-        echo "🎯 Next version: $NEXT_VERSION (${INCREMENT_TYPE} increment)"
-        echo "📊 Changes: $HAS_BREAKING breaking, $HAS_FEAT features, $HAS_FIX fixes"
+        echo "🎯 DEBUG: Next version calculated: $NEXT_VERSION (${INCREMENT_TYPE} increment)"
+        echo "📊 DEBUG: Changes: $HAS_BREAKING breaking, $HAS_FEAT features, $HAS_FIX fixes"
         
         # Update package.json with the calculated version
+        echo "🔍 DEBUG: Updating package.json with version $NEXT_VERSION..."
         node -e "
-          const pkg = JSON.parse(require('fs').readFileSync('package.json', 'utf8'));
+          const fs = require('fs');
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          console.log('🔍 DEBUG: package.json before update:', JSON.stringify(pkg, null, 2));
           pkg.version = '$NEXT_VERSION';
-          require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          console.log('🔍 DEBUG: package.json after update:', JSON.stringify(pkg, null, 2));
         "
+        
+        # Verify the version was set correctly
+        UPDATED_VERSION=$(node -p "require('./package.json').version")
+        echo "🔍 DEBUG: Verified package.json version after update: $UPDATED_VERSION"
+        
+        if [ "$UPDATED_VERSION" != "$NEXT_VERSION" ]; then
+          echo "❌ ERROR: Version mismatch! Expected: $NEXT_VERSION, Got: $UPDATED_VERSION"
+          exit 1
+        fi
         
         echo "calculated-version=$NEXT_VERSION" >> $GITHUB_OUTPUT
         echo "increment-type=$INCREMENT_TYPE" >> $GITHUB_OUTPUT
@@ -131,24 +169,40 @@ jobs:
     - name: Generate Changelog from Conventional Commits
       id: changelog
       if: steps.deployment-check.outputs.deployment_occurred == 'true'
-      uses: TriPSs/conventional-changelog-action@v6
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        output-file: 'CHANGELOG.md'
-        version-file: 'package.json'
-        version-path: 'version'
-        create-summary: 'true'
-        skip-on-empty: 'false'
-        skip-version-file: 'false'
-        skip-commit: 'false'
-        git-message: '📝 docs: update CHANGELOG.md for v{version} [skip ci]'
-        git-user-name: 'github-actions[bot]'
-        git-user-email: 'github-actions[bot]@users.noreply.github.com'
-        preset: 'conventionalcommits'
-        config-file-path: '.versionrc.json'
-        fallback-version: 'patch'
-        skip-tag: 'true'
-        skip-ci: 'false'
+      run: |
+        echo "🔄 Generating changelog manually to ensure proper version handling..."
+        
+        # Use the calculated version from previous step
+        VERSION="${{ steps.semver.outputs.calculated-version }}"
+        echo "Using version: $VERSION"
+        
+        # Create a basic changelog entry for this version
+        CURRENT_DATE=$(date +%Y-%m-%d)
+        COMMITS_SINCE_TAG=$(git log ${{ steps.semver.outputs.highest-tag }}..HEAD --oneline --pretty=format:"* %s ([%h](https://github.com/tmttn/tmttn.eu/commit/%H))")
+        
+        # Create temporary changelog with proper version
+        echo "# Changelog" > temp_changelog.md
+        echo "" >> temp_changelog.md
+        echo "All notable changes to Thomas Metten's personal portfolio website are documented in this file." >> temp_changelog.md
+        echo "" >> temp_changelog.md
+        echo "## <small>$VERSION ($CURRENT_DATE)</small>" >> temp_changelog.md
+        echo "" >> temp_changelog.md
+        echo "### Summary" >> temp_changelog.md
+        echo "Release with improvements and updates." >> temp_changelog.md
+        echo "" >> temp_changelog.md
+        echo "$COMMITS_SINCE_TAG" >> temp_changelog.md
+        echo "" >> temp_changelog.md
+        
+        # Append existing changelog content (skip the header)
+        if [ -f CHANGELOG.md ]; then
+          tail -n +4 CHANGELOG.md >> temp_changelog.md
+        fi
+        
+        mv temp_changelog.md CHANGELOG.md
+        
+        echo "changelog_content<<EOF" >> $GITHUB_OUTPUT
+        echo "$COMMITS_SINCE_TAG" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
         
     - name: Force new release creation
       if: steps.deployment-check.outputs.deployment_occurred == 'true'
@@ -170,118 +224,25 @@ jobs:
         
         echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
         
-    - name: Enhance CHANGELOG.md with summaries and structure
+    - name: Commit version and changelog changes
       if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
       run: |
-        echo "✨ Enhancing CHANGELOG.md with intelligent summaries..."
+        echo "📝 Committing version bump and changelog updates..."
         
-        # Get the version for processing
-        VERSION=$(node -p "require('./package.json').version")
+        # Configure git for the action
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
         
-        # Create enhanced changelog with summary
-        node -e "
-        const fs = require('fs');
-        const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
+        # Add the updated files
+        git add CHANGELOG.md package.json
         
-        // Validate no duplicate versions exist
-        const versionHeaders = changelog.match(/^## .*?\d+\.\d+\.\d+/gm) || [];
-        const versions = versionHeaders.map(h => h.match(/\d+\.\d+\.\d+/)[0]);
-        const duplicates = versions.filter((v, i) => versions.indexOf(v) !== i);
-        if (duplicates.length > 0) {
-          console.error('❌ ERROR: Duplicate versions found in changelog:', duplicates);
-          process.exit(1);
-        }
-        console.log('✅ No duplicate versions found');
-        
-        // Extract the first version section
-        const lines = changelog.split('\n');
-        let versionStart = -1;
-        let versionEnd = lines.length;
-        
-        for (let i = 0; i < lines.length; i++) {
-          if (lines[i].startsWith('## ')) {
-            if (versionStart === -1) {
-              versionStart = i;
-            } else {
-              versionEnd = i;
-              break;
-            }
-          }
-        }
-        
-        if (versionStart === -1) process.exit(0);
-        
-        const versionSection = lines.slice(versionStart, versionEnd);
-        const commits = versionSection.filter(line => line.startsWith('* '));
-        
-        // Analyze commits for summary generation
-        const features = commits.filter(line => line.includes('✨') || line.includes('feat:')).length;
-        const fixes = commits.filter(line => line.includes('🐛') || line.includes('fix:')).length;
-        const perf = commits.filter(line => line.includes('⚡') || line.includes('perf:')).length;
-        const security = commits.filter(line => line.includes('🔒') || line.includes('security:')).length;
-        const tests = commits.filter(line => line.includes('🧪') || line.includes('test:')).length;
-        const total = commits.length;
-        
-        // Generate intelligent summary
-        let summary = '';
-        if (features >= 5) {
-          summary = '**Major Release** - Significant new features and functionality improvements.';
-        } else if (features >= 2) {
-          summary = 'Feature release with new functionality and enhancements.';
-        } else if (fixes >= 3) {
-          summary = 'Maintenance release focused on bug fixes and stability improvements.';
-        } else if (security > 0) {
-          summary = 'Security update with vulnerability fixes and improvements.';
-        } else if (perf > 0) {
-          summary = 'Performance improvements and optimization updates.';
-        } else {
-          summary = 'Minor updates with dependency changes and maintenance improvements.';
-        }
-        
-        // Add feature highlights
-        let highlights = [];
-        if (features > 0) highlights.push(\`\${features} new feature\${features > 1 ? 's' : ''}\`);
-        if (fixes > 0) highlights.push(\`\${fixes} bug fix\${fixes > 1 ? 'es' : ''}\`);
-        if (security > 0) highlights.push(\`\${security} security update\${security > 1 ? 's' : ''}\`);
-        if (perf > 0) highlights.push(\`\${perf} performance improvement\${perf > 1 ? 's' : ''}\`);
-        
-        // Insert summary after version header
-        const enhancedSection = [
-          versionSection[0], // Version header
-          '',
-          '### Summary',
-          summary,
-          ...(highlights.length ? ['', \`This release includes \${highlights.join(', ')}.\`] : []),
-          '',
-          ...versionSection.slice(1)
-        ];
-        
-        // Reconstruct changelog
-        const newChangelog = [
-          ...lines.slice(0, versionStart),
-          ...enhancedSection,
-          ...lines.slice(versionEnd)
-        ].join('\n');
-        
-        fs.writeFileSync('CHANGELOG.md', newChangelog);
-        "
-        
-        echo "🧹 Fixing CHANGELOG.md markdown formatting..."
-        
-        # Ensure file starts with proper header if missing
-        if ! grep -q "^# Changelog" CHANGELOG.md; then
-          echo "Adding changelog header..."
-          sed -i '1i# Changelog\n\nAll notable changes to Thomas Metten'\''s personal portfolio website are documented in this file.\n' CHANGELOG.md
+        # Check if there are changes to commit
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "📝 docs: sync version v${{ steps.validate-version.outputs.version }} and CHANGELOG.md [skip ci]"
+          echo "✅ Version and changelog committed"
         fi
-        
-        # Remove excessive blank lines (more than 2 consecutive)
-        sed -i '/^$/N;/^\n$/d' CHANGELOG.md
-        
-        # Ensure single trailing newline
-        sed -i -e :a -e '/^\s*$/{$d;N;ba' -e '}' CHANGELOG.md
-        echo "" >> CHANGELOG.md
-        
-        echo "✅ CHANGELOG.md enhanced with summaries and formatting fixed"
     
     - name: Sync version and CHANGELOG.md to main branch
       if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
@@ -317,7 +278,7 @@ jobs:
       with:
         tag_name: v${{ steps.validate-version.outputs.version }}
         name: Release v${{ steps.validate-version.outputs.version }}
-        body: ${{ steps.changelog.outputs.clean_changelog }}
+        body: ${{ steps.changelog.outputs.changelog_content }}
         target_commitish: production
         make_latest: true
         generate_release_notes: true

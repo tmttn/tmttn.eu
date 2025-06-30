@@ -2,15 +2,18 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
-##  (2025-06-30)
+## <small>0.2.5 (2025-06-30)</small>
 
 ### Summary
-Minor updates with dependency changes and maintenance improvements.
+Maintenance release focused on bug fixes and stability improvements.
 
-This release includes 1 new feature.
-* 📝 docs: sync version v0.2.4 and CHANGELOG.md [skip ci] ([f3af48b](https://github.com/tmttn/tmttn.eu/commit/f3af48b))
-* 📝 docs: update CHANGELOG.md for vvnull [skip ci] ([e39ff5d](https://github.com/tmttn/tmttn.eu/commit/e39ff5d))
+This release includes 1 new feature and 1 bug fix.
+
+### 🔧 Maintenance & Build
 * 🔧 feat: implement proper semver logic based on conventional commits since highest tag ([8d00851](https://github.com/tmttn/tmttn.eu/commit/8d00851))
+
+### 📝 Documentation  
+* 📝 docs: sync version v0.2.4 and CHANGELOG.md [skip ci] ([f3af48b](https://github.com/tmttn/tmttn.eu/commit/f3af48b))
 
 ## <small>0.2.4 (2025-06-30)</small>
 

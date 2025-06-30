@@ -118,18 +118,53 @@ jobs:
               
               # If not skipped, check if it's user-facing
               if [ "$SKIP_FILE" = "false" ]; then
-                for user_path in "${USER_FACING_PATHS[@]}"; do
-                  if [[ "$file" == $user_path* ]]; then
-                    echo "✅ User-facing change detected: $file"
+                # Special handling for package.json - check content changes
+                if [[ "$file" == "package.json" ]]; then
+                  echo "📦 Analyzing package.json changes..."
+                  PACKAGE_DIFF=$(git diff origin/production...origin/main -- package.json)
+                  
+                  # Check for user-facing package.json changes
+                  if echo "$PACKAGE_DIFF" | grep -E '^[+-].*"(dependencies|engines|overrides|version|main|module|exports|scripts)"' | grep -vE '"(test|dev|lint|format|cypress)"'; then
+                    echo "✅ User-facing package.json changes detected (dependencies/engines/overrides/version/build scripts)"
                     USER_FACING_CHANGES=true
-                    break
+                  elif echo "$PACKAGE_DIFF" | grep -E '^[+-].*"(description|keywords|author|license|repository|bugs|homepage|devDependencies)"'; then
+                    echo "⏭️ Skipping package.json metadata-only changes"
+                  else
+                    echo "✅ User-facing package.json changes detected (other production changes)"
+                    USER_FACING_CHANGES=true
                   fi
-                done
-                
-                # If no user-facing path matched, it might be a root-level config file
-                if [ "$USER_FACING_CHANGES" = "false" ]; then
-                  echo "❓ Unclassified change (treating as user-facing): $file"
-                  USER_FACING_CHANGES=true
+                # Special handling for package-lock.json - only if dependencies changed
+                elif [[ "$file" == "package-lock.json" ]]; then
+                  echo "🔒 Checking if package-lock.json changes affect production dependencies..."
+                  # If package.json dependencies changed, then package-lock is also user-facing
+                  if echo "$CHANGED_FILES" | grep -q "package.json"; then
+                    echo "✅ Package-lock changes detected alongside package.json - likely production impact"
+                    USER_FACING_CHANGES=true
+                  else
+                    # Check if only devDependencies in lockfile changed
+                    LOCK_DIFF=$(git diff origin/production...origin/main -- package-lock.json)
+                    if echo "$LOCK_DIFF" | grep -E '"node_modules/.+": \{' | grep -vE '"node_modules/(jest|cypress|eslint|prettier|@types)'; then
+                      echo "✅ Production dependencies in package-lock.json changed"
+                      USER_FACING_CHANGES=true
+                    else
+                      echo "⏭️ Skipping package-lock.json changes (dev dependencies only)"
+                    fi
+                  fi
+                else
+                  # Regular file path checking
+                  for user_path in "${USER_FACING_PATHS[@]}"; do
+                    if [[ "$file" == $user_path* ]] && [[ "$file" != "package.json" ]] && [[ "$file" != "package-lock.json" ]]; then
+                      echo "✅ User-facing change detected: $file"
+                      USER_FACING_CHANGES=true
+                      break
+                    fi
+                  done
+                  
+                  # If no user-facing path matched, it might be a root-level config file
+                  if [ "$USER_FACING_CHANGES" = "false" ]; then
+                    echo "❓ Unclassified change (treating as user-facing): $file"
+                    USER_FACING_CHANGES=true
+                  fi
                 fi
               fi
             done
