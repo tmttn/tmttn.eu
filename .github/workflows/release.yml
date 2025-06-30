@@ -3,6 +3,7 @@ name: Release & Changelog
 on:
   push:
     branches: [production]
+  workflow_dispatch:
 
 jobs:
   release:
