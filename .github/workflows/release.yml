@@ -99,17 +99,12 @@ jobs:
         echo "new-version=$NEW_VERSION" >> $GITHUB_OUTPUT
         echo "New package.json version after changelog: $NEW_VERSION"
     
-    - name: Check if release already exists for new version
+    - name: Force new release creation
       if: steps.deployment-check.outputs.deployment_occurred == 'true'
       id: check-release
       run: |
-        if gh release view "v${{ steps.new-version.outputs.new-version }}" >/dev/null 2>&1; then
-          echo "exists=true" >> $GITHUB_OUTPUT
-          echo "Release v${{ steps.new-version.outputs.new-version }} already exists"
-        else
-          echo "exists=false" >> $GITHUB_OUTPUT
-          echo "Release v${{ steps.new-version.outputs.new-version }} does not exist - will create"
-        fi
+        echo "exists=false" >> $GITHUB_OUTPUT
+        echo "🚀 Force creating new release for v${{ steps.new-version.outputs.new-version }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
@@ -305,15 +300,6 @@ jobs:
         echo "- **CI Impact**: Changelog sync uses [skip ci] to prevent new pipeline" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "The release includes all changes that were rebased to the production branch." >> $GITHUB_STEP_SUMMARY
-    
-    - name: Skip Release (Already Exists)
-      if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'true'
-      run: |
-        echo "## ℹ️ Release Already Exists" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "- **Version**: v${{ steps.new-version.outputs.new-version }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **Status**: Release already exists, skipping creation" >> $GITHUB_STEP_SUMMARY
-        echo "- **Release URL**: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.new-version.outputs.new-version }}" >> $GITHUB_STEP_SUMMARY
     
     - name: Skip Release (No Deployment)
       if: steps.deployment-check.outputs.deployment_occurred == 'false'
