@@ -89,6 +89,7 @@ jobs:
         config-file-path: '.versionrc.json'
         fallback-version: 'patch'
         skip-tag: 'true'
+        skip-ci: 'false'
         
     - name: Get new package version after changelog
       if: steps.deployment-check.outputs.deployment_occurred == 'true'
