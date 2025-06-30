@@ -30,11 +30,15 @@ jest.mock('react', () => ({
 }))
 
 // Mock GitHubService
-jest.mock('@services/github', () => ({
-  GitHubService: {
-    getPublicRepositories: jest.fn(),
-  },
-}))
+jest.mock('@services/github', () => {
+  const API_FAILURE = Symbol('API_FAILURE')
+  return {
+    GitHubService: {
+      getPublicRepositories: jest.fn(),
+      API_FAILURE,
+    },
+  }
+})
 
 import { use } from 'react'
 import { GitHubService } from '@services/github'
@@ -181,33 +185,23 @@ describe('Portfolio', () => {
     expect(starElements.length).toBeGreaterThan(0)
   })
 
-  it('handles error state correctly', () => {
-    // Mock console.error to suppress error output during tests
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+  it('handles API failure by hiding the section', () => {
+    // Mock use hook to return API failure symbol
+    mockUse.mockReturnValue(GitHubService.API_FAILURE)
     
-    // Mock use hook to throw an error
-    mockUse.mockImplementation(() => {
-      throw new Error('Failed to fetch repositories')
-    })
+    const { container } = renderWithThemeProvider(<Portfolio />)
 
-    // Error boundary will catch this, but since we don't have one, component will fail
-    // Instead, let's test with empty array and show appropriate message
-    mockUse.mockReturnValue([])
-    
-    renderWithThemeProvider(<Portfolio />)
-
-    expect(screen.getByText('No repositories found.')).toBeInTheDocument()
-    
-    // Restore console.error
-    consoleErrorSpy.mockRestore()
+    // Component should render nothing (null) when API fails
+    expect(container.firstChild).toBeNull()
   })
 
-  it('handles empty repository list', () => {
+  it('handles empty repository list by hiding the section', () => {
     mockUse.mockReturnValue([])
 
-    renderWithThemeProvider(<Portfolio />)
+    const { container } = renderWithThemeProvider(<Portfolio />)
 
-    expect(screen.getByText('No repositories found.')).toBeInTheDocument()
+    // Component should render nothing (null) when no repositories are found
+    expect(container.firstChild).toBeNull()
   })
 
   it('renders GitHub profile link in footer', () => {
@@ -222,12 +216,11 @@ describe('Portfolio', () => {
   })
 
   it('applies correct variant prop', () => {
+    const { container, rerender } = renderWithThemeProvider(<Portfolio variant="even" />)
     mockUse.mockReturnValue([])
-
-    const { rerender } = renderWithThemeProvider(<Portfolio variant="even" />)
     
-    // Component should render without errors with variant prop
-    expect(screen.getByText('No repositories found.')).toBeInTheDocument()
+    // Component should render nothing when no repositories
+    expect(container.firstChild).toBeNull()
 
     rerender(
       <ThemeProvider>
@@ -235,7 +228,8 @@ describe('Portfolio', () => {
       </ThemeProvider>
     )
     
-    expect(screen.getByText('No repositories found.')).toBeInTheDocument()
+    // Still should render nothing
+    expect(container.firstChild).toBeNull()
   })
 
   it('limits topics to 5 maximum', () => {

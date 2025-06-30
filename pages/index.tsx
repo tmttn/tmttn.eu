@@ -2,14 +2,13 @@ import React, { useState, useEffect } from "react"
 import {
   Layout,
   Scrollable,
-  Portfolio,
   SEOHead,
   AccessibleNavigation,
   SkipNavigation,
   ParticleBackground,
-  GitHubHeatmap,
   EnhancedThemeToggle,
-  PageTransition
+  PageTransition,
+  ShowcaseSection
 } from '@features'
 import { 
   ClientOnlyIcon, 
@@ -138,11 +137,7 @@ export default function Home() {
             </StyledIcon>
           </StyledIconBar>
         </StyledContactSection>
-        <StyledSection id="showcase" $variant="even" role="region" aria-labelledby="showcase-heading" data-testid="portfolio-section">
-          <h1 id="showcase-heading">Showcase</h1>
-          <GitHubHeatmap />
-          <Portfolio variant="even" />
-        </StyledSection>
+        <ShowcaseSection variant="even" />
       </StyledMain>
       
       <StyledFooter role="contentinfo" aria-label="Site footer">

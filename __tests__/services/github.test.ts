@@ -19,10 +19,10 @@ describe('GitHubService', () => {
   })
 
   describe('getPublicRepositories', () => {
-    it('skips API calls in test environment and returns empty array', async () => {
+    it('skips API calls in test environment and returns API_FAILURE', async () => {
       const result = await GitHubService.getPublicRepositories()
       
-      expect(result).toEqual([])
+      expect(result).toBe(GitHubService.API_FAILURE)
       expect(mockFetch).not.toHaveBeenCalled()
       expect(console.log).toHaveBeenCalledWith('Skipping GitHub API call (test environment)')
     })
@@ -185,7 +185,7 @@ describe('GitHubService', () => {
       const repositories = await GitHubService.getPublicRepositories()
       const contributions = await GitHubService.getContributionData()
 
-      expect(repositories).toEqual([])
+      expect(repositories).toBe(GitHubService.API_FAILURE)
       expect(contributions.contributions).toHaveLength(366) // Fallback data
       expect(mockFetch).not.toHaveBeenCalled()
 
@@ -243,8 +243,8 @@ describe('GitHubService', () => {
       })
 
       const result = await GitHubService.getPublicRepositories()
-      expect(result).toEqual([])
-      expect(console.warn).toHaveBeenCalledWith('GitHub API error (403). Using empty repository list.')
+      expect(result).toBe(GitHubService.API_FAILURE)
+      expect(console.warn).toHaveBeenCalledWith('GitHub API error (403). Returning API failure.')
     })
 
     it('handles 429 error and sets rate limit', async () => {
@@ -254,8 +254,8 @@ describe('GitHubService', () => {
       })
 
       const result = await GitHubService.getPublicRepositories()
-      expect(result).toEqual([])
-      expect(console.warn).toHaveBeenCalledWith('GitHub API error (429). Using empty repository list.')
+      expect(result).toBe(GitHubService.API_FAILURE)
+      expect(console.warn).toHaveBeenCalledWith('GitHub API error (429). Returning API failure.')
     })
 
     it('handles 500 server error and sets rate limit', async () => {
@@ -265,15 +265,15 @@ describe('GitHubService', () => {
       })
 
       const result = await GitHubService.getPublicRepositories()
-      expect(result).toEqual([])
-      expect(console.warn).toHaveBeenCalledWith('GitHub API error (500). Using empty repository list.')
+      expect(result).toBe(GitHubService.API_FAILURE)
+      expect(console.warn).toHaveBeenCalledWith('GitHub API error (500). Returning API failure.')
     })
 
     it('handles network error and sets rate limit', async () => {
       mockFetch.mockRejectedValueOnce(new Error('Network error'))
 
       const result = await GitHubService.getPublicRepositories()
-      expect(result).toEqual([])
+      expect(result).toBe(GitHubService.API_FAILURE)
       expect(console.error).toHaveBeenCalledWith('Failed to fetch GitHub repositories:', expect.any(Error))
     })
 
@@ -369,8 +369,8 @@ describe('GitHubService', () => {
       
       // Second call should skip due to rate limit
       const result = await GitHubService.getPublicRepositories()
-      expect(result).toEqual([])
-      expect(console.log).toHaveBeenCalledWith('GitHub API rate limited - using empty repository list')
+      expect(result).toBe(GitHubService.API_FAILURE)
+      expect(console.log).toHaveBeenCalledWith('GitHub API rate limited - returning API failure')
       
       // Reset for next test
       GitHubService.resetRateLimit()
@@ -432,7 +432,7 @@ describe('GitHubService', () => {
       Object.defineProperty(process.env, 'NODE_ENV', { value: 'development', writable: true })
       
       const repositories = await GitHubService.getPublicRepositories()
-      expect(repositories).toEqual([])
+      expect(repositories).toBe(GitHubService.API_FAILURE)
       expect(console.log).toHaveBeenCalledWith('Skipping GitHub API call (test environment)')
       
       Object.defineProperty(process.env, 'NODE_ENV', { value: originalEnv, writable: true })
@@ -447,7 +447,7 @@ describe('GitHubService', () => {
       delete globalThis.window
       
       const repositories = await GitHubService.getPublicRepositories()
-      expect(repositories).toEqual([])
+      expect(repositories).toBe(GitHubService.API_FAILURE)
       
       Object.defineProperty(process.env, 'NODE_ENV', { value: originalEnv, writable: true })
       globalThis.window = originalWindow
@@ -461,7 +461,7 @@ describe('GitHubService', () => {
       delete process.env.ENABLE_GITHUB_API
       
       const repositories = await GitHubService.getPublicRepositories()
-      expect(repositories).toEqual([])
+      expect(repositories).toBe(GitHubService.API_FAILURE)
       
       Object.defineProperty(process.env, 'NODE_ENV', { value: originalEnv, writable: true })
       if (originalEnable) {

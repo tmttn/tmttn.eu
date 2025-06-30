@@ -47,6 +47,9 @@ export class GitHubService {
   private static rateLimitedUntil: number = 0
   private static readonly RATE_LIMIT_COOLDOWN = 60 * 1000 // 1 minute
 
+  // Special symbol to indicate API failure vs empty results
+  static readonly API_FAILURE = Symbol('API_FAILURE')
+
   private static shouldSkipAPICall(): boolean {
     // Always skip API calls in development and testing environments
     // This prevents rate limiting and makes development/testing more reliable
@@ -80,15 +83,15 @@ export class GitHubService {
     this.rateLimitedUntil = 0
   }
 
-  static async getPublicRepositories(): Promise<GitHubRepository[]> {
+  static async getPublicRepositories(): Promise<GitHubRepository[] | typeof GitHubService.API_FAILURE> {
     if (this.shouldSkipAPICall()) {
       console.log('Skipping GitHub API call (test environment)')
-      return []
+      return this.API_FAILURE
     }
 
     if (this.isRateLimited()) {
-      console.log('GitHub API rate limited - using empty repository list')
-      return []
+      console.log('GitHub API rate limited - returning API failure')
+      return this.API_FAILURE
     }
 
     try {
@@ -97,12 +100,12 @@ export class GitHubService {
       )
       
       if (!response.ok) {
-        console.warn(`GitHub API error (${response.status}). Using empty repository list.`)
+        console.warn(`GitHub API error (${response.status}). Returning API failure.`)
         if (response.status === 403 || response.status === 429 || response.status >= 500) {
           // Rate limit (403, 429) or server errors (5xx) - implement cooldown
           this.setRateLimited()
         }
-        return []
+        return this.API_FAILURE
       }
       
       const repos: GitHubRepository[] = await response.json()
@@ -121,7 +124,7 @@ export class GitHubService {
       console.error('Failed to fetch GitHub repositories:', error)
       // Network errors should also trigger cooldown to prevent spam
       this.setRateLimited()
-      return []
+      return this.API_FAILURE
     }
   }
 

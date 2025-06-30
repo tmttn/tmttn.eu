@@ -116,12 +116,14 @@ interface PortfolioProperties {
 function PortfolioContent({ variant }: Readonly<PortfolioProperties>) {
   const repositories = use(GitHubService.getPublicRepositories())
 
+  // Hide the entire section if API failed
+  if (repositories === GitHubService.API_FAILURE) {
+    return null
+  }
+
+  // If API succeeded but returned empty array, still hide the section
   if (repositories.length === 0) {
-    return (
-      <div className="portfolio-empty">
-        <p>No repositories found.</p>
-      </div>
-    )
+    return null
   }
 
   return (
@@ -159,3 +161,4 @@ export default function Portfolio({ variant = 'odd' }: PortfolioProperties) {
     </Suspense>
   )
 }
+
