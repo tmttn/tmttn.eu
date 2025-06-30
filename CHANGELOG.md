@@ -1,10 +1,16 @@
+# Changelog
+
+All notable changes to Thomas Metten's personal portfolio website are documented in this file.
+
 ##  (2025-06-30)
 
+### Summary
+Minor updates with dependency changes and maintenance improvements.
+
+This release includes 1 new feature.
 * 📝 docs: sync version v0.2.4 and CHANGELOG.md [skip ci] ([f3af48b](https://github.com/tmttn/tmttn.eu/commit/f3af48b))
 * 📝 docs: update CHANGELOG.md for vvnull [skip ci] ([e39ff5d](https://github.com/tmttn/tmttn.eu/commit/e39ff5d))
 * 🔧 feat: implement proper semver logic based on conventional commits since highest tag ([8d00851](https://github.com/tmttn/tmttn.eu/commit/8d00851))
-
-
 
 ## <small>0.2.4 (2025-06-30)</small>
 
@@ -17,8 +23,6 @@
 * 🔧 fix: correct changelog version ordering and add duplicate prevention ([c5f42bb](https://github.com/tmttn/tmttn.eu/commit/c5f42bb))
 * 🔧 fix: correct version to 0.2.3 and fix changelog ordering to match existing tags ([81400b5](https://github.com/tmttn/tmttn.eu/commit/81400b5))
 * 🔧 fix: force new release creation and remove duplicate release check ([a55dc6b](https://github.com/tmttn/tmttn.eu/commit/a55dc6b))
-
-
 
 ## <small>0.2.2 (2025-06-30)</small>
 
@@ -35,15 +39,11 @@
 * 🔧 fix: trigger deployment to test release workflow after vnull tag removal ([ba06b29](https://github.com/tmttn/tmttn.eu/commit/ba06b29))
 * 🔧 fix: update E2E tests to handle hidden portfolio section ([fcc94d0](https://github.com/tmttn/tmttn.eu/commit/fcc94d0))
 
-
-
 ## <small>0.2.1 (2025-06-30)</small>
 
 * 📝 docs: update CHANGELOG.md for vvnull [skip ci] ([09a05c3](https://github.com/tmttn/tmttn.eu/commit/09a05c3))
 * 🔧 fix: resolve vvnull changelog issue and enhance automated versioning ([6457cce](https://github.com/tmttn/tmttn.eu/commit/6457cce))
 * 🔧 fix: update Renovate config to use modern commitMessage subcomponents ([632b46b](https://github.com/tmttn/tmttn.eu/commit/632b46b))
-
-
 
 ## <small>0.1.1 (2025-06-30)</small>
 
@@ -57,6 +57,4 @@
 * 🔧 enhance: automate release workflow to trigger on user-facing deployments ([505f2bf](https://github.com/tmttn/tmttn.eu/commit/505f2bf))
 * 🔧 fix: improve deployment workflow to use git-based change detection ([d4c3019](https://github.com/tmttn/tmttn.eu/commit/d4c3019))
 * 🧪 test: fix intermittent ParticleBackground connection test failure ([e078a05](https://github.com/tmttn/tmttn.eu/commit/e078a05))
-
-
 
