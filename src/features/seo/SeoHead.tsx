@@ -18,7 +18,7 @@ interface SEOHeadProperties {
 const defaultProps = {
   title: 'Tom Metten - Full-Stack Developer & Tech Enthusiast',
   description: 'Tom Metten is a passionate full-stack developer from Belgium, specializing in modern web technologies, React, TypeScript, and cloud solutions. Explore my portfolio and connect with me.',
-  keywords: 'Tom Metten, full-stack developer, React, TypeScript, Next.js, web development, Belgium, software engineer, portfolio',
+  keywords: 'Tom Metten, full-stack developer, React, TypeScript, Next.js, web development, Belgium, software engineer, portfolio, modern web technologies',
   ogImage: '/static/gibli-avatar-portrait-og.png',
   ogUrl: 'https://tmttn.eu',
   twitterCard: 'summary_large_image' as const,
