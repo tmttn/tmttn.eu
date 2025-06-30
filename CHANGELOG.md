@@ -1,5 +1,13 @@
-##  (2025-06-30)
+# Changelog
 
+All notable changes to Thomas Metten's personal portfolio website are documented in this file.
+
+## 0.2.4 (2025-06-30)
+
+### Summary
+Maintenance release focused on bug fixes and stability improvements.
+
+This release includes 1 new feature, 5 bug fixes.
 * 🐛 fix: prevent duplicate [skip ci] in changelog commit messages ([66a2c2c](https://github.com/tmttn/tmttn.eu/commit/66a2c2c))
 * 🐛 fix: resolve illegal return statement in changelog enhancement script ([e1eaa36](https://github.com/tmttn/tmttn.eu/commit/e1eaa36))
 * 📝 docs: sync version v0.1.1 and CHANGELOG.md [skip ci] ([0ce5793](https://github.com/tmttn/tmttn.eu/commit/0ce5793))
@@ -10,8 +18,6 @@
 * 🔧 fix: correct changelog version ordering and add duplicate prevention ([c5f42bb](https://github.com/tmttn/tmttn.eu/commit/c5f42bb))
 * 🔧 fix: correct version to 0.2.3 and fix changelog ordering to match existing tags ([81400b5](https://github.com/tmttn/tmttn.eu/commit/81400b5))
 * 🔧 fix: force new release creation and remove duplicate release check ([a55dc6b](https://github.com/tmttn/tmttn.eu/commit/a55dc6b))
-
-
 
 ## <small>0.2.2 (2025-06-30)</small>
 
@@ -28,15 +34,11 @@
 * 🔧 fix: trigger deployment to test release workflow after vnull tag removal ([ba06b29](https://github.com/tmttn/tmttn.eu/commit/ba06b29))
 * 🔧 fix: update E2E tests to handle hidden portfolio section ([fcc94d0](https://github.com/tmttn/tmttn.eu/commit/fcc94d0))
 
-
-
 ## <small>0.2.1 (2025-06-30)</small>
 
 * 📝 docs: update CHANGELOG.md for vvnull [skip ci] ([09a05c3](https://github.com/tmttn/tmttn.eu/commit/09a05c3))
 * 🔧 fix: resolve vvnull changelog issue and enhance automated versioning ([6457cce](https://github.com/tmttn/tmttn.eu/commit/6457cce))
 * 🔧 fix: update Renovate config to use modern commitMessage subcomponents ([632b46b](https://github.com/tmttn/tmttn.eu/commit/632b46b))
-
-
 
 ## <small>0.1.1 (2025-06-30)</small>
 
@@ -50,8 +52,6 @@
 * 🔧 enhance: automate release workflow to trigger on user-facing deployments ([505f2bf](https://github.com/tmttn/tmttn.eu/commit/505f2bf))
 * 🔧 fix: improve deployment workflow to use git-based change detection ([d4c3019](https://github.com/tmttn/tmttn.eu/commit/d4c3019))
 * 🧪 test: fix intermittent ParticleBackground connection test failure ([e078a05](https://github.com/tmttn/tmttn.eu/commit/e078a05))
-
-
 
 ## 0.1.0 (2025-06-30)
 
@@ -253,6 +253,4 @@
 * ci: create auto-approve.yaml ([7a0b97e](https://github.com/tmttn/tmttn.eu/commit/7a0b97e))
 * ci: create codeql.yml ([dced0a0](https://github.com/tmttn/tmttn.eu/commit/dced0a0))
 * ci: create eslint.yml ([20dc3c4](https://github.com/tmttn/tmttn.eu/commit/20dc3c4))
-
-
 
