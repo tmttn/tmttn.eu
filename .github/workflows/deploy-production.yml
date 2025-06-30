@@ -66,61 +66,69 @@ jobs:
           # Build the current production branch
           npm run build
           
-          # Compare meaningful content (excluding Next.js build-specific artifacts)
+          # Compare build content excluding Next.js build-specific artifacts
           echo "Comparing build content (excluding Next.js build IDs and hashes)..."
           
-          # Function to create content hash excluding build-specific elements
-          create_content_hash() {
-            local dir=$1
-            local output_file=$2
-            
-            # Hash all non-build-specific files
-            find "$dir" -type f \
-              ! -path "*/_next/static/*/pages/*" \
-              ! -path "*/_next/static/*/chunks/*" \
-              ! -path "*/_next/static/chunks/*" \
-              ! -name "*.js.map" \
-              ! -name "*buildManifest.js" \
-              ! -name "*ssgManifest.js" \
-              -exec sh -c '
-                case "$1" in
-                  *.html)
-                    # Normalize build IDs in HTML
-                    sed "s/_next\/static\/[a-zA-Z0-9_-]*\//_next\/static\/BUILD_ID\//g" "$1" | \
-                    sed "s/\"buildId\":\"[^\"]*\"/\"buildId\":\"BUILD_ID\"/g"
-                    ;;
-                  *.js)
-                    # Skip JS files with build IDs in filename
-                    if echo "$1" | grep -q "_next/static/[^/]*/"; then
-                      echo "# BUILD_SPECIFIC_JS_FILE"
-                    else
-                      cat "$1"
-                    fi
-                    ;;
-                  *)
-                    cat "$1"
-                    ;;
-                esac
-              ' _ {} \; | sort | md5sum > "$output_file"
-          }
+          # Simple approach: compare file lists and key content files
+          # Exclude _next directory which contains build-specific hashes
           
-          # Create content hashes
-          create_content_hash "/tmp/current-build" "/tmp/current-hash"
-          create_content_hash "out" "/tmp/production-hash"
+          # Create file lists excluding build-specific paths
+          find /tmp/current-build -type f ! -path "*/_next/*" | sed "s|/tmp/current-build/||" | sort > /tmp/current-files.txt
+          find out -type f ! -path "*/_next/*" | sed "s|out/||" | sort > /tmp/production-files.txt
           
-          # Compare content hashes
-          if diff /tmp/current-hash /tmp/production-hash > /dev/null 2>&1; then
-            echo "✅ Build content is functionally identical - no deployment needed"
-            echo "Only Next.js build IDs and internal hashes differ"
-            BUILD_CHANGED=false
-          else
-            echo "🔄 Build content differs - deployment needed"
-            echo "Meaningful content changes detected"
+          # Compare file lists first
+          if ! diff /tmp/current-files.txt /tmp/production-files.txt > /dev/null 2>&1; then
+            echo "🔄 File list differs - deployment needed"
+            echo "File differences:"
+            diff /tmp/current-files.txt /tmp/production-files.txt || true
             BUILD_CHANGED=true
+          else
+            # File lists are same, now compare content of key files (HTML, CSS, etc.)
+            echo "File lists identical, comparing content..."
+            CONTENT_CHANGED=false
+            
+            # Compare HTML files (normalize build IDs)
+            for file in $(find /tmp/current-build -name "*.html" | sed "s|/tmp/current-build/||"); do
+              if [ -f "out/$file" ]; then
+                # Normalize build IDs before comparison
+                sed 's/_next\/static\/[a-zA-Z0-9_-]*\//_next\/static\/BUILD_ID\//g' "/tmp/current-build/$file" > "/tmp/current-$file.norm"
+                sed 's/_next\/static\/[a-zA-Z0-9_-]*\//_next\/static\/BUILD_ID\//g' "out/$file" > "/tmp/production-$file.norm"
+                
+                if ! diff "/tmp/current-$file.norm" "/tmp/production-$file.norm" > /dev/null 2>&1; then
+                  echo "HTML content differs: $file"
+                  CONTENT_CHANGED=true
+                  break
+                fi
+                
+                rm -f "/tmp/current-$file.norm" "/tmp/production-$file.norm"
+              fi
+            done
+            
+            # Compare other non-JS files
+            if [ "$CONTENT_CHANGED" = "false" ]; then
+              for file in $(find /tmp/current-build -type f ! -path "*/_next/*" ! -name "*.html" | sed "s|/tmp/current-build/||"); do
+                if [ -f "out/$file" ]; then
+                  if ! diff "/tmp/current-build/$file" "out/$file" > /dev/null 2>&1; then
+                    echo "Content differs: $file"
+                    CONTENT_CHANGED=true
+                    break
+                  fi
+                fi
+              done
+            fi
+            
+            if [ "$CONTENT_CHANGED" = "true" ]; then
+              echo "🔄 Build content differs - deployment needed"
+              BUILD_CHANGED=true
+            else
+              echo "✅ Build content is functionally identical - no deployment needed"
+              echo "Only Next.js build IDs and internal artifacts differ"
+              BUILD_CHANGED=false
+            fi
           fi
           
-          # Clean up hash files
-          rm -f /tmp/current-hash /tmp/production-hash
+          # Clean up temp files
+          rm -f /tmp/current-files.txt /tmp/production-files.txt
         else
           echo "Production branch doesn't exist - deployment needed"
           BUILD_CHANGED=true
