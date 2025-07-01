@@ -1,6 +1,19 @@
 # Personal Portfolio — Next.js 15 + Netlify
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/be69a204-608b-4d68-9882-2eee8c608e24/deploy-status)](https://app.netlify.com/sites/tmttnbe/deploys)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18+-61DAFB?style=flat&logo=react&logoColor=white)](https://react.dev/)
+[![Styled Components](https://img.shields.io/badge/styled--components-6.0+-DB7093?style=flat&logo=styled-components&logoColor=white)](https://styled-components.com/)
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=tmttn_tmttn.eu&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=tmttn_tmttn.eu)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=tmttn_tmttn.eu&metric=coverage)](https://sonarcloud.io/summary/new_code?id=tmttn_tmttn.eu)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=tmttn_tmttn.eu&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=tmttn_tmttn.eu)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=tmttn_tmttn.eu&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=tmttn_tmttn.eu)
+
+[![GitHub](https://img.shields.io/github/license/tmttn/tmttn.eu?style=flat)](https://github.com/tmttn/tmttn.eu/blob/main/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/tmttn/tmttn.eu?style=flat)](https://github.com/tmttn/tmttn.eu/issues)
+[![GitHub stars](https://img.shields.io/github/stars/tmttn/tmttn.eu?style=flat)](https://github.com/tmttn/tmttn.eu/stargazers)
 
 This is a modern, high-performance personal portfolio website built with **Next.js 15** and **TypeScript**, designed for **static export** and deployment to **Netlify**. It features a dual-theme glassmorphism design, interactive animations, GitHub integration, and a clean, maintainable codebase with robust developer tooling.
 
