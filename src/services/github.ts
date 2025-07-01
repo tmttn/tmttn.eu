@@ -219,8 +219,9 @@ export class GitHubService {
         const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
         const baseChance = isWeekend ? 0.2 : 0.4
         
-        if (Math.random() < baseChance) {
-          count = Math.floor(Math.random() * 3) + 1
+        // SAFETY: Math.random() usage is safe here - used only for generating fallback UI data, not security-critical
+        if (Math.random() < baseChance) { // NOSONAR: S2245
+          count = Math.floor(Math.random() * 3) + 1 // NOSONAR: S2245
         }
       }
       
@@ -249,12 +250,14 @@ export class GitHubService {
       const dayOfWeek = date.getDay()
       const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
       const baseChance = isWeekend ? 0.3 : 0.6
+      // SAFETY: Math.random() usage is safe here - used only for generating fallback UI data, not security-critical
+      // NOSONAR: S2245 - Pseudorandom number generators are secure for fallback UI data generation
       const randomFactor = Math.random()
       
       let count = 0
       if (randomFactor < baseChance) {
-        count = Math.floor(Math.random() * 6) + 1
-        if (randomFactor < 0.1) count += Math.floor(Math.random() * 8)
+        count = Math.floor(Math.random() * 6) + 1 // NOSONAR: S2245
+        if (randomFactor < 0.1) count += Math.floor(Math.random() * 8) // NOSONAR: S2245
       }
       
       const level = Math.min(Math.floor(count / 2), 4)

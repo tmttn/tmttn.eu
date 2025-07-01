@@ -103,15 +103,17 @@ export default function ParticleBackground({
     ]
 
     const createParticle = (): Particle => {
+      // SAFETY: Math.random() usage is safe here - used only for visual effects and non-security-critical randomness
+      // NOSONAR: S2245 - Pseudorandom number generators are secure for visual effects
       const maxLife = PARTICLE_CONSTANTS.PARTICLE_MIN_LIFE + Math.random() * PARTICLE_CONSTANTS.PARTICLE_LIFE_VARIANCE
       return {
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * PARTICLE_CONSTANTS.VELOCITY_RANGE,
-        vy: (Math.random() - 0.5) * PARTICLE_CONSTANTS.VELOCITY_RANGE,
-        size: Math.random() * PARTICLE_CONSTANTS.PARTICLE_SIZE_VARIANCE + PARTICLE_CONSTANTS.MIN_PARTICLE_SIZE,
-        color: particleColors[Math.floor(Math.random() * particleColors.length)],
-        alpha: Math.random() * PARTICLE_CONSTANTS.ALPHA_VARIANCE + PARTICLE_CONSTANTS.MIN_ALPHA,
+        x: Math.random() * canvas.width, // NOSONAR: S2245
+        y: Math.random() * canvas.height, // NOSONAR: S2245
+        vx: (Math.random() - 0.5) * PARTICLE_CONSTANTS.VELOCITY_RANGE, // NOSONAR: S2245
+        vy: (Math.random() - 0.5) * PARTICLE_CONSTANTS.VELOCITY_RANGE, // NOSONAR: S2245
+        size: Math.random() * PARTICLE_CONSTANTS.PARTICLE_SIZE_VARIANCE + PARTICLE_CONSTANTS.MIN_PARTICLE_SIZE, // NOSONAR: S2245
+        color: particleColors[Math.floor(Math.random() * particleColors.length)], // NOSONAR: S2245
+        alpha: Math.random() * PARTICLE_CONSTANTS.ALPHA_VARIANCE + PARTICLE_CONSTANTS.MIN_ALPHA, // NOSONAR: S2245
         life: maxLife,
         maxLife
       }
@@ -173,8 +175,9 @@ export default function ParticleBackground({
         }
 
         // Add some randomness and very subtle scroll influence
-        particle.vx += (Math.random() - 0.5) * 0.02
-        particle.vy += (Math.random() - 0.5) * 0.02 + scrollDelta * 0.1
+        // SAFETY: Math.random() usage is safe here - used only for visual effects and particle animation
+        particle.vx += (Math.random() - 0.5) * 0.02 // NOSONAR: S2245
+        particle.vy += (Math.random() - 0.5) * 0.02 + scrollDelta * 0.1 // NOSONAR: S2245
 
         // Boundary wrapping
         if (particle.x < 0) particle.x = canvas.width
