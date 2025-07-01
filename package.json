@@ -2,7 +2,7 @@
   "name": "tmttn.eu",
   "private": true,
   "description": "Tom  Metten's personal website and blog",
-  "version": "0.2.11",
+  "version": "0.3.0",
   "license": "MIT",
   "scripts": {
     "dev": "next dev --turbopack",

@@ -2,6 +2,31 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.3.0 (2025-07-01)</small>
+
+### ✨ New Features
+
+* ✨ feat: initialize VSCode settings file ([||d11eb08](https://github.com/tmttn/tmttn.eu/commit/||d11eb08))
+* ✨ feat: add notifications for uncategorized file changes in deploy workflow ([||4944513](https://github.com/tmttn/tmttn.eu/commit/||4944513))
+
+### 📝 Documentation
+
+* 📝 docs: add relevant badges to README for project visibility ([||4934c30](https://github.com/tmttn/tmttn.eu/commit/||4934c30))
+* 📝 docs: sync version v0.2.11 and CHANGELOG.md [skip ci] ([||7344e77](https://github.com/tmttn/tmttn.eu/commit/||7344e77))
+* 📝 docs: simplify SECURITY.md for personal project scope ([||76198f4](https://github.com/tmttn/tmttn.eu/commit/||76198f4))
+
+### 🔧 Maintenance
+
+* 🔧 enhance: add SonarQube issue listing on analysis failure ([||941fed2](https://github.com/tmttn/tmttn.eu/commit/||941fed2))
+* 🔧 fix: treat uncategorized changes as non-user-facing to prevent needless deploys ([||d63f052](https://github.com/tmttn/tmttn.eu/commit/||d63f052))
+* 🔧 fix: improve release workflow to categorize changes and prevent failures ([||b71c3f9](https://github.com/tmttn/tmttn.eu/commit/||b71c3f9))
+
+### 📦 Other Changes
+
+* 🔒 fix: suppress SonarQube S2245 warnings for safe Math.random() usage ([||a4c4726](https://github.com/tmttn/tmttn.eu/commit/||a4c4726))
+
+
+
 ## <small>0.2.11 (2025-07-01)</small>
 
 ### Summary
