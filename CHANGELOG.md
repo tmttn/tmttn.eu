@@ -2,6 +2,16 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.2.11 (2025-07-01)</small>
+
+### Summary
+Release with improvements and updates.
+
+* ♻️ refactor: use React.Readonly<T> instead of individual readonly properties ([5f3fffa](https://github.com/tmttn/tmttn.eu/commit/5f3fffa1a8e589c54c0d1b9328e29159e5389c9c))
+* 🔧 refactor: fix SonarQube code quality issues ([4a3a52b](https://github.com/tmttn/tmttn.eu/commit/4a3a52bb2ebac9d38b43cf13f193b50489222c8c))
+* 📝 docs: sync version v0.2.10 and CHANGELOG.md [skip ci] ([4291926](https://github.com/tmttn/tmttn.eu/commit/4291926c53986cd669cb300d83ef4b6674bbc226))
+
+
 ## <small>0.2.10 (2025-07-01)</small>
 
 ### Summary
