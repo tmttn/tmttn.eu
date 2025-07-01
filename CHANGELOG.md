@@ -2,6 +2,15 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.2.10 (2025-07-01)</small>
+
+### Summary
+Release with improvements and updates.
+
+* 🔧 feat: integrate SonarQube analysis into CI pipeline ([c3cc967](https://github.com/tmttn/tmttn.eu/commit/c3cc967f38dd82a14b880db929fcfdeb4b4ecf68))
+* 📝 docs: sync version v0.2.9 and CHANGELOG.md [skip ci] ([9cc62c1](https://github.com/tmttn/tmttn.eu/commit/9cc62c109aa5eb316be7720c3a6cc26edeaee101))
+
+
 ## <small>0.2.9 (2025-07-01)</small>
 
 ### Summary
