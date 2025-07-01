@@ -2,6 +2,16 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.2.9 (2025-07-01)</small>
+
+### Summary
+Release with improvements and updates.
+
+* ⚡ perf: fix infinite useEffect loop causing 178s Time to Interactive ([da1006c](https://github.com/tmttn/tmttn.eu/commit/da1006c2e187300bd68a95144b983362a5ee4dde))
+* 🔧 fix: correct package.json version-only detection with precise logic ([3a108ef](https://github.com/tmttn/tmttn.eu/commit/3a108ef269cd8a7d0bb018af23c2f59eecc616ab))
+* 📝 docs: sync version v0.2.8 and CHANGELOG.md [skip ci] ([a691362](https://github.com/tmttn/tmttn.eu/commit/a6913621ae9669fb5a0edf58e7e592ff772db73e))
+
+
 ## <small>0.2.8 (2025-06-30)</small>
 
 ### Summary
