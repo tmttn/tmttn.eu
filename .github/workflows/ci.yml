@@ -351,9 +351,49 @@ jobs:
       run: npm run test:coverage
     
     - name: SonarQube Scan
+      id: sonar-scan
       uses: SonarSource/sonarqube-scan-action@v5
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    
+    - name: List SonarQube issues on failure
+      if: failure() && steps.sonar-scan.outcome == 'failure'
+      run: |
+        echo "## ❌ SonarQube Analysis Failed" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Issues Found:" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        
+        # Try to get issues from SonarQube API
+        PROJECT_KEY="tmttn_tmttn.eu"
+        SONAR_URL="https://sonarcloud.io"
+        
+        # Get issues from SonarQube API
+        curl -s -u "$SONAR_TOKEN:" \
+          "$SONAR_URL/api/issues/search?componentKeys=$PROJECT_KEY&resolved=false&types=BUG,VULNERABILITY,CODE_SMELL&ps=50" \
+          | jq -r '.issues[] | "File: \(.component | split(":") | last)\nLine: \(.line // "N/A")\nRule: \(.rule)\nSeverity: \(.severity)\nMessage: \(.message)\n---"' \
+          >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "Unable to fetch detailed issues from SonarQube API" >> $GITHUB_STEP_SUMMARY
+        
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Copy the issues above and send them to Claude with:" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        echo "Please fix these SonarQube issues:" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "[paste the issues from above here]" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Instructions for Claude:" >> $GITHUB_STEP_SUMMARY
+        echo "1. Fix each issue by editing the specific files mentioned" >> $GITHUB_STEP_SUMMARY
+        echo "2. Follow the existing code style and conventions in this Next.js project" >> $GITHUB_STEP_SUMMARY
+        echo "3. Use the barrel import system (@components, @features, etc.)" >> $GITHUB_STEP_SUMMARY
+        echo "4. After fixing, run 'npm run lint' and 'npm run type-check' to verify" >> $GITHUB_STEP_SUMMARY
+        echo "5. Run 'npm test' to ensure no tests are broken" >> $GITHUB_STEP_SUMMARY
+        echo "6. Do not add any comments unless specifically requested" >> $GITHUB_STEP_SUMMARY
+        echo "7. Keep changes minimal and focused only on the reported issues" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Manual Check (if API fails):" >> $GITHUB_STEP_SUMMARY
+        echo "Visit: https://sonarcloud.io/project/issues?id=tmttn_tmttn.eu&resolved=false" >> $GITHUB_STEP_SUMMARY
     
     - name: Create SonarQube summary
       run: |
