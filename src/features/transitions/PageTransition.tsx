@@ -4,10 +4,10 @@ import { TransitionWrapper } from './PageTransition.styled'
 
 
 interface PageTransitionProperties {
-  readonly className?: string
+  className?: string
 }
 
-export default function PageTransition({ children, className }: React.PropsWithChildren<PageTransitionProperties>) {
+export default function PageTransition({ children, className }: React.PropsWithChildren<Readonly<PageTransitionProperties>>) {
   const { isDark } = useTheme()
   const [isVisible, setIsVisible] = useState(false)
   const [previousTheme, setPreviousTheme] = useState(isDark)

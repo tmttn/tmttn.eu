@@ -1,9 +1,9 @@
 import React from "react"
 
 interface LayoutProperties {
-  readonly children: React.ReactNode
+  children: React.ReactNode
 }
 
-export default function Layout({ children }: LayoutProperties) {
+export default function Layout({ children }: Readonly<LayoutProperties>) {
   return <div>{children}</div>
 }

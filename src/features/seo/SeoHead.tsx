@@ -2,17 +2,17 @@ import React from 'react'
 import Head from 'next/head'
 
 interface SEOHeadProperties {
-  readonly title?: string
-  readonly description?: string
-  readonly keywords?: string
-  readonly ogTitle?: string
-  readonly ogDescription?: string
-  readonly ogImage?: string
-  readonly ogUrl?: string
-  readonly twitterCard?: 'summary' | 'summary_large_image'
-  readonly canonicalUrl?: string
-  readonly noindex?: boolean
-  readonly structuredData?: object
+  title?: string
+  description?: string
+  keywords?: string
+  ogTitle?: string
+  ogDescription?: string
+  ogImage?: string
+  ogUrl?: string
+  twitterCard?: 'summary' | 'summary_large_image'
+  canonicalUrl?: string
+  noindex?: boolean
+  structuredData?: object
 }
 
 const defaultProps = {
@@ -36,7 +36,7 @@ export default function SEOHead({
   canonicalUrl,
   noindex = false,
   structuredData
-}: SEOHeadProperties) {
+}: Readonly<SEOHeadProperties>) {
   const fullTitle = title === defaultProps.title ? title : `${title} | Tom Metten`
 
   return (

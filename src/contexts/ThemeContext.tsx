@@ -3,9 +3,9 @@ import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { darkTheme, lightTheme, Theme } from '@styles'
 
 export interface ThemeContextType {
-  readonly isDark: boolean
-  readonly toggleTheme: () => void
-  readonly theme: Theme
+  isDark: boolean
+  toggleTheme: () => void
+  theme: Theme
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
