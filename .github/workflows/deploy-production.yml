@@ -66,6 +66,7 @@ jobs:
             
             # Check if any changed files affect the user-facing website
             USER_FACING_CHANGES=false
+            UNCATEGORIZED_FILES=""
             
             # Paths that affect the live website
             USER_FACING_PATHS=(
@@ -94,6 +95,7 @@ jobs:
               "README.md"
               "CHANGELOG.md"
               "CLAUDE.md"
+              "SECURITY.md"
               ".gitignore"
               ".eslintrc"
               "jest.config.js"
@@ -178,18 +180,20 @@ jobs:
                   fi
                 else
                   # Regular file path checking
+                  FILE_MATCHED=false
                   for user_path in "${USER_FACING_PATHS[@]}"; do
                     if [[ "$file" == $user_path* ]] && [[ "$file" != "package.json" ]] && [[ "$file" != "package-lock.json" ]]; then
                       echo "✅ User-facing change detected: $file"
                       USER_FACING_CHANGES=true
+                      FILE_MATCHED=true
                       break
                     fi
                   done
                   
-                  # If no user-facing path matched, it might be a root-level config file
-                  if [ "$USER_FACING_CHANGES" = "false" ]; then
-                    echo "❓ Unclassified change (treating as user-facing): $file"
-                    USER_FACING_CHANGES=true
+                  # If no user-facing path matched, treat as non-user-facing (conservative approach)
+                  if [ "$FILE_MATCHED" = "false" ]; then
+                    echo "⏭️ Unclassified change (treating as non-user-facing): $file"
+                    UNCATEGORIZED_FILES="$UNCATEGORIZED_FILES- $file"$'\n'
                   fi
                 fi
               fi
@@ -204,6 +208,26 @@ jobs:
               echo "✅ Only non-user-facing changes detected - no deployment needed"
               echo "Changes are limited to tests, docs, CI, or development files"
               DEPLOY_NEEDED=false
+            fi
+            
+            # Add notification for uncategorized files
+            if [ ! -z "$UNCATEGORIZED_FILES" ]; then
+              echo ""
+              echo "⚠️ WARNING: Uncategorized files detected (treated as non-user-facing):"
+              echo -e "$UNCATEGORIZED_FILES"
+              echo ""
+              echo "## ⚠️ Uncategorized Files Detected" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "The following files were not categorized as user-facing or non-user-facing:" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo -e "$UNCATEGORIZED_FILES" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "**Action:** These files were treated as **non-user-facing** to prevent unnecessary deployments." >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "**Next Steps:** Consider adding these file patterns to either:" >> $GITHUB_STEP_SUMMARY
+              echo "- \`USER_FACING_PATHS\` array if they affect the live website" >> $GITHUB_STEP_SUMMARY
+              echo "- \`NON_DEPLOYMENT_PATHS\` array if they are development/documentation files" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
             fi
           fi
         else

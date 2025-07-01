@@ -13,7 +13,7 @@ jobs:
     name: Create Release & Generate Changelog
     runs-on: ubuntu-latest
     
-    # Only run if Deploy to Production workflow succeeded and deployed changes
+    # Run if Deploy to Production workflow completed (regardless of deployment)
     if: github.event.workflow_run.conclusion == 'success'
     
     permissions:
@@ -133,10 +133,10 @@ jobs:
           PATCH=$((PATCH + 1))
           INCREMENT_TYPE="patch"
         else
-          echo "❌ DEBUG: No significant changes found (feat/fix/BREAKING)"
-          echo "🔍 DEBUG: All commits:"
-          echo "$COMMITS_SINCE_TAG" | head -10
-          exit 1
+          # No breaking/feat/fix changes - still create a patch release for other changes
+          PATCH=$((PATCH + 1))
+          INCREMENT_TYPE="patch"
+          echo "🔍 DEBUG: No significant changes found (feat/fix/BREAKING), creating patch release for other changes"
         fi
         
         NEXT_VERSION="$MAJOR.$MINOR.$PATCH"
@@ -167,31 +167,110 @@ jobs:
         echo "increment-type=$INCREMENT_TYPE" >> $GITHUB_OUTPUT
         echo "highest-tag=$HIGHEST_TAG" >> $GITHUB_OUTPUT
     
-    - name: Generate Changelog from Conventional Commits
+    - name: Generate Categorized Changelog
       id: changelog
       if: steps.deployment-check.outputs.deployment_occurred == 'true'
       run: |
-        echo "🔄 Generating changelog manually to ensure proper version handling..."
+        echo "🔄 Generating categorized changelog with readable change summary..."
         
         # Use the calculated version from previous step
         VERSION="${{ steps.semver.outputs.calculated-version }}"
         echo "Using version: $VERSION"
         
-        # Create a basic changelog entry for this version
+        # Get all commits since last tag
         CURRENT_DATE=$(date +%Y-%m-%d)
-        COMMITS_SINCE_TAG=$(git log ${{ steps.semver.outputs.highest-tag }}..HEAD --oneline --pretty=format:"* %s ([%h](https://github.com/tmttn/tmttn.eu/commit/%H))")
+        ALL_COMMITS=$(git log ${{ steps.semver.outputs.highest-tag }}..HEAD --oneline --pretty=format:"%s|||%h")
         
-        # Create temporary changelog with proper version
+        # Initialize categorized sections
+        FEATURES=""
+        FIXES=""
+        ENHANCEMENTS=""
+        STYLE=""
+        DOCS=""
+        TESTS=""
+        CHORE=""
+        OTHER=""
+        
+        # Categorize commits
+        while IFS='|||' read -r commit_msg commit_hash; do
+          commit_link="* $commit_msg ([${commit_hash}](https://github.com/tmttn/tmttn.eu/commit/${commit_hash}))"
+          
+          if [[ $commit_msg =~ ^(✨|feat) ]]; then
+            FEATURES="$FEATURES$commit_link"$'\n'
+          elif [[ $commit_msg =~ ^(🐛|fix) ]]; then
+            FIXES="$FIXES$commit_link"$'\n'
+          elif [[ $commit_msg =~ ^(🌟|enhance) ]]; then
+            ENHANCEMENTS="$ENHANCEMENTS$commit_link"$'\n'
+          elif [[ $commit_msg =~ ^(🎨|style) ]]; then
+            STYLE="$STYLE$commit_link"$'\n'
+          elif [[ $commit_msg =~ ^(📝|docs) ]]; then
+            DOCS="$DOCS$commit_link"$'\n'
+          elif [[ $commit_msg =~ ^(🧪|test) ]]; then
+            TESTS="$TESTS$commit_link"$'\n'
+          elif [[ $commit_msg =~ ^(🔧|chore|⚡|perf|♻️|refactor) ]]; then
+            CHORE="$CHORE$commit_link"$'\n'
+          else
+            OTHER="$OTHER$commit_link"$'\n'
+          fi
+        done <<< "$ALL_COMMITS"
+        
+        # Create temporary changelog with categorized sections
         echo "# Changelog" > temp_changelog.md
         echo "" >> temp_changelog.md
         echo "All notable changes to Thomas Metten's personal portfolio website are documented in this file." >> temp_changelog.md
         echo "" >> temp_changelog.md
         echo "## <small>$VERSION ($CURRENT_DATE)</small>" >> temp_changelog.md
         echo "" >> temp_changelog.md
-        echo "### Summary" >> temp_changelog.md
-        echo "Release with improvements and updates." >> temp_changelog.md
-        echo "" >> temp_changelog.md
-        echo "$COMMITS_SINCE_TAG" >> temp_changelog.md
+        
+        # Add sections only if they have content
+        if [ ! -z "$FEATURES" ]; then
+          echo "### ✨ New Features" >> temp_changelog.md
+          echo "" >> temp_changelog.md
+          echo "$FEATURES" >> temp_changelog.md
+        fi
+        
+        if [ ! -z "$ENHANCEMENTS" ]; then
+          echo "### 🌟 Enhancements" >> temp_changelog.md
+          echo "" >> temp_changelog.md
+          echo "$ENHANCEMENTS" >> temp_changelog.md
+        fi
+        
+        if [ ! -z "$FIXES" ]; then
+          echo "### 🐛 Bug Fixes" >> temp_changelog.md
+          echo "" >> temp_changelog.md
+          echo "$FIXES" >> temp_changelog.md
+        fi
+        
+        if [ ! -z "$STYLE" ]; then
+          echo "### 🎨 Styling & UI" >> temp_changelog.md
+          echo "" >> temp_changelog.md
+          echo "$STYLE" >> temp_changelog.md
+        fi
+        
+        if [ ! -z "$DOCS" ]; then
+          echo "### 📝 Documentation" >> temp_changelog.md
+          echo "" >> temp_changelog.md
+          echo "$DOCS" >> temp_changelog.md
+        fi
+        
+        if [ ! -z "$TESTS" ]; then
+          echo "### 🧪 Testing" >> temp_changelog.md
+          echo "" >> temp_changelog.md
+          echo "$TESTS" >> temp_changelog.md
+        fi
+        
+        if [ ! -z "$CHORE" ]; then
+          echo "### 🔧 Maintenance" >> temp_changelog.md
+          echo "" >> temp_changelog.md
+          echo "$CHORE" >> temp_changelog.md
+        fi
+        
+        if [ ! -z "$OTHER" ]; then
+          echo "### 📦 Other Changes" >> temp_changelog.md
+          echo "" >> temp_changelog.md
+          echo "$OTHER" >> temp_changelog.md
+        fi
+        
         echo "" >> temp_changelog.md
         
         # Append existing changelog content (skip the header)
@@ -201,8 +280,19 @@ jobs:
         
         mv temp_changelog.md CHANGELOG.md
         
+        # Create summary for GitHub release
+        SUMMARY=""
+        [ ! -z "$FEATURES" ] && SUMMARY="$SUMMARY### ✨ New Features\n$FEATURES\n"
+        [ ! -z "$ENHANCEMENTS" ] && SUMMARY="$SUMMARY### 🌟 Enhancements\n$ENHANCEMENTS\n"
+        [ ! -z "$FIXES" ] && SUMMARY="$SUMMARY### 🐛 Bug Fixes\n$FIXES\n"
+        [ ! -z "$STYLE" ] && SUMMARY="$SUMMARY### 🎨 Styling & UI\n$STYLE\n"
+        [ ! -z "$DOCS" ] && SUMMARY="$SUMMARY### 📝 Documentation\n$DOCS\n"
+        [ ! -z "$TESTS" ] && SUMMARY="$SUMMARY### 🧪 Testing\n$TESTS\n"
+        [ ! -z "$CHORE" ] && SUMMARY="$SUMMARY### 🔧 Maintenance\n$CHORE\n"
+        [ ! -z "$OTHER" ] && SUMMARY="$SUMMARY### 📦 Other Changes\n$OTHER\n"
+        
         echo "changelog_content<<EOF" >> $GITHUB_OUTPUT
-        echo "$COMMITS_SINCE_TAG" >> $GITHUB_OUTPUT
+        echo -e "$SUMMARY" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
         
     - name: Force new release creation
