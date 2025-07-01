@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, useMemo } from 'react'
 import { useTheme } from '../../contexts/ThemeContext'
 import { ParticleCanvas } from './ParticleBackground.styled'
 
@@ -33,8 +33,7 @@ export default function ParticleBackground({
   const lastScrollReference = useRef(0)
   const [isVisible, setIsVisible] = useState(true)
   const lastFrameTime = useRef(0)
-  const fpsTarget = 60
-  const frameInterval = 1000 / fpsTarget
+  const frameInterval = useMemo(() => 1000 / 60, [])
 
   useEffect(() => {
     // Check for reduced motion preference
@@ -235,7 +234,7 @@ export default function ParticleBackground({
       // Clear particle references
       particlesReference.current = []
     }
-  }, [particleCount, isDark, frameInterval])
+  }, [particleCount, isDark])
 
   if (!isVisible) return
 
