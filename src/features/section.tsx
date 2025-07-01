@@ -1,7 +1,7 @@
 import React from "react"
 
 interface SectionProperties {
-  id?: string
+  readonly id?: string
 }
 
 export default function Section({ id, children }: React.PropsWithChildren<SectionProperties>) {

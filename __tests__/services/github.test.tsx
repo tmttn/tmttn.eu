@@ -60,7 +60,7 @@ describe('GitHubService', () => {
       const result = await GitHubService.getPublicRepositories()
       
       expect(result).toBe(GitHubService.API_FAILURE)
-      expect(consoleSpy.log).toHaveBeenCalledWith('Skipping GitHub API call (test environment)')
+      // Console logging removed
     })
 
     it('returns API_FAILURE when in development environment', async () => {
@@ -69,7 +69,7 @@ describe('GitHubService', () => {
       const result = await GitHubService.getPublicRepositories()
       
       expect(result).toBe(GitHubService.API_FAILURE)
-      expect(consoleSpy.log).toHaveBeenCalledWith('Skipping GitHub API call (test environment)')
+      // Console logging removed
     })
 
     it('returns API_FAILURE when SKIP_GITHUB_API is true', async () => {
@@ -81,7 +81,7 @@ describe('GitHubService', () => {
       const result = await GitHubService.getPublicRepositories()
       
       expect(result).toBe(GitHubService.API_FAILURE)
-      expect(consoleSpy.log).toHaveBeenCalledWith('Skipping GitHub API call (test environment)')
+      // Console logging removed
     })
 
     it('returns API_FAILURE when in production client without ENABLE_GITHUB_API', async () => {
@@ -126,12 +126,12 @@ describe('GitHubService', () => {
       const result = await GitHubService.getPublicRepositories()
       
       expect(result).toBe(GitHubService.API_FAILURE)
-      expect(consoleSpy.warn).toHaveBeenCalledWith('GitHub API error (403). Returning API failure.')
+      // Console logging removed
       
       // Check that rate limiting was applied
       const secondResult = await GitHubService.getPublicRepositories()
       expect(secondResult).toBe(GitHubService.API_FAILURE)
-      expect(consoleSpy.log).toHaveBeenCalledWith('GitHub API rate limited - returning API failure')
+      // Console logging removed
     })
 
     it('returns API_FAILURE on 429 error (too many requests)', async () => {
@@ -147,12 +147,12 @@ describe('GitHubService', () => {
       const result = await GitHubService.getPublicRepositories()
       
       expect(result).toBe(GitHubService.API_FAILURE)
-      expect(consoleSpy.warn).toHaveBeenCalledWith('GitHub API error (429). Returning API failure.')
+      // Console logging removed
       
       // Check that rate limiting was applied
       const secondResult = await GitHubService.getPublicRepositories()
       expect(secondResult).toBe(GitHubService.API_FAILURE)
-      expect(consoleSpy.log).toHaveBeenCalledWith('GitHub API rate limited - returning API failure')
+      // Console logging removed
     })
 
     it('returns API_FAILURE on 500 error (server error)', async () => {
@@ -168,12 +168,12 @@ describe('GitHubService', () => {
       const result = await GitHubService.getPublicRepositories()
       
       expect(result).toBe(GitHubService.API_FAILURE)
-      expect(consoleSpy.warn).toHaveBeenCalledWith('GitHub API error (500). Returning API failure.')
+      // Console logging removed
       
       // Check that rate limiting was applied
       const secondResult = await GitHubService.getPublicRepositories()
       expect(secondResult).toBe(GitHubService.API_FAILURE)
-      expect(consoleSpy.log).toHaveBeenCalledWith('GitHub API rate limited - returning API failure')
+      // Console logging removed
     })
 
     it('returns API_FAILURE on 404 error without rate limiting', async () => {
@@ -189,7 +189,7 @@ describe('GitHubService', () => {
       const result = await GitHubService.getPublicRepositories()
       
       expect(result).toBe(GitHubService.API_FAILURE)
-      expect(consoleSpy.warn).toHaveBeenCalledWith('GitHub API error (404). Returning API failure.')
+      // Console logging removed
       
       // 404 should not trigger rate limiting, so second call should attempt API again
       mockFetch.mockResolvedValueOnce({
@@ -211,12 +211,12 @@ describe('GitHubService', () => {
       const result = await GitHubService.getPublicRepositories()
       
       expect(result).toBe(GitHubService.API_FAILURE)
-      expect(consoleSpy.error).toHaveBeenCalledWith('Failed to fetch GitHub repositories:', expect.any(Error))
+      // Console logging removed
       
       // Check that rate limiting was applied
       const secondResult = await GitHubService.getPublicRepositories()
       expect(secondResult).toBe(GitHubService.API_FAILURE)
-      expect(consoleSpy.log).toHaveBeenCalledWith('GitHub API rate limited - returning API failure')
+      // Console logging removed
     })
 
     it('filters out forks and archived repositories', async () => {
@@ -283,7 +283,7 @@ describe('GitHubService', () => {
       // Should be rate limited
       const rateLimitedResult = await GitHubService.getPublicRepositories()
       expect(rateLimitedResult).toBe(GitHubService.API_FAILURE)
-      expect(consoleSpy.log).toHaveBeenCalledWith('GitHub API rate limited - returning API failure')
+      // Console logging removed
       
       // Reset rate limit
       GitHubService.resetRateLimit()

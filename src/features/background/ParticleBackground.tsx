@@ -20,8 +20,41 @@ interface ParticleBackgroundProperties {
   className?: string
 }
 
+// Constants for particle behavior and rendering
+const PARTICLE_CONSTANTS = {
+  DEFAULT_PARTICLE_COUNT: 50,
+  FRAME_RATE: 60,
+  FRAME_INTERVAL: 1000 / 60,
+  PARTICLE_MIN_LIFE: 300,
+  PARTICLE_LIFE_VARIANCE: 200,
+  VELOCITY_RANGE: 0.5,
+  MIN_PARTICLE_SIZE: 1,
+  PARTICLE_SIZE_VARIANCE: 3,
+  MIN_ALPHA: 0.2,
+  ALPHA_VARIANCE: 0.5,
+  CONNECTION_DISTANCE_SQUARED: 10_000, // 100^2
+  CONNECTION_OPACITY_BASE: 0.08,
+  CONNECTION_LINE_WIDTH: 0.4,
+  MAX_CONNECTIONS_MULTIPLIER: 2,
+  MAX_TOTAL_CONNECTIONS: 100,
+  PARTICLE_OPACITY: {
+    DARK_BLUE: 0.8,
+    DARK_HIGHLIGHT: 0.6,
+    DARK_GREEN: 0.7,
+    DARK_PINK: 0.5,
+    LIGHT_BLUE: 0.6,
+    LIGHT_BLUE_VARIANT: 0.5,
+    LIGHT_GREEN: 0.6,
+    LIGHT_PINK: 0.4,
+  },
+  CONNECTION_COLORS: {
+    DARK: 'rgba(96, 165, 250, 0.25)',
+    LIGHT: 'rgba(59, 130, 246, 0.3)',
+  },
+} as const
+
 export default function ParticleBackground({ 
-  particleCount = 50, 
+  particleCount = PARTICLE_CONSTANTS.DEFAULT_PARTICLE_COUNT, 
   className 
 }: Readonly<ParticleBackgroundProperties>) {
   const { isDark } = useTheme()
@@ -33,7 +66,7 @@ export default function ParticleBackground({
   const lastScrollReference = useRef(0)
   const [isVisible, setIsVisible] = useState(true)
   const lastFrameTime = useRef(0)
-  const frameInterval = useMemo(() => 1000 / 60, [])
+  const frameInterval = useMemo(() => PARTICLE_CONSTANTS.FRAME_INTERVAL, [])
 
   useEffect(() => {
     // Check for reduced motion preference
@@ -58,27 +91,27 @@ export default function ParticleBackground({
 
     // Particle colors based on theme
     const particleColors = isDark ? [
-      'rgba(96, 165, 250, 0.8)', // primary blue
-      'rgba(165, 180, 252, 0.6)', // primary highlight
-      'rgba(52, 211, 153, 0.7)',  // accent green
-      'rgba(244, 114, 182, 0.5)', // secondary pink
+      `rgba(96, 165, 250, ${PARTICLE_CONSTANTS.PARTICLE_OPACITY.DARK_BLUE})`, // primary blue
+      `rgba(165, 180, 252, ${PARTICLE_CONSTANTS.PARTICLE_OPACITY.DARK_HIGHLIGHT})`, // primary highlight
+      `rgba(52, 211, 153, ${PARTICLE_CONSTANTS.PARTICLE_OPACITY.DARK_GREEN})`,  // accent green
+      `rgba(244, 114, 182, ${PARTICLE_CONSTANTS.PARTICLE_OPACITY.DARK_PINK})`, // secondary pink
     ] : [
-      'rgba(59, 130, 246, 0.6)',  // darker blue for light mode
-      'rgba(29, 78, 216, 0.5)',   // darker blue variant
-      'rgba(5, 150, 105, 0.6)',   // darker green
-      'rgba(225, 29, 72, 0.4)',   // darker pink
+      `rgba(59, 130, 246, ${PARTICLE_CONSTANTS.PARTICLE_OPACITY.LIGHT_BLUE})`,  // darker blue for light mode
+      `rgba(29, 78, 216, ${PARTICLE_CONSTANTS.PARTICLE_OPACITY.LIGHT_BLUE_VARIANT})`,   // darker blue variant
+      `rgba(5, 150, 105, ${PARTICLE_CONSTANTS.PARTICLE_OPACITY.LIGHT_GREEN})`,   // darker green
+      `rgba(225, 29, 72, ${PARTICLE_CONSTANTS.PARTICLE_OPACITY.LIGHT_PINK})`,   // darker pink
     ]
 
     const createParticle = (): Particle => {
-      const maxLife = 300 + Math.random() * 200
+      const maxLife = PARTICLE_CONSTANTS.PARTICLE_MIN_LIFE + Math.random() * PARTICLE_CONSTANTS.PARTICLE_LIFE_VARIANCE
       return {
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        size: Math.random() * 3 + 1,
+        vx: (Math.random() - 0.5) * PARTICLE_CONSTANTS.VELOCITY_RANGE,
+        vy: (Math.random() - 0.5) * PARTICLE_CONSTANTS.VELOCITY_RANGE,
+        size: Math.random() * PARTICLE_CONSTANTS.PARTICLE_SIZE_VARIANCE + PARTICLE_CONSTANTS.MIN_PARTICLE_SIZE,
         color: particleColors[Math.floor(Math.random() * particleColors.length)],
-        alpha: Math.random() * 0.5 + 0.2,
+        alpha: Math.random() * PARTICLE_CONSTANTS.ALPHA_VARIANCE + PARTICLE_CONSTANTS.MIN_ALPHA,
         life: maxLife,
         maxLife
       }
@@ -181,7 +214,7 @@ export default function ParticleBackground({
       }
 
       // Optimized connections - limit calculations and use distance squared
-      const maxConnections = Math.min(particleCount * 2, 100) // Limit total connections
+      const maxConnections = Math.min(particleCount * PARTICLE_CONSTANTS.MAX_CONNECTIONS_MULTIPLIER, PARTICLE_CONSTANTS.MAX_TOTAL_CONNECTIONS) // Limit total connections
       let connectionCount = 0
       
       for (let index = 0; index < particlesReference.current.length && connectionCount < maxConnections; index++) {
@@ -192,13 +225,13 @@ export default function ParticleBackground({
           const dy = particle.y - other.y
           const distanceSquared = dx * dx + dy * dy
           
-          if (distanceSquared < 10_000) { // 100^2
+          if (distanceSquared < PARTICLE_CONSTANTS.CONNECTION_DISTANCE_SQUARED) { // 100^2
             const distance = Math.sqrt(distanceSquared)
-            const opacity = (100 - distance) / 100 * 0.08 // Reduced opacity for performance
+            const opacity = (100 - distance) / 100 * PARTICLE_CONSTANTS.CONNECTION_OPACITY_BASE // Reduced opacity for performance
             context.save()
             context.globalAlpha = opacity
-            context.strokeStyle = isDark ? 'rgba(96, 165, 250, 0.25)' : 'rgba(59, 130, 246, 0.3)'
-            context.lineWidth = 0.4
+            context.strokeStyle = isDark ? PARTICLE_CONSTANTS.CONNECTION_COLORS.DARK : PARTICLE_CONSTANTS.CONNECTION_COLORS.LIGHT
+            context.lineWidth = PARTICLE_CONSTANTS.CONNECTION_LINE_WIDTH
             context.beginPath()
             context.moveTo(particle.x, particle.y)
             context.lineTo(other.x, other.y)
@@ -234,7 +267,7 @@ export default function ParticleBackground({
       // Clear particle references
       particlesReference.current = []
     }
-  }, [particleCount, isDark])
+  }, [particleCount, isDark, frameInterval])
 
   if (!isVisible) return
 

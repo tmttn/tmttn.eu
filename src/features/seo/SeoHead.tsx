@@ -2,17 +2,17 @@ import React from 'react'
 import Head from 'next/head'
 
 interface SEOHeadProperties {
-  title?: string
-  description?: string
-  keywords?: string
-  ogTitle?: string
-  ogDescription?: string
-  ogImage?: string
-  ogUrl?: string
-  twitterCard?: 'summary' | 'summary_large_image'
-  canonicalUrl?: string
-  noindex?: boolean
-  structuredData?: object
+  readonly title?: string
+  readonly description?: string
+  readonly keywords?: string
+  readonly ogTitle?: string
+  readonly ogDescription?: string
+  readonly ogImage?: string
+  readonly ogUrl?: string
+  readonly twitterCard?: 'summary' | 'summary_large_image'
+  readonly canonicalUrl?: string
+  readonly noindex?: boolean
+  readonly structuredData?: object
 }
 
 const defaultProps = {
@@ -78,12 +78,12 @@ export default function SEOHead({
       <meta name="theme-color" content="#60a5fa" />
       <meta name="msapplication-TileColor" content="#60a5fa" />
       
-      {/* Structured Data */}
+      {/* Structured Data - Safe because it's JSON.stringify of controlled objects */}
       {structuredData && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData)
+            __html: JSON.stringify(structuredData, null, 0)
           }}
         />
       )}

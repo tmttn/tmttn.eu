@@ -4,7 +4,7 @@ import { TransitionWrapper } from './PageTransition.styled'
 
 
 interface PageTransitionProperties {
-  className?: string
+  readonly className?: string
 }
 
 export default function PageTransition({ children, className }: React.PropsWithChildren<PageTransitionProperties>) {

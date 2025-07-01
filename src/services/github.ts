@@ -46,6 +46,10 @@ export class GitHubService {
   private static readonly USERNAME = 'tmttn'
   private static rateLimitedUntil: number = 0
   private static readonly RATE_LIMIT_COOLDOWN = 60 * 1000 // 1 minute
+  private static readonly MAX_REPOS_PER_PAGE = 100
+  private static readonly DAYS_IN_YEAR = 365
+  private static readonly MILLISECONDS_IN_MINUTE = 60 * 1000
+  private static readonly MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
 
   // Special symbol to indicate API failure vs empty results
   static readonly API_FAILURE = Symbol('API_FAILURE')
@@ -75,7 +79,7 @@ export class GitHubService {
 
   private static setRateLimited(): void {
     this.rateLimitedUntil = Date.now() + this.RATE_LIMIT_COOLDOWN
-    console.warn(`GitHub API rate limited. Cooling down for ${this.RATE_LIMIT_COOLDOWN / 1000} seconds.`)
+    // API rate limited - cooling down
   }
 
   // Method for testing - reset rate limit
@@ -85,22 +89,19 @@ export class GitHubService {
 
   static async getPublicRepositories(): Promise<GitHubRepository[] | typeof GitHubService.API_FAILURE> {
     if (this.shouldSkipAPICall()) {
-      console.log('Skipping GitHub API call (test environment)')
       return this.API_FAILURE
     }
 
     if (this.isRateLimited()) {
-      console.log('GitHub API rate limited - returning API failure')
       return this.API_FAILURE
     }
 
     try {
       const response = await fetch(
-        `${this.API_BASE}/users/${this.USERNAME}/repos?type=public&sort=updated&per_page=100`
+        `${this.API_BASE}/users/${this.USERNAME}/repos?type=public&sort=updated&per_page=${this.MAX_REPOS_PER_PAGE}`
       )
       
       if (!response.ok) {
-        console.warn(`GitHub API error (${response.status}). Returning API failure.`)
         if (response.status === 403 || response.status === 429 || response.status >= 500) {
           // Rate limit (403, 429) or server errors (5xx) - implement cooldown
           this.setRateLimited()
@@ -120,8 +121,7 @@ export class GitHubService {
           }
           return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
         })
-    } catch (error) {
-      console.error('Failed to fetch GitHub repositories:', error)
+    } catch {
       // Network errors should also trigger cooldown to prevent spam
       this.setRateLimited()
       return this.API_FAILURE
@@ -130,23 +130,20 @@ export class GitHubService {
 
   static async getContributionData(): Promise<{ contributions: ContributionDay[], stats: GitHubStats }> {
     if (this.shouldSkipAPICall()) {
-      console.log('Skipping GitHub API call (test environment)')
       return this.generateFallbackData()
     }
 
     if (this.isRateLimited()) {
-      console.log('GitHub API rate limited - using fallback contribution data')
       return this.generateFallbackData()
     }
 
     try {
       // Use public REST API to get user events (recent activity)
       const eventsResponse = await fetch(
-        `${this.API_BASE}/users/${this.USERNAME}/events/public?per_page=100`
+        `${this.API_BASE}/users/${this.USERNAME}/events/public?per_page=${this.MAX_REPOS_PER_PAGE}`
       )
 
       if (!eventsResponse.ok) {
-        console.warn(`GitHub API error (${eventsResponse.status}). Using fallback contribution data.`)
         if (eventsResponse.status === 403 || eventsResponse.status === 429 || eventsResponse.status >= 500) {
           // Rate limit (403, 429) or server errors (5xx) - implement cooldown
           this.setRateLimited()
@@ -161,8 +158,7 @@ export class GitHubService {
       const stats = this.calculateStats(contributions)
 
       return { contributions, stats }
-    } catch (error) {
-      console.error('Failed to fetch GitHub contributions:', error)
+    } catch {
       // Network errors should also trigger cooldown to prevent spam
       this.setRateLimited()
       return this.generateFallbackData()
@@ -172,7 +168,7 @@ export class GitHubService {
   private static generateContributionDataFromEvents(events: GitHubEvent[]): ContributionDay[] {
     const contributions: ContributionDay[] = []
     const today = new Date()
-    const oneYear = 365
+    const oneYear = this.DAYS_IN_YEAR
     
     // Create a map of dates to track actual activity
     const activityMap = new Map<string, number>()
@@ -180,13 +176,13 @@ export class GitHubService {
     // Process events to extract contribution dates
     for (const event of events) {
       const eventDate = new Date(event.created_at).toISOString().split('T')[0]
-      const currentCount = activityMap.get(eventDate) || 0
+      const currentCount = activityMap.get(eventDate) ?? 0
       
       // Weight different event types
       let contributionWeight = 1
       switch (event.type) {
         case 'PushEvent': {
-          contributionWeight = event.payload?.commits?.length || 1
+          contributionWeight = event.payload?.commits?.length ?? 1
           break
         }
         case 'CreateEvent':
@@ -201,6 +197,7 @@ export class GitHubService {
         }
         default: {
           contributionWeight = 1
+          break
         }
       }
       
@@ -213,7 +210,7 @@ export class GitHubService {
       date.setDate(date.getDate() - index)
       const dateString = date.toISOString().split('T')[0]
       
-      const actualCount = activityMap.get(dateString) || 0
+      const actualCount = activityMap.get(dateString) ?? 0
       
       // Add some realistic variation for days without recorded events
       let count = actualCount
@@ -242,7 +239,7 @@ export class GitHubService {
   private static generateFallbackData(): { contributions: ContributionDay[], stats: GitHubStats } {
     const contributions: ContributionDay[] = []
     const today = new Date()
-    const oneYear = 365
+    const oneYear = this.DAYS_IN_YEAR
     
     for (let index = oneYear; index >= 0; index--) {
       const date = new Date(today)
@@ -284,8 +281,8 @@ export class GitHubService {
     let thisMonth = 0
     
     const today = new Date()
-    const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
-    const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
+    const oneWeekAgo = new Date(today.getTime() - 7 * this.MILLISECONDS_IN_DAY)
+    const oneMonthAgo = new Date(today.getTime() - 30 * this.MILLISECONDS_IN_DAY)
     
     // Calculate streaks and recent activity
     for (let index = contributions.length - 1; index >= 0; index--) {

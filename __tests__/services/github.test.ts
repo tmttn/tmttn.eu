@@ -24,7 +24,7 @@ describe('GitHubService', () => {
       
       expect(result).toBe(GitHubService.API_FAILURE)
       expect(mockFetch).not.toHaveBeenCalled()
-      expect(console.log).toHaveBeenCalledWith('Skipping GitHub API call (test environment)')
+      // Console logging removed
     })
 
     it('filters and sorts repositories correctly (unit test of logic)', () => {
@@ -120,7 +120,7 @@ describe('GitHubService', () => {
       expect(result).toHaveProperty('stats')
       expect(result.contributions).toHaveLength(366) // One year + today
       expect(mockFetch).not.toHaveBeenCalled()
-      expect(console.log).toHaveBeenCalledWith('Skipping GitHub API call (test environment)')
+      // Console logging removed
     })
 
     it('generates contribution levels correctly (unit test of logic)', () => {
@@ -205,7 +205,7 @@ describe('GitHubService', () => {
       await GitHubService.getContributionData()
 
       // Should not see any rate limiting messages
-      expect(console.log).toHaveBeenCalledWith('Skipping GitHub API call (test environment)')
+      // Console logging removed
       expect(console.warn).not.toHaveBeenCalledWith(expect.stringContaining('rate limited'))
       expect(console.log).not.toHaveBeenCalledWith(expect.stringContaining('rate limited'))
     })
@@ -244,7 +244,7 @@ describe('GitHubService', () => {
 
       const result = await GitHubService.getPublicRepositories()
       expect(result).toBe(GitHubService.API_FAILURE)
-      expect(console.warn).toHaveBeenCalledWith('GitHub API error (403). Returning API failure.')
+      // Console logging removed
     })
 
     it('handles 429 error and sets rate limit', async () => {
@@ -255,7 +255,7 @@ describe('GitHubService', () => {
 
       const result = await GitHubService.getPublicRepositories()
       expect(result).toBe(GitHubService.API_FAILURE)
-      expect(console.warn).toHaveBeenCalledWith('GitHub API error (429). Returning API failure.')
+      // Console logging removed
     })
 
     it('handles 500 server error and sets rate limit', async () => {
@@ -266,7 +266,7 @@ describe('GitHubService', () => {
 
       const result = await GitHubService.getPublicRepositories()
       expect(result).toBe(GitHubService.API_FAILURE)
-      expect(console.warn).toHaveBeenCalledWith('GitHub API error (500). Returning API failure.')
+      // Console logging removed
     })
 
     it('handles network error and sets rate limit', async () => {
@@ -274,7 +274,7 @@ describe('GitHubService', () => {
 
       const result = await GitHubService.getPublicRepositories()
       expect(result).toBe(GitHubService.API_FAILURE)
-      expect(console.error).toHaveBeenCalledWith('Failed to fetch GitHub repositories:', expect.any(Error))
+      // Console logging removed
     })
 
     it('handles successful response and processes data', async () => {
@@ -315,7 +315,7 @@ describe('GitHubService', () => {
       const result = await GitHubService.getContributionData()
       expect(result).toHaveProperty('contributions')
       expect(result).toHaveProperty('stats')
-      expect(console.warn).toHaveBeenCalledWith('GitHub API error (403). Using fallback contribution data.')
+      // Console logging removed
     })
 
     it('processes events data correctly', async () => {
@@ -370,7 +370,7 @@ describe('GitHubService', () => {
       // Second call should skip due to rate limit
       const result = await GitHubService.getPublicRepositories()
       expect(result).toBe(GitHubService.API_FAILURE)
-      expect(console.log).toHaveBeenCalledWith('GitHub API rate limited - returning API failure')
+      // Console logging removed
       
       // Reset for next test
       GitHubService.resetRateLimit()
@@ -387,7 +387,7 @@ describe('GitHubService', () => {
       // Next call should be rate limited
       const result = await GitHubService.getContributionData()
       expect(result).toHaveProperty('contributions')
-      expect(console.log).toHaveBeenCalledWith('GitHub API rate limited - using fallback contribution data')
+      // Console logging removed
       
       GitHubService.resetRateLimit()
     })
@@ -433,7 +433,7 @@ describe('GitHubService', () => {
       
       const repositories = await GitHubService.getPublicRepositories()
       expect(repositories).toBe(GitHubService.API_FAILURE)
-      expect(console.log).toHaveBeenCalledWith('Skipping GitHub API call (test environment)')
+      // Console logging removed
       
       Object.defineProperty(process.env, 'NODE_ENV', { value: originalEnv, writable: true })
     })

@@ -1,5 +1,9 @@
 import React from "react"
 
-export default function Layout({ children }: React.PropsWithChildren) {
+interface LayoutProperties {
+  readonly children: React.ReactNode
+}
+
+export default function Layout({ children }: LayoutProperties) {
   return <div>{children}</div>
 }
