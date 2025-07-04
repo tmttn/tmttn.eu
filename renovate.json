@@ -10,28 +10,28 @@
     "security:openssf-scorecard"
   ],
   "commitMessagePrefix": "🔧 ",
-  "commitMessageAction": "chore",
+  "commitMessageAction": "chore:",
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newValue}}",
   "packageRules": [
     {
       "matchUpdateTypes": ["major"],
       "commitMessagePrefix": "⬆️ ",
-      "commitMessageAction": "chore",
+      "commitMessageAction": "chore:",
       "commitMessageTopic": "{{depName}}",
       "commitMessageExtra": "to {{newValue}}"
     },
     {
       "matchUpdateTypes": ["minor"],
       "commitMessagePrefix": "🔧 ",
-      "commitMessageAction": "chore",
+      "commitMessageAction": "chore:",
       "commitMessageTopic": "{{depName}}",
       "commitMessageExtra": "to {{newValue}}"
     },
     {
       "matchUpdateTypes": ["patch"],
       "commitMessagePrefix": "🐛 ",
-      "commitMessageAction": "fix",
+      "commitMessageAction": "fix:",
       "commitMessageTopic": "{{depName}}",
       "commitMessageExtra": "to {{newValue}}"
     },
@@ -39,21 +39,21 @@
       "matchDepTypes": ["devDependencies"],
       "matchUpdateTypes": ["major", "minor"],
       "commitMessagePrefix": "🔧 ",
-      "commitMessageAction": "chore",
+      "commitMessageAction": "chore:",
       "commitMessageTopic": "{{depName}}",
       "commitMessageExtra": "to {{newValue}}"
     },
     {
       "matchPackageNames": ["@types/**"],
       "commitMessagePrefix": "🔧 ",
-      "commitMessageAction": "chore",
+      "commitMessageAction": "chore:",
       "commitMessageTopic": "{{depName}}",
       "commitMessageExtra": "to {{newValue}}"
     },
     {
       "matchCategories": ["security"],
       "commitMessagePrefix": "🔒 ",
-      "commitMessageAction": "fix",
+      "commitMessageAction": "fix:",
       "commitMessageTopic": "{{depName}}",
       "commitMessageExtra": "to {{newValue}}"
     }
