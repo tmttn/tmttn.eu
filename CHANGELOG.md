@@ -2,6 +2,22 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.3.4 (2025-07-04)</small>
+
+### 🐛 Bug Fixes
+
+* 🐛 fix: eslint monorepo to ^9.30.0 (#54) ([||0386272](https://github.com/tmttn/tmttn.eu/commit/||0386272))
+
+### 📝 Documentation
+
+* 📝 docs: sync version v0.3.3 and CHANGELOG.md [skip ci] ([||f54e100](https://github.com/tmttn/tmttn.eu/commit/||f54e100))
+
+### 🔧 Maintenance
+
+* 🔧 chore: @types/node to ^24.0.7 (#53) ([||c16a9f8](https://github.com/tmttn/tmttn.eu/commit/||c16a9f8))
+
+
+
 ## <small>0.3.3 (2025-07-04)</small>
 
 ### 📝 Documentation
