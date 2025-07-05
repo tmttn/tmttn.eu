@@ -2,6 +2,18 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.3.5 (2025-07-05)</small>
+
+### 🐛 Bug Fixes
+
+* 🐛 fix: cypress to ^14.5.0 (#55) ([||49f5d71](https://github.com/tmttn/tmttn.eu/commit/||49f5d71))
+
+### 📝 Documentation
+
+* 📝 docs: sync version v0.3.4 and CHANGELOG.md [skip ci] ([||667d2fd](https://github.com/tmttn/tmttn.eu/commit/||667d2fd))
+
+
+
 ## <small>0.3.4 (2025-07-04)</small>
 
 ### 🐛 Bug Fixes
