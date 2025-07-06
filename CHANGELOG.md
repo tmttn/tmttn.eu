@@ -2,6 +2,18 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.3.6 (2025-07-06)</small>
+
+### 🐛 Bug Fixes
+
+* 🐛 fix: jest monorepo to ^30.0.3 (#56) ([||3f69a50](https://github.com/tmttn/tmttn.eu/commit/||3f69a50))
+
+### 📝 Documentation
+
+* 📝 docs: sync version v0.3.5 and CHANGELOG.md [skip ci] ([||3a59456](https://github.com/tmttn/tmttn.eu/commit/||3a59456))
+
+
+
 ## <small>0.3.5 (2025-07-05)</small>
 
 ### 🐛 Bug Fixes
