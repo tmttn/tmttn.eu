@@ -2,6 +2,18 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.3.7 (2025-07-07)</small>
+
+### 🐛 Bug Fixes
+
+* 🐛 fix: nextjs monorepo to ^15.3.4 (#57) ([||41ed85b](https://github.com/tmttn/tmttn.eu/commit/||41ed85b))
+
+### 📝 Documentation
+
+* 📝 docs: sync version v0.3.6 and CHANGELOG.md [skip ci] ([||ee203aa](https://github.com/tmttn/tmttn.eu/commit/||ee203aa))
+
+
+
 ## <small>0.3.6 (2025-07-06)</small>
 
 ### 🐛 Bug Fixes
