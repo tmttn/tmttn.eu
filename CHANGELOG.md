@@ -2,6 +2,18 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.3.9 (2025-07-12)</small>
+
+### 📝 Documentation
+
+* 📝 docs: sync version v0.3.8 and CHANGELOG.md [skip ci] ([||5ea7ab3](https://github.com/tmttn/tmttn.eu/commit/||5ea7ab3))
+
+### 🔧 Maintenance
+
+* 🔧 chore: webpack to ^5.99.9 (#60) ([||cc3eeda](https://github.com/tmttn/tmttn.eu/commit/||cc3eeda))
+
+
+
 ## <small>0.3.8 (2025-07-11)</small>
 
 ### 📝 Documentation
