@@ -2,6 +2,18 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.3.10 (2025-07-13)</small>
+
+### 🐛 Bug Fixes
+
+* 🐛 fix: sharp to ^0.34.2 (#61) ([||44f01a7](https://github.com/tmttn/tmttn.eu/commit/||44f01a7))
+
+### 📝 Documentation
+
+* 📝 docs: sync version v0.3.9 and CHANGELOG.md [skip ci] ([||804c91a](https://github.com/tmttn/tmttn.eu/commit/||804c91a))
+
+
+
 ## <small>0.3.9 (2025-07-12)</small>
 
 ### 📝 Documentation
