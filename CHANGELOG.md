@@ -2,6 +2,18 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.3.12 (2025-07-15)</small>
+
+### 📝 Documentation
+
+* 📝 docs: sync version v0.3.11 and CHANGELOG.md [skip ci] ([||ba1eac4](https://github.com/tmttn/tmttn.eu/commit/||ba1eac4))
+
+### 🔧 Maintenance
+
+* 🔧 chore: eslint monorepo to ^9.30.0 (#63) ([||874a9dd](https://github.com/tmttn/tmttn.eu/commit/||874a9dd))
+
+
+
 ## <small>0.3.11 (2025-07-14)</small>
 
 ### 🐛 Bug Fixes
