@@ -2,6 +2,23 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.3.13 (2025-07-25)</small>
+
+### 🐛 Bug Fixes
+
+* 🐛 fix: webpack to ^5.99.9 (#66) ([||10e73fb](https://github.com/tmttn/tmttn.eu/commit/||10e73fb))
+
+### 📝 Documentation
+
+* 📝 docs: sync version v0.3.12 and CHANGELOG.md [skip ci] ([||d930584](https://github.com/tmttn/tmttn.eu/commit/||d930584))
+
+### 🔧 Maintenance
+
+* 🔧 chore: eslint-plugin-unicorn to ^60.0.0 (#69) ([||2513597](https://github.com/tmttn/tmttn.eu/commit/||2513597))
+* 🔧 chore: typescript-eslint monorepo to ^8.35.0 (#65) ([||8ef3641](https://github.com/tmttn/tmttn.eu/commit/||8ef3641))
+
+
+
 ## <small>0.3.12 (2025-07-15)</small>
 
 ### 📝 Documentation
