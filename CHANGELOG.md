@@ -2,6 +2,31 @@
 
 All notable changes to Thomas Metten's personal portfolio website are documented in this file.
 
+## <small>0.3.14 (2025-07-27)</small>
+
+### 🐛 Bug Fixes
+
+* 🐛 fix: jest monorepo to ^30.0.3 (#71) ([||b6ba965](https://github.com/tmttn/tmttn.eu/commit/||b6ba965))
+* 🐛 fix: cypress to ^14.5.0 (#67) ([||15dd571](https://github.com/tmttn/tmttn.eu/commit/||15dd571))
+
+### 📝 Documentation
+
+* 📝 docs: sync version v0.3.13 and CHANGELOG.md [skip ci] ([||e6f4dd2](https://github.com/tmttn/tmttn.eu/commit/||e6f4dd2))
+
+### 🔧 Maintenance
+
+* 🔧 chore: Fix eslint.config.mjs import for @next/eslint-plugin-next flatConfig ([||23e04b6](https://github.com/tmttn/tmttn.eu/commit/||23e04b6))
+* 🔧 chore: update @fortawesome/react-fontawesome to v0.2.3 for compatibility updates ([||56a16fd](https://github.com/tmttn/tmttn.eu/commit/||56a16fd))
+* 🔧 chore: nextjs monorepo to ^15.3.4 (#64) ([||7d1499f](https://github.com/tmttn/tmttn.eu/commit/||7d1499f))
+* 🔧 chore: @types/node to ^24.0.7 (#59) ([||a079b19](https://github.com/tmttn/tmttn.eu/commit/||a079b19))
+* 🔧 chore: typescript-eslint monorepo to ^8.35.0 (#70) ([||15f3419](https://github.com/tmttn/tmttn.eu/commit/||15f3419))
+
+### 📦 Other Changes
+
+* ⬆️ chore: Font Awesome to ^7.0.0 (#72) ([||872b5f2](https://github.com/tmttn/tmttn.eu/commit/||872b5f2))
+
+
+
 ## <small>0.3.13 (2025-07-25)</small>
 
 ### 🐛 Bug Fixes
