@@ -8,7 +8,7 @@ const nextConfig = {
   images: {
     domains: [],
     formats: ['image/webp', 'image/avif'],
-    unoptimized: process.env.NODE_ENV === 'test' || process.env.CI === 'true',
+    unoptimized: true, // Vercel handles optimization; this ensures local/CI builds work
   },
 
   // Performance optimizations
