@@ -55,7 +55,7 @@ jobs:
       if: steps.deployment-check.outputs.deployment_occurred == 'true'
       uses: actions/setup-node@v6
       with:
-        node-version: '22.x'
+        node-version: '24.x'
         cache: 'npm'
     
     - name: Install dependencies
