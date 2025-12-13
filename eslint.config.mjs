@@ -5,8 +5,7 @@ import unicornPlugin from 'eslint-plugin-unicorn'
 import typescriptPlugin from '@typescript-eslint/eslint-plugin'
 import typescriptParser from '@typescript-eslint/parser'
 import globals from 'globals'
-import pkg from '@next/eslint-plugin-next'
-const { flatConfig } = pkg
+import nextPlugin from '@next/eslint-plugin-next'
 
 export default [
   {
@@ -25,8 +24,8 @@ export default [
     ],
   },
   js.configs.recommended,
-  flatConfig.recommended,
-  flatConfig.coreWebVitals,
+  nextPlugin.configs.recommended,
+  nextPlugin.configs['core-web-vitals'],
   {
     files: ['src/**/*.{js,jsx,ts,tsx}', 'pages/**/*.{js,jsx,ts,tsx}'],
     plugins: {

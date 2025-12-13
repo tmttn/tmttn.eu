@@ -84,4 +84,10 @@ yarn-error.log
 # Cypress
 cypress/videos
 cypress/screenshots
-cypress/reports.idea/
+cypress/reports
+
+# IDE
+.idea/
+
+# Vercel
+.vercel
