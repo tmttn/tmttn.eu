@@ -71,7 +71,7 @@ export default function ResponsiveImage({
   sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw',
   placeholder = 'empty',
   blurDataURL
-}: ResponsiveImageProperties) {
+}: Readonly<ResponsiveImageProperties>) {
 
   const sourceSet = getSourceSet(src, sizes);
 

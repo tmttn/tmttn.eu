@@ -5,8 +5,8 @@ export const SkipLink = styled.a`
   position: absolute;
   top: -100px;
   left: 8px;
-  background: ${({ theme }) => theme.isDark ? '#1f2937' : '#1f2937'};
-  color: ${({ theme }) => theme.isDark ? '#ffffff' : '#ffffff'};
+  background: #1f2937;
+  color: #ffffff;
   border: 2px solid ${({ theme }) => theme.colors.accent};
   padding: 8px 16px;
   border-radius: 4px;
@@ -21,11 +21,11 @@ export const SkipLink = styled.a`
     outline: 3px solid ${({ theme }) => theme.colors.accent};
     outline-offset: 2px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-    background: ${({ theme }) => theme.isDark ? '#111827' : '#111827'};
+    background: #111827;
   }
 
   &:hover {
-    background: ${({ theme }) => theme.isDark ? '#111827' : '#111827'};
+    background: #111827;
     border-color: ${({ theme }) => theme.colors.primaryHighlight};
   }
 `

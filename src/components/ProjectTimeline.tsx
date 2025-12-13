@@ -141,8 +141,8 @@ export default function ProjectTimeline() {
                 </TimelineHeader>
                 
                 <TimelineDescription $isExpanded={isExpanded}>
-                  {item.description.map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
+                  {item.description.map((paragraph) => (
+                    <p key={`${item.id}-${paragraph.slice(0, 20)}`}>{paragraph}</p>
                   ))}
                 </TimelineDescription>
                 

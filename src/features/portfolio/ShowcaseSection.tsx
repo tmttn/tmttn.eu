@@ -17,7 +17,7 @@ function ShowcaseSectionContent({ variant }: Readonly<ShowcaseSectionProperties>
   }
 
   return (
-    <StyledSection id="showcase" $variant={variant} role="region" aria-labelledby="showcase-heading" data-testid="portfolio-section">
+    <StyledSection as="section" id="showcase" $variant={variant} aria-labelledby="showcase-heading" data-testid="portfolio-section">
       <h1 id="showcase-heading">Showcase</h1>
       <GitHubHeatmap />
       <Portfolio variant={variant} />
@@ -25,7 +25,7 @@ function ShowcaseSectionContent({ variant }: Readonly<ShowcaseSectionProperties>
   )
 }
 
-export default function ShowcaseSection({ variant = 'even' }: ShowcaseSectionProperties) {
+export default function ShowcaseSection({ variant = 'even' }: Readonly<ShowcaseSectionProperties>) {
   return (
     <Suspense fallback={null}>
       <ShowcaseSectionContent variant={variant} />

@@ -36,8 +36,7 @@ export default function Scrollable() {
     }
 
     if (mainNavLinksReference.current) {
-      for (let index = 0; index < mainNavLinksReference.current.length; index++) {
-        const link = mainNavLinksReference.current[index]
+      for (const link of Array.from(mainNavLinksReference.current)) {
         const section: HTMLElement | null = document.querySelector(link.hash)
 
         if (section && section.offsetTop <= fromTop &&

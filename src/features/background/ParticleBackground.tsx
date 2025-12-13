@@ -37,6 +37,8 @@ const PARTICLE_CONSTANTS = {
   CONNECTION_LINE_WIDTH: 0.4,
   MAX_CONNECTIONS_MULTIPLIER: 2,
   MAX_TOTAL_CONNECTIONS: 100,
+  MOUSE_INTERACTION_DISTANCE_SQUARED: 22_500, // 150^2
+  MOUSE_INTERACTION_RADIUS: 150,
   PARTICLE_OPACITY: {
     DARK_BLUE: 0.8,
     DARK_HIGHLIGHT: 0.6,
@@ -52,6 +54,94 @@ const PARTICLE_CONSTANTS = {
     LIGHT: 'rgba(59, 130, 246, 0.3)',
   },
 } as const
+
+// Helper function to update particle position based on mouse interaction
+const applyMouseInteraction = (particle: Particle, mouseX: number, mouseY: number) => {
+  const dx = mouseX - particle.x
+  const dy = mouseY - particle.y
+  const distanceSquared = dx * dx + dy * dy
+
+  if (distanceSquared < PARTICLE_CONSTANTS.MOUSE_INTERACTION_DISTANCE_SQUARED) {
+    const distance = Math.sqrt(distanceSquared)
+    const force = (PARTICLE_CONSTANTS.MOUSE_INTERACTION_RADIUS - distance) / PARTICLE_CONSTANTS.MOUSE_INTERACTION_RADIUS
+    particle.vx += dx * force * 0.0001
+    particle.vy += dy * force * 0.0001
+  }
+}
+
+// Helper function to apply physics and boundary wrapping
+const updateParticlePhysics = (particle: Particle, canvasWidth: number, canvasHeight: number, scrollDelta: number) => {
+  // Add randomness and subtle scroll influence
+  // SAFETY: Math.random() usage is safe here - used only for visual effects
+  particle.vx += (Math.random() - 0.5) * 0.02 // NOSONAR: S2245
+  particle.vy += (Math.random() - 0.5) * 0.02 + scrollDelta * 0.1 // NOSONAR: S2245
+
+  // Boundary wrapping
+  if (particle.x < 0) particle.x = canvasWidth
+  if (particle.x > canvasWidth) particle.x = 0
+  if (particle.y < 0) particle.y = canvasHeight
+  if (particle.y > canvasHeight) particle.y = 0
+
+  // Velocity damping
+  particle.vx *= 0.99
+  particle.vy *= 0.99
+}
+
+// Helper function to render a single particle
+const renderParticle = (context: CanvasRenderingContext2D, particle: Particle) => {
+  const lifeRatio = particle.life / particle.maxLife
+  const alpha = particle.alpha * lifeRatio
+
+  context.save()
+  context.globalAlpha = alpha
+  context.fillStyle = particle.color
+  context.beginPath()
+  context.arc(particle.x, particle.y, particle.size * lifeRatio, 0, Math.PI * 2)
+  context.fill()
+
+  // Conditional glow effect - only for larger particles
+  if (particle.size > 2) {
+    context.shadowBlur = 6
+    context.shadowColor = particle.color
+    context.fill()
+  }
+  context.restore()
+}
+
+// Helper function to draw connections between particles
+const drawConnections = (
+  context: CanvasRenderingContext2D,
+  particles: Particle[],
+  maxConnections: number,
+  isDark: boolean
+) => {
+  let connectionCount = 0
+
+  for (let index = 0; index < particles.length && connectionCount < maxConnections; index++) {
+    const particle = particles[index]
+    for (let innerIndex = index + 1; innerIndex < particles.length && connectionCount < maxConnections; innerIndex++) {
+      const other = particles[innerIndex]
+      const dx = particle.x - other.x
+      const dy = particle.y - other.y
+      const distanceSquared = dx * dx + dy * dy
+
+      if (distanceSquared < PARTICLE_CONSTANTS.CONNECTION_DISTANCE_SQUARED) {
+        const distance = Math.sqrt(distanceSquared)
+        const opacity = (100 - distance) / 100 * PARTICLE_CONSTANTS.CONNECTION_OPACITY_BASE
+        context.save()
+        context.globalAlpha = opacity
+        context.strokeStyle = isDark ? PARTICLE_CONSTANTS.CONNECTION_COLORS.DARK : PARTICLE_CONSTANTS.CONNECTION_COLORS.LIGHT
+        context.lineWidth = PARTICLE_CONSTANTS.CONNECTION_LINE_WIDTH
+        context.beginPath()
+        context.moveTo(particle.x, particle.y)
+        context.lineTo(other.x, other.y)
+        context.stroke()
+        context.restore()
+        connectionCount++
+      }
+    }
+  }
+}
 
 export default function ParticleBackground({ 
   particleCount = PARTICLE_CONSTANTS.DEFAULT_PARTICLE_COUNT, 
@@ -155,95 +245,38 @@ export default function ParticleBackground({
       const mouseY = mouseReference.current.y
       const scrollDelta = (scrollReference.current - lastScrollReference.current) * 0.01
       lastScrollReference.current = scrollReference.current
-      
+
+      // Update and render each particle
       for (let index = 0; index < particlesReference.current.length; index++) {
         const particle = particlesReference.current[index]
+
         // Update particle position
         particle.x += particle.vx
         particle.y += particle.vy
-        
-        // Optimized mouse interaction - attract particles to mouse
-        const dx = mouseX - particle.x
-        const dy = mouseY - particle.y
-        const distanceSquared = dx * dx + dy * dy
-        
-        if (distanceSquared < 22_500) { // 150^2 to avoid sqrt calculation
-          const distance = Math.sqrt(distanceSquared)
-          const force = (150 - distance) / 150
-          particle.vx += dx * force * 0.0001
-          particle.vy += dy * force * 0.0001
-        }
 
-        // Add some randomness and very subtle scroll influence
-        // SAFETY: Math.random() usage is safe here - used only for visual effects and particle animation
-        particle.vx += (Math.random() - 0.5) * 0.02 // NOSONAR: S2245
-        particle.vy += (Math.random() - 0.5) * 0.02 + scrollDelta * 0.1 // NOSONAR: S2245
+        // Apply mouse interaction
+        applyMouseInteraction(particle, mouseX, mouseY)
 
-        // Boundary wrapping
-        if (particle.x < 0) particle.x = canvas.width
-        if (particle.x > canvas.width) particle.x = 0
-        if (particle.y < 0) particle.y = canvas.height
-        if (particle.y > canvas.height) particle.y = 0
+        // Apply physics and boundary wrapping
+        updateParticlePhysics(particle, canvas.width, canvas.height, scrollDelta)
 
-        // Velocity damping
-        particle.vx *= 0.99
-        particle.vy *= 0.99
-
-        // Life cycle
+        // Life cycle management
         particle.life--
         if (particle.life <= 0) {
           particlesReference.current[index] = createParticle()
           continue
         }
 
-        // Optimized particle rendering - reduce expensive effects
-        const lifeRatio = particle.life / particle.maxLife
-        const alpha = particle.alpha * lifeRatio
-        
-        context.save()
-        context.globalAlpha = alpha
-        context.fillStyle = particle.color
-        context.beginPath()
-        context.arc(particle.x, particle.y, particle.size * lifeRatio, 0, Math.PI * 2)
-        context.fill()
-        
-        // Conditional glow effect - only for larger particles to reduce GPU load
-        if (particle.size > 2) {
-          context.shadowBlur = 6
-          context.shadowColor = particle.color
-          context.fill()
-        }
-        context.restore()
+        // Render the particle
+        renderParticle(context, particle)
       }
 
-      // Optimized connections - limit calculations and use distance squared
-      const maxConnections = Math.min(particleCount * PARTICLE_CONSTANTS.MAX_CONNECTIONS_MULTIPLIER, PARTICLE_CONSTANTS.MAX_TOTAL_CONNECTIONS) // Limit total connections
-      let connectionCount = 0
-      
-      for (let index = 0; index < particlesReference.current.length && connectionCount < maxConnections; index++) {
-        const particle = particlesReference.current[index]
-        for (let index_ = index + 1; index_ < particlesReference.current.length && connectionCount < maxConnections; index_++) {
-          const other = particlesReference.current[index_]
-          const dx = particle.x - other.x
-          const dy = particle.y - other.y
-          const distanceSquared = dx * dx + dy * dy
-          
-          if (distanceSquared < PARTICLE_CONSTANTS.CONNECTION_DISTANCE_SQUARED) { // 100^2
-            const distance = Math.sqrt(distanceSquared)
-            const opacity = (100 - distance) / 100 * PARTICLE_CONSTANTS.CONNECTION_OPACITY_BASE // Reduced opacity for performance
-            context.save()
-            context.globalAlpha = opacity
-            context.strokeStyle = isDark ? PARTICLE_CONSTANTS.CONNECTION_COLORS.DARK : PARTICLE_CONSTANTS.CONNECTION_COLORS.LIGHT
-            context.lineWidth = PARTICLE_CONSTANTS.CONNECTION_LINE_WIDTH
-            context.beginPath()
-            context.moveTo(particle.x, particle.y)
-            context.lineTo(other.x, other.y)
-            context.stroke()
-            context.restore()
-            connectionCount++
-          }
-        }
-      }
+      // Draw connections between particles
+      const maxConnections = Math.min(
+        particleCount * PARTICLE_CONSTANTS.MAX_CONNECTIONS_MULTIPLIER,
+        PARTICLE_CONSTANTS.MAX_TOTAL_CONNECTIONS
+      )
+      drawConnections(context, particlesReference.current, maxConnections, isDark)
 
       animationReference.current = requestAnimationFrame(animate)
     }
@@ -275,11 +308,10 @@ export default function ParticleBackground({
   if (!isVisible) return
 
   return (
-    <ParticleCanvas 
-      ref={canvasReference} 
+    <ParticleCanvas
+      ref={canvasReference}
       className={className}
       aria-hidden="true"
-      role="presentation"
       $isDark={isDark}
     />
   )

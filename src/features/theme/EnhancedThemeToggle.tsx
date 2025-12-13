@@ -28,6 +28,15 @@ export default function EnhancedThemeToggle({ className }: Readonly<EnhancedThem
     setHasMounted(true)
   }, [])
 
+  const cleanupRipple = (rippleId: number) => {
+    setRipples(previous => previous.filter(ripple => ripple.id !== rippleId))
+  }
+
+  const endTransition = () => {
+    setIsTransitioning(false)
+    setShowOverlay(false)
+  }
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (!buttonReference.current) return
 
@@ -53,19 +62,11 @@ export default function EnhancedThemeToggle({ className }: Readonly<EnhancedThem
     })
 
     // Toggle theme with slight delay for smooth transition
-    setTimeout(() => {
-      toggleTheme()
-    }, 150)
+    setTimeout(toggleTheme, 150)
 
     // Clean up animations
-    setTimeout(() => {
-      setRipples(previous => previous.filter(ripple => ripple.id !== rippleId))
-    }, 600)
-
-    setTimeout(() => {
-      setIsTransitioning(false)
-      setShowOverlay(false)
-    }, 800)
+    setTimeout(() => cleanupRipple(rippleId), 600)
+    setTimeout(endTransition, 800)
   }
 
   if (!hasMounted) {

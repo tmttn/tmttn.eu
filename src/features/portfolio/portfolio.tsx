@@ -39,7 +39,7 @@ const getLanguageColor = (language: string | null) => {
   return colors[language || ''] || '#858585'
 }
 
-function RepositoryCard({ repo, variant }: RepositoryCardProperties) {
+function RepositoryCard({ repo, variant }: Readonly<RepositoryCardProperties>) {
 
   return (
     <StyledRepoCard $variant={variant}>
@@ -149,7 +149,7 @@ function PortfolioContent({ variant }: Readonly<PortfolioProperties>) {
   )
 }
 
-export default function Portfolio({ variant = 'odd' }: PortfolioProperties) {
+export default function Portfolio({ variant = 'odd' }: Readonly<PortfolioProperties>) {
   return (
     <Suspense fallback={
       <div className="portfolio-loading">

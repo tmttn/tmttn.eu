@@ -24,9 +24,9 @@ function GitHubHeatmapContent() {
       </h3>
       
       <HeatmapGrid>
-        {contributions.map((day, index) => (
+        {contributions.map((day) => (
           <HeatmapDay
-            key={index}
+            key={day.date}
             $level={day.level}
             title={`${day.date}: ${day.count} contributions`}
             className="contribution-day"

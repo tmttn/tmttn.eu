@@ -19,7 +19,7 @@ const navigationItems = [
   { href: "/#showcase", label: "Showcase", description: "View portfolio" },
 ]
 
-export default function AccessibleNavigation({ className }: NavigationProperties) {
+export default function AccessibleNavigation({ className }: Readonly<NavigationProperties>) {
   const [isOpen, setIsOpen] = useState(false)
   const navReference = useRef<HTMLElement>(null)
   const buttonReference = useRef<HTMLButtonElement>(null)
@@ -60,7 +60,7 @@ export default function AccessibleNavigation({ className }: NavigationProperties
   }
 
   return (
-    <NavContainer ref={navReference} className={className} role="navigation" aria-label="Main navigation">
+    <NavContainer as="nav" ref={navReference} className={className} aria-label="Main navigation">
       <MobileMenuButton
         ref={buttonReference}
         onClick={toggleMenu}
@@ -71,13 +71,13 @@ export default function AccessibleNavigation({ className }: NavigationProperties
         {isOpen ? '✕' : '☰'}
       </MobileMenuButton>
       
-      <StyledNavList 
+      <StyledNavList
+        as="ul"
         id="main-navigation"
-        role="list"
         $isOpen={isOpen}
       >
         {navigationItems.map((item) => (
-          <StyledNavItem key={item.href} role="listitem">
+          <StyledNavItem as="li" key={item.href}>
             <Link 
               href={item.href}
               onClick={closeMenu}

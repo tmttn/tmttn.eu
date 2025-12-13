@@ -85,9 +85,9 @@ describe('ParticleBackground', () => {
   })
 
   it('renders canvas element with correct attributes', () => {
-    renderWithThemeProvider(<ParticleBackground />)
-    
-    const canvas = screen.getByRole('presentation', { hidden: true })
+    const { container } = renderWithThemeProvider(<ParticleBackground />)
+
+    const canvas = container.querySelector('canvas')
     expect(canvas).toBeInTheDocument()
     expect(canvas).toHaveAttribute('aria-hidden', 'true')
   })
@@ -107,9 +107,9 @@ describe('ParticleBackground', () => {
       })),
     })
 
-    renderWithThemeProvider(<ParticleBackground />)
-    
-    expect(screen.queryByRole('presentation', { hidden: true })).not.toBeInTheDocument()
+    const { container } = renderWithThemeProvider(<ParticleBackground />)
+
+    expect(container.querySelector('canvas')).not.toBeInTheDocument()
   })
 
   it('sets up canvas with correct dimensions', () => {
@@ -128,17 +128,17 @@ describe('ParticleBackground', () => {
 
   it('respects custom particle count prop', () => {
     const customParticleCount = 25
-    renderWithThemeProvider(<ParticleBackground particleCount={customParticleCount} />)
-    
+    const { container } = renderWithThemeProvider(<ParticleBackground particleCount={customParticleCount} />)
+
     // Component should render without errors
-    expect(screen.getByRole('presentation', { hidden: true })).toBeInTheDocument()
+    expect(container.querySelector('canvas')).toBeInTheDocument()
   })
 
   it('applies custom className when provided', () => {
     const customClass = 'custom-particle-bg'
-    renderWithThemeProvider(<ParticleBackground className={customClass} />)
-    
-    const canvas = screen.getByRole('presentation', { hidden: true })
+    const { container } = renderWithThemeProvider(<ParticleBackground className={customClass} />)
+
+    const canvas = container.querySelector('canvas')
     expect(canvas).toHaveClass(customClass)
   })
 
@@ -231,11 +231,11 @@ describe('ParticleBackground', () => {
   it('updates particle colors based on theme', () => {
     // Test with different theme by changing localStorage
     localStorage.setItem('theme', 'light')
-    
-    renderWithThemeProvider(<ParticleBackground />)
-    
-    expect(screen.getByRole('presentation', { hidden: true })).toBeInTheDocument()
-    
+
+    const { container } = renderWithThemeProvider(<ParticleBackground />)
+
+    expect(container.querySelector('canvas')).toBeInTheDocument()
+
     // Reset for other tests
     localStorage.clear()
   })

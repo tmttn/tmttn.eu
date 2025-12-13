@@ -27,21 +27,18 @@ describe('SkipNavigation', () => {
 
   it('has proper accessibility attributes', () => {
     renderWithThemeProvider(<SkipNavigation />)
-    
+
     const mainContentLink = screen.getByLabelText('Skip to main content')
     const navigationLink = screen.getByLabelText('Skip to navigation')
-    
-    expect(mainContentLink).toHaveAttribute('role', 'navigation')
+
     expect(mainContentLink).toHaveAttribute('aria-label', 'Skip to main content')
-    
-    expect(navigationLink).toHaveAttribute('role', 'navigation')
     expect(navigationLink).toHaveAttribute('aria-label', 'Skip to navigation')
   })
 
   it('renders two skip links', () => {
     renderWithThemeProvider(<SkipNavigation />)
-    
-    const skipLinks = screen.getAllByRole('navigation')
+
+    const skipLinks = screen.getAllByRole('link')
     expect(skipLinks).toHaveLength(2)
   })
 

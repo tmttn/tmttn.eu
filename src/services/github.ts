@@ -196,7 +196,7 @@ export class GitHubService {
           break
         }
         default: {
-          contributionWeight = 1
+          // contributionWeight already initialized to 1
           break
         }
       }
