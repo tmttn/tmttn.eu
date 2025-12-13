@@ -8,6 +8,7 @@ const nextConfig = {
   images: {
     domains: [],
     formats: ['image/webp', 'image/avif'],
+    unoptimized: process.env.NODE_ENV === 'test' || process.env.CI === 'true',
   },
 
   // Performance optimizations
