@@ -1,5 +1,7 @@
 import React from 'react'
 import type { AppProps } from 'next/app'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import { ThemeProvider } from '@contexts'
 import { GlobalStyle } from '@styles'
 import '@utils/fontawesome'
@@ -9,6 +11,8 @@ export default function App({ Component, pageProps }: AppProps) {
     <ThemeProvider>
       <GlobalStyle />
       <Component {...pageProps} />
+      <Analytics />
+      <SpeedInsights />
     </ThemeProvider>
   )
 }
