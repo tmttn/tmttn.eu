@@ -45,7 +45,7 @@ jobs:
 
     - name: Checkout production branch
       if: steps.deployment-check.outputs.deployment_occurred == 'true'
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         ref: production  # Checkout production branch, not main
         fetch-depth: 0  # Need full history for changelog generation
