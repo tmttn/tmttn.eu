@@ -349,7 +349,7 @@ jobs:
     
     - name: SonarQube Scan
       id: sonar-scan
-      uses: SonarSource/sonarqube-scan-action@v5
+      uses: SonarSource/sonarqube-scan-action@v7
       continue-on-error: true
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
