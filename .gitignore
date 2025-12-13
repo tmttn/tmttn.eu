@@ -84,4 +84,4 @@ yarn-error.log
 # Cypress
 cypress/videos
 cypress/screenshots
-cypress/reports
+cypress/reports.idea/
