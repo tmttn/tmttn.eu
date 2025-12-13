@@ -4,16 +4,12 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  
+
   images: {
     domains: [],
-    unoptimized: true, // Required for static export
     formats: ['image/webp', 'image/avif'],
   },
-  output: 'export', // Enable static export for Netlify
-  trailingSlash: true, // Add trailing slashes for better static hosting
-  distDir: 'out', // Output directory for static export
-  
+
   // Performance optimizations
   poweredByHeader: false,
   compress: true,

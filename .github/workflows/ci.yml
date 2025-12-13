@@ -73,33 +73,29 @@ jobs:
     
     - name: Verify build output
       run: |
-        if [ ! -d "out" ]; then
-          echo "Build output directory 'out' not found"
-          exit 1
-        fi
-        if [ ! -f "out/index.html" ]; then
-          echo "index.html not found in build output"
+        if [ ! -d ".next" ]; then
+          echo "Build output directory '.next' not found"
           exit 1
         fi
         echo "Build verification successful"
-        echo "Build size: $(du -sh out/)"
+        echo "Build size: $(du -sh .next/)"
     
     - name: Create build summary
       run: |
         echo "## 📦 Build Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "- **Status**: ✅ Build successful" >> $GITHUB_STEP_SUMMARY
-        echo "- **Output**: Static files generated in \`out/\` directory" >> $GITHUB_STEP_SUMMARY
-        echo "- **Build Size**: $(du -sh out/ | cut -f1)" >> $GITHUB_STEP_SUMMARY
-        echo "- **Files Generated**: $(find out -type f | wc -l) files" >> $GITHUB_STEP_SUMMARY
+        echo "- **Output**: Next.js build in \`.next/\` directory" >> $GITHUB_STEP_SUMMARY
+        echo "- **Build Size**: $(du -sh .next/ | cut -f1)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Deployment**: Vercel" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Key Files" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ \`index.html\` (main page)" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ \`_next/static/\` (Next.js assets)" >> $GITHUB_STEP_SUMMARY
-        if [ -f "out/sitemap.xml" ]; then
+        echo "### Build Contents" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ \`.next/static/\` (optimized assets)" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ \`.next/server/\` (server components)" >> $GITHUB_STEP_SUMMARY
+        if [ -f "public/sitemap.xml" ]; then
           echo "- ✅ \`sitemap.xml\` (SEO)" >> $GITHUB_STEP_SUMMARY
         fi
-        if [ -f "out/robots.txt" ]; then
+        if [ -f "public/robots.txt" ]; then
           echo "- ✅ \`robots.txt\` (SEO)" >> $GITHUB_STEP_SUMMARY
         fi
     
@@ -107,7 +103,7 @@ jobs:
       uses: actions/upload-artifact@v6
       with:
         name: build-output
-        path: out/
+        path: .next/
         retention-days: 1
 
   # Stage 2: Quality Assurance (runs in parallel, only if build succeeds)
@@ -434,22 +430,22 @@ jobs:
       uses: actions/download-artifact@v7
       with:
         name: build-output
-        path: out/
-    
+        path: .next/
+
     - name: Verify build artifacts
       run: |
         echo "Verifying build artifacts..."
-        ls -la out/
-        if [ ! -f "out/index.html" ]; then
-          echo "❌ index.html not found in build artifacts"
+        ls -la .next/
+        if [ ! -d ".next/server" ]; then
+          echo "❌ .next/server not found in build artifacts"
           exit 1
         fi
         echo "✅ Build artifacts verified"
-    
+
     - name: Run Cypress E2E tests
       uses: cypress-io/github-action@v6
       with:
-        start: npx serve out -s -l 3000
+        start: npm run start
         wait-on: 'http://localhost:3000'
         wait-on-timeout: 120
         browser: chrome

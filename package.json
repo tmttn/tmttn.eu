@@ -9,7 +9,6 @@
     "build": "node scripts/optimize-images.js && node scripts/generate-sitemap.js && next build",
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",
-    "serve": "npx serve out -s -l 3000",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "optimize-images": "node scripts/optimize-images.js",
@@ -23,7 +22,7 @@
     "cypress:run:headless": "cypress run --headless --config-file cypress.config.cucumber.ts",
     "e2e": "start-server-and-test dev:e2e http://localhost:3000 cypress:run",
     "e2e:chrome": "start-server-and-test dev:e2e http://localhost:3000 cypress:run:chrome",
-    "e2e:ci": "start-server-and-test serve http://localhost:3000 cypress:run:headless",
+    "e2e:ci": "start-server-and-test start http://localhost:3000 cypress:run:headless",
     "dev:e2e": "ENABLE_GITHUB_API=true next dev --turbopack"
   },
   "dependencies": {
@@ -64,7 +63,6 @@
     "jest": "^30.0.3",
     "jest-environment-jsdom": "^30.0.2",
     "prettier": "3.7.4",
-    "serve": "^14.2.4",
     "sharp": "^0.34.2",
     "start-server-and-test": "^2.0.12",
     "ts-loader": "^9.5.2",

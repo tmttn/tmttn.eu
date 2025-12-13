@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Commands
 
 - `npm run dev` - Start development server with Turbopack
-- `npm run build` - Generate sitemap and build for production (static export)
+- `npm run build` - Generate sitemap and build for production
 - `npm run build:analyze` - Build with bundle analyzer
 - `npm run start` - Start production server
 - `npm run lint` - Run Next.js linter
@@ -29,17 +29,17 @@ If the dev server is not running, check first...:
 Claude has access to the following CLI tools for development and deployment:
 
 - **GitHub CLI (`gh`)** - For GitHub operations (issues, PRs, releases, repository management)
-- **Netlify CLI (`netlify`)** - For Netlify deployments, functions, and site management
+- **Vercel CLI (`vercel`)** - For Vercel deployments, serverless functions, and project management
 
 ## Project Architecture
 
-This is a **Next.js 15** personal portfolio website configured for **static export** to Netlify. The site features:
+This is a **Next.js 15** personal portfolio website deployed on **Vercel**. The site features:
 
 ### Core Architecture
 
 - **Framework**: Next.js 15 with TypeScript
 - **Styling**: Styled-components with theme system
-- **Deployment**: Static export to Netlify (`output: 'export'`)
+- **Deployment**: Vercel with full Next.js support
 - **Bundling**: Turbopack for development, custom webpack optimizations for production
 
 ### Theme System
@@ -77,11 +77,11 @@ This is a **Next.js 15** personal portfolio website configured for **static expo
 
 ### Build Configuration
 
-- Static export configured in `next.config.js`
+- Vercel deployment configured in `vercel.json`
 - Bundle splitting optimization for vendor/common chunks
 - Bundle analyzer support with `ANALYZE=true`
 - Styled-components compiler enabled
-- Image optimization disabled for static export compatibility
+- Image optimization enabled via Vercel
 
 ### Development Notes
 

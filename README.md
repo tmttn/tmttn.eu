@@ -1,6 +1,6 @@
-# Personal Portfolio — Next.js 15 + Netlify
+# Personal Portfolio — Next.js 15 + Vercel
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/be69a204-608b-4d68-9882-2eee8c608e24/deploy-status)](https://app.netlify.com/sites/tmttnbe/deploys)
+[![Vercel](https://img.shields.io/badge/Vercel-deployed-black?style=flat&logo=vercel&logoColor=white)](https://vercel.com)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18+-61DAFB?style=flat&logo=react&logoColor=white)](https://react.dev/)
@@ -15,7 +15,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/tmttn/tmttn.eu?style=flat)](https://github.com/tmttn/tmttn.eu/issues)
 [![GitHub stars](https://img.shields.io/github/stars/tmttn/tmttn.eu?style=flat)](https://github.com/tmttn/tmttn.eu/stargazers)
 
-This is a modern, high-performance personal portfolio website built with **Next.js 15** and **TypeScript**, designed for **static export** and deployment to **Netlify**. It features a dual-theme glassmorphism design, interactive animations, GitHub integration, and a clean, maintainable codebase with robust developer tooling.
+This is a modern, high-performance personal portfolio website built with **Next.js 15** and **TypeScript**, deployed on **Vercel**. It features a dual-theme glassmorphism design, interactive animations, GitHub integration, and a clean, maintainable codebase with robust developer tooling.
 
 ---
 
@@ -33,13 +33,13 @@ This is a modern, high-performance personal portfolio website built with **Next.
    npm run dev
    ```
 
-3. **Build for production (static export)**
+3. **Build for production**
 
    ```bash
    npm run build
    ```
 
-4. **Preview static build locally**
+4. **Preview production build locally**
 
    ```bash
    npm run start
@@ -50,7 +50,7 @@ This is a modern, high-performance personal portfolio website built with **Next.
 ## 🛠️ Development Commands
 
 - `npm run dev` — Start dev server (Turbopack)
-- `npm run build` — Static export for production (includes sitemap)
+- `npm run build` — Build for production (includes sitemap)
 - `npm run build:analyze` — Analyze bundle size
 - `npm run start` — Start production server
 - `npm run lint` — Run Next.js linter
@@ -63,7 +63,7 @@ This is a modern, high-performance personal portfolio website built with **Next.
 
 - **Framework:** Next.js 15 (App Router) + TypeScript
 - **Styling:** Styled-components with custom theme system
-- **Deployment:** Static export (`output: 'export'`) for Netlify
+- **Deployment:** Vercel with full Next.js support
 - **Bundling:** Turbopack (dev), custom webpack optimizations (prod)
 
 ### Main Features
@@ -131,11 +131,11 @@ Each directory contains an `index.ts` that re-exports everything inside. Always 
 
 ## ⚙️ Build & Configuration
 
-- **Static export:** Set in `next.config.js`
+- **Vercel deployment:** Configured in `vercel.json`
 - **Bundle splitting:** Optimized for vendor/common chunks
 - **Bundle analyzer:** Enabled with `ANALYZE=true`
 - **Styled-components:** Compiler enabled
-- **Image optimization:** Disabled for static export compatibility
+- **Image optimization:** Enabled via Vercel
 - **Aliases:**  
   - TypeScript: See `tsconfig.json`
   - Turbopack: See `next.config.js` (`turbopack.resolveAlias`)
@@ -232,7 +232,7 @@ Use **Conventional Commits** with themed emojis:
 ## 🧑‍💻 CLI Tools
 
 - **GitHub CLI:** Issue/PR/release management (`gh`)
-- **Netlify CLI:** Deploy, manage functions/sites (`netlify`)
+- **Vercel CLI:** Deploy, manage serverless functions/projects (`vercel`)
 
 ---
 
