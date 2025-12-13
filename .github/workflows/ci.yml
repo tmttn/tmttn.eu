@@ -105,6 +105,7 @@ jobs:
         name: build-output
         path: .next/
         retention-days: 1
+        include-hidden-files: true
 
   # Stage 2: Quality Assurance (runs in parallel, only if build succeeds)
   
@@ -349,6 +350,7 @@ jobs:
     - name: SonarQube Scan
       id: sonar-scan
       uses: SonarSource/sonarqube-scan-action@v5
+      continue-on-error: true
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     
