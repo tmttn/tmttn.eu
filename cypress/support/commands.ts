@@ -160,7 +160,7 @@ Cypress.Commands.add('checkA11y', () => {
   // Basic accessibility checks
   cy.get('main').should('exist')
   cy.get('h1').should('exist')
-  cy.get('[role="navigation"]').should('exist')
+  cy.get('nav').should('exist')
 })
 
 Cypress.Commands.add('toggleTheme', () => {
