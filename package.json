@@ -71,7 +71,7 @@
     "ts-loader": "^9.5.2",
     "typescript": "^5.9.3",
     "webpack": "^5.99.9",
-    "webpack-bundle-analyzer": "^4.10.2"
+    "webpack-bundle-analyzer": "^5.0.0"
   },
   "repository": {
     "type": "git",
