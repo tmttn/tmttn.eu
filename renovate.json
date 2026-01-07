@@ -1,5 +1,4 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
     "default:automergeMinor",
@@ -9,6 +8,9 @@
     "helpers:followTypescriptNext",
     "security:openssf-scorecard"
   ],
+  "automergeType": "pr",
+  "automergeStrategy": "squash",
+  "platformAutomerge": true,
   "commitMessagePrefix": "🔧 ",
   "commitMessageAction": "chore:",
   "commitMessageTopic": "{{depName}}",
