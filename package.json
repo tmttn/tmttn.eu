@@ -88,6 +88,6 @@
     "base-x": "^5.0.1",
     "@conventional-changelog/git-client": "^2.5.1",
     "diff": "^8.0.3",
-    "undici": "^6.23.0"
+    "undici": "^7.0.0"
   }
 }
