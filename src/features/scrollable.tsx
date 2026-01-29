@@ -28,24 +28,16 @@ export default function Scrollable() {
     const fromTop = window.scrollY
 
     if (headerReference.current) {
-      if (fromTop > 10) {
-        headerReference.current.classList.add("scrolled")
-      } else {
-        headerReference.current.classList.remove("scrolled")
-      }
+      headerReference.current.classList.toggle("scrolled", fromTop > 10)
     }
 
     if (mainNavLinksReference.current) {
       for (const link of mainNavLinksReference.current) {
         const section: HTMLElement | null = document.querySelector(link.hash)
 
-        if (section && section.offsetTop <= fromTop &&
-          section.offsetTop + section.offsetHeight > fromTop
-        ) {
-          link.classList.add("current")
-        } else {
-          link.classList.remove("current")
-        }
+        const isCurrent = !!(section && section.offsetTop <= fromTop &&
+          section.offsetTop + section.offsetHeight > fromTop)
+        link.classList.toggle("current", isCurrent)
       }
     }
   }, [])

@@ -55,6 +55,9 @@ export default [
       ...reactPlugin.configs.recommended.rules,
       ...reactHooksPlugin.configs.recommended.rules,
       ...unicornPlugin.configs.recommended.rules,
+      'react/react-in-jsx-scope': 'off', // Next.js auto-imports React
+      'react-hooks/set-state-in-effect': 'off', // Legitimate SSR hydration patterns in Next.js
+      'unicorn/no-array-sort': 'off', // toSorted not available with current TypeScript lib target
       'unicorn/filename-case': [
         'error',
         {
