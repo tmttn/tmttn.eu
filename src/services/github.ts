@@ -114,7 +114,7 @@ export class GitHubService {
       // Filter out forks and archived repos, sort by stars/updated date
       return repos
         .filter(repo => !repo.fork && !repo.archived)
-        .sort((a, b) => {
+        .toSorted((a, b) => {
           // Sort by stars first, then by updated date
           if (a.stargazers_count !== b.stargazers_count) {
             return b.stargazers_count - a.stargazers_count
