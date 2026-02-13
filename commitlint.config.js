@@ -22,20 +22,20 @@ module.exports = {
     ],
     'subject-min-length': [2, 'always', 1],
     'subject-max-length': [2, 'always', 100],
-    'subject-case': [2, 'always', 'sentence-case'],
+    'subject-case': [0],
     'header-max-length': [2, 'always', 120],
     // Custom rule to allow any emoji at the start
     'header-pattern': [
       2,
       'always',
-      /^([\p{Emoji}][\u200d\ufe0f]* )?(feat|fix|style|refactor|perf|test|docs|chore|deploy|enhance)(\(.+\))?: .+$/u
+      /^([\p{Emoji}][‍️]* )?(feat|fix|style|refactor|perf|test|docs|chore|deploy|enhance)(\(.+\))?: .+$/u
     ]
   },
   plugins: [
     {
       rules: {
         'header-pattern': ({ header }) => {
-          const pattern = /^([\p{Emoji}][\u200d\ufe0f]* )?(feat|fix|style|refactor|perf|test|docs|chore|deploy|enhance)(\(.+\))?: .+$/u;
+          const pattern = /^([\p{Emoji}][‍️]* )?(feat|fix|style|refactor|perf|test|docs|chore|deploy|enhance)(\(.+\))?: .+$/u;
 
           if (!pattern.test(header)) {
             return [
