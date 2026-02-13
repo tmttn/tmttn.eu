@@ -11,6 +11,8 @@
   "automergeType": "pr",
   "automergeStrategy": "squash",
   "platformAutomerge": true,
+  "postUpdateOptions": ["npmDedupe"],
+  "npmrc": "legacy-peer-deps=true",
   "commitMessagePrefix": "🔧 ",
   "commitMessageAction": "chore:",
   "commitMessageTopic": "{{depName}}",
