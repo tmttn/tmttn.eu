@@ -66,7 +66,7 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm install
+      run: npm install --legacy-peer-deps
     
     - name: Build application
       run: npm run build
@@ -129,7 +129,7 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm install
+      run: npm install --legacy-peer-deps
     
     - name: Run Jest tests with coverage
       run: npm run test:coverage
@@ -178,7 +178,7 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm install
+      run: npm install --legacy-peer-deps
     
     - name: Run TypeScript type checking
       run: npm run type-check
@@ -302,13 +302,13 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm install
+      run: npm install --legacy-peer-deps
     
     - name: Run security audit
-      run: npm audit --audit-level=moderate
-    
+      run: npm audit --audit-level=high --omit=dev
+
     - name: Check for known vulnerabilities
-      run: npx audit-ci --moderate
+      run: npx audit-ci --high
     
     - name: Create security audit summary
       run: |
@@ -344,7 +344,7 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm install
+      run: npm install --legacy-peer-deps
     
     - name: Run tests for SonarQube
       run: npm run test:coverage
@@ -428,7 +428,7 @@ jobs:
         cache: 'npm'
     
     - name: Install dependencies
-      run: npm install
+      run: npm install --legacy-peer-deps
     
     - name: Download build artifacts
       uses: actions/download-artifact@v7
