@@ -103,7 +103,7 @@ jobs:
       run: tar -czf build-output.tar.gz .next/
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: build-output
         path: build-output.tar.gz
@@ -153,7 +153,7 @@ jobs:
         fi
     
     - name: Upload coverage reports
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: coverage-report
         path: coverage/
@@ -434,7 +434,7 @@ jobs:
       run: npm install --legacy-peer-deps
     
     - name: Download build artifacts
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         name: build-output
 
@@ -465,7 +465,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Upload Cypress screenshots on failure
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       if: failure()
       with:
         name: cypress-screenshots
@@ -473,7 +473,7 @@ jobs:
         retention-days: 7
     
     - name: Upload Cypress videos
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         name: cypress-videos
@@ -481,7 +481,7 @@ jobs:
         retention-days: 7
     
     - name: Upload Cypress reports
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         name: cypress-reports
