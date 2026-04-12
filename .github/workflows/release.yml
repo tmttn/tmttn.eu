@@ -365,7 +365,7 @@ jobs:
     
     - name: Create Release with auto-generated notes
       if: steps.deployment-check.outputs.deployment_occurred == 'true' && steps.check-release.outputs.exists == 'false'
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         tag_name: v${{ steps.validate-version.outputs.version }}
         name: Release v${{ steps.validate-version.outputs.version }}
